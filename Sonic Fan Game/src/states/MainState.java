@@ -53,7 +53,7 @@ public class MainState extends State {
 		
 		Loader.leafForest1Map.draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);
 		
-		//for(int i = 0; i < shapes.length; i++) {shapes[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}
+		for(int i = 0; i < shapes.length; i++) {shapes[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}
 		
 		player.draw(graphics);
 	}
@@ -117,6 +117,7 @@ public class MainState extends State {
 				   tile == 140 ||
 				   tile == 160 ||
 				   tile == 230 ||
+				   tile == 235 ||
 				   tile == 34) {shapes = append(shapes, new Rectangle(new Vector(x, y), new Vector(w, h), Color.WHITE));}
 				if(tile == 12) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y + h6), new Vector(x + w, y + h2), new Vector(x, y + h2)}, Color.WHITE));}
 				if(tile == 13) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h6), new Vector(x + w, y + h3), new Vector(x + w, y + h2 + h6), new Vector(x, y + h2 + h6)}, Color.WHITE));}
@@ -154,7 +155,13 @@ public class MainState extends State {
 				}
 				if(tile == 63 ||
 				   tile == 206 ||
-				   tile == 41) {shapes = append(shapes, new Rectangle(new Vector(x, y + h2), new Vector(w, h2), Color.WHITE));}
+				   tile == 205 ||
+				   tile == 42 ||
+				   tile == 43 ||
+				   tile == 44 ||
+				   tile == 211 ||
+				   tile == 41) {shapes = append(shapes, new Rectangle(new Vector(x, y + h2), new Vector(w, s4), Color.WHITE));}
+				if(tile == 110) {shapes = append(shapes, new Rectangle(new Vector(x, y), new Vector(w, s4), Color.WHITE));}
 				if(tile == 64) {shapes = append(shapes, new Rectangle(new Vector(x, y + h2), new Vector(w2, h2), Color.WHITE));}
 				if(tile == 83) {
 					shapes = append(shapes, new Rectangle(new Vector(x, y), new Vector(w2, h), Color.WHITE));
@@ -166,7 +173,13 @@ public class MainState extends State {
 				if(tile == 88) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h), new Vector(x + w, y + s9), new Vector(x + w, y + h)}, Color.WHITE));}
 				if(tile == 89) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + s9), new Vector(x + w, y + s6), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 120 ||
-				   tile == 250) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2), new Vector(x + w2, y + h2 + h6 - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
+				   tile == 250) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2),
+						                                                        new Vector(x + s1, y + h2),
+						                                                        new Vector(x + s5, y + h2 + s1),
+						                                                        new Vector(x + s7, y + h2 + s2),
+						                                                        new Vector(x + s9, y + h2 + s3),
+						                                                        new Vector(x + w, y + h),
+						                                                        new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 100) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 161) {
 					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + s11, y + s11), new Vector(x + s11, y + h), new Vector(x, y + h)}, Color.WHITE));
@@ -213,6 +226,28 @@ public class MainState extends State {
 					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + w2, y), new Vector(x + w, y + h24), new Vector(x + w, y + h), new Vector(x + w2, y + h)}, Color.WHITE));
 				}
 				if(tile == 203) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h24), new Vector(x + w, y + h2 - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
+				if(tile == 173) {
+					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2),
+							                                       new Vector(x + w2, y + h2),
+							                                       new Vector(x + w2, y + h),
+							                                       new Vector(x, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s6, y + s6),
+                                                                   new Vector(x + s9, y + s5),
+									                               new Vector(x + s9, y + h),
+									                               new Vector(x + s6, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s9, y + s5),
+									                               new Vector(x + s11, y + s3),
+									                               new Vector(x + s11, y + h),
+									                               new Vector(x + s9, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s11, y + s3),
+									                               new Vector(x + w, y),
+									                               new Vector(x + w, y + h),
+									                               new Vector(x + s11, y + h)}, Color.WHITE));
+				}
+				if(tile == 118) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y), new Vector(x + w, y + s1), new Vector(x, y + s4)}, Color.WHITE));}
+				if(tile == 119) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + s4, y), new Vector(x, y + s1)}, Color.WHITE));}
+				if(tile == 39) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h), new Vector(x + w, y + s9), new Vector(x + w, y + h)}, Color.WHITE));}
+				if(tile == 40) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + s9), new Vector(x + w, y + s6), new Vector(x + w, y + s10), new Vector(x + s4, y + h), new Vector(x, y + h)}, Color.WHITE));}
 			}
 		}
 	}
