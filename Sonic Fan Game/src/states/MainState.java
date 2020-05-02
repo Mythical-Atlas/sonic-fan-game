@@ -75,9 +75,9 @@ public class MainState extends State {
 		player = null;
 		shapes = null;
 		
-		for(int tx = 0; tx < json.map.length; tx++) {
-			for(int ty = 0; ty < json.map[tx].length; ty++) {
-				int tile = json.map[tx][ty];
+		for(int tx = 0; tx < json.map[0].length; tx++) {
+			for(int ty = 0; ty < json.map[0][tx].length; ty++) {
+				int tile = json.map[0][tx][ty] - 1;
 				int w = json.tileWidth * SCALE;
 				int h = json.tileHeight * SCALE;
 				int w2 = w / 2;

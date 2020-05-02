@@ -1,5 +1,7 @@
 package datatypes;
 
+import static java.lang.Math.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,44 +15,87 @@ import org.json.simple.parser.ParseException;
 public class TiledJSON {
 	public int width;
 	public int height;
+	public int length;
 	public int tileWidth;
 	public int tileHeight;
-	public int[][] map;
-	
-	private JSONObject object;
+	public int[][][] map;
+	public int offsets[];
+	public String[] tilesets;
+	public String[] layers;
 	
 	public TiledJSON(String jsonPath) {
-		object = null;
+		JSONObject object = null;
 		try {object = (JSONObject)new JSONParser().parse(new InputStreamReader(getClass().getResourceAsStream(jsonPath)));}
 		catch (Exception e) {e.printStackTrace();}
 		
 		tileWidth = (int)(long)object.get("tilewidth");
 		tileHeight = (int)(long)object.get("tileheight");
 		
+		JSONArray firstGids = (JSONArray)object.get("tilesets");
+		offsets = new int[firstGids.size()];
+		tilesets = new String[firstGids.size()];
+		
+		for(int i = 0; i < firstGids.size(); i++) {
+			JSONObject gid = (JSONObject)firstGids.get(i);
+			offsets[i] = (int)(long)gid.get("firstgid");
+			tilesets[i] = (String)gid.get("source");
+			
+			if(tilesets[i].endsWith(".tsx") || tilesets[i].endsWith(".xml")) {tilesets[i] = tilesets[i].substring(0, tilesets[i].length() - 4);}
+			else if(tilesets[i].endsWith(".json")) {tilesets[i] = tilesets[i].substring(0, tilesets[i].length() - 5);}
+		}
+		
 		JSONArray layers = (JSONArray)object.get("layers");
-		JSONObject layer = (JSONObject)layers.get(0);
-		JSONArray chunks = (JSONArray)layer.get("chunks");
+		length = layers.size();
 		
-		int startX = (int)(long)layer.get("startx");
-		int startY = (int)(long)layer.get("starty");
-		width = (int)(long)layer.get("width");
-		height = (int)(long)layer.get("height");
+		int x1 = (int)(long)((JSONObject)layers.get(0)).get("startx");
+		int y1 = (int)(long)((JSONObject)layers.get(0)).get("starty");
+		int x2 = x1 + (int)(long)((JSONObject)layers.get(0)).get("width");
+		int y2 = y1 + (int)(long)((JSONObject)layers.get(0)).get("height");
 		
-		map = new int[width][height];
-		
-		for(int i = 0; i < chunks.size(); i++) {
-			JSONObject chunk = (JSONObject)chunks.get(i);
-			JSONArray data = (JSONArray)chunk.get("data");
+		for(int i = 1; i < length; i++) {
+			JSONObject layer = (JSONObject)layers.get(i);
+			int tx1 = (int)(long)layer.get("startx");
+			int ty1 = (int)(long)layer.get("starty");
+			int tx2 = tx1 + (int)(long)layer.get("width");
+			int ty2 = ty1 + (int)(long)layer.get("height");
 			
-			int offsetX = (int)(long)chunk.get("x");
-			int offsetY = (int)(long)chunk.get("y");
-	        int w = (int)(long)chunk.get("width");
-			int h = (int)(long)chunk.get("height");
+			x1 = min(x1, tx1);
+			y1 = min(y1, ty1);
+			x2 = max(x2, tx2);
+			y2 = max(y2, ty2);
+		}
+		
+		width = x2 - x1;
+		height = y2 - y1;
+		
+		map = new int[length][width][height];
+		
+		for(int l = 0; l < length; l++) {
+			JSONObject layer = (JSONObject)layers.get(l);
+			//this.layers[l] = ((String)layer.get("name"));
+			int lx = (int)(long)layer.get("startx");
+			int ly = (int)(long)layer.get("starty");
+			int lw = (int)(long)layer.get("width");
+			int lh = (int)(long)layer.get("height");
 			
-			for(int y = 0; y < h; y++) {
-				for(int x = 0; x < w; x++) {
-					int t = x + (y * w);
-					map[x + offsetX - startX][y + offsetY - startY] = (int)(long)data.get(t) - 1;
+			if(lw * lh > 0) {
+				JSONArray chunks = (JSONArray)layer.get("chunks");
+				
+				for(int i = 0; i < chunks.size(); i++) {
+					JSONObject chunk = (JSONObject)chunks.get(i);
+					JSONArray data = (JSONArray)chunk.get("data");
+					
+					int cx = (int)(long)chunk.get("x");
+					int cy = (int)(long)chunk.get("y");
+			        int cw = (int)(long)chunk.get("width");
+					int ch = (int)(long)chunk.get("height");
+					
+					for(int x = 0; x < cw; x++) {
+						for(int y = 0; y < ch; y++) {
+							int t = x + (y * cw);
+							map[l][x + cx - lx][y + cy - ly] = (int)(long)data.get(t);
+						}
+					}
 				}
 			}
 		}

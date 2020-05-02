@@ -28,7 +28,9 @@ import javax.swing.JPanel;
 
 import datatypes.Animation;
 import datatypes.State;
+import datatypes.TiledJSON;
 import datatypes.Tilemap;
+import datatypes.Tileset;
 import states.MainState;
 import states.MenuState;
 import states.TestState;
@@ -129,13 +131,10 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 		if(!loadedAssets) {
 			loadedAssets = true;
 			
-			try {
-				testMap1 = TiledJSONReader.readTileMap(getClass().getResourceAsStream("/maps/testMap1.json"));
-				testMap2 = TiledJSONReader.readTileMap(getClass().getResourceAsStream("/maps/testMap2.json"));
-			}
-			catch(Exception e) {e.printStackTrace();}
+			testMap1 = new TiledJSON("/maps/testMap1.json").map[0];
+			testMap2 = new TiledJSON("/maps/testMap2.json").map[0];
 			
-			leafForest1Map = new Tilemap("/maps/Leaf_Forest_Act_1.json", "/maps/Leaf_Forest_Act_1.png", "/maps/Leaf_Forest_Act_1 test.png");
+			leafForest1Map = new Tilemap("/maps/leaf.json", "/maps/");
 			
 			idleAnim = new Animation("sonicsprites", "idle", new int[]{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 12, 6, 6, 6, 12, 8}, 0);
 			runSlowestAnim = new Animation("sonicsprites", "slowest", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
