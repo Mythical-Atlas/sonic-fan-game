@@ -31,6 +31,11 @@ public class Arc extends Shape {
 		
 		//System.out.println("c = (" + points[2].x + ", " + points[2].y + ")");
 	}
+	public Arc(Vector a, Vector b, Vector c, double radius, Color color) {
+		this.color = color;
+		
+		points = new Vector[]{a.subtract(b).normalize().scale(radius).add(b), b, c.subtract(b).normalize().scale(radius).add(b)};
+	}
 
 	public Vector getCenter() {return(points[1]);}
 	public double getRadius() {return(points[0].getDistance(points[1]));}

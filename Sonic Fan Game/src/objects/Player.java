@@ -225,6 +225,7 @@ public class Player {
 		crouch();
 		gravity();
 		
+		// TODO: step velocity 1 unit at a time
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
 		pos.translate(vel);
 		
@@ -234,12 +235,15 @@ public class Player {
 		if(layer == 1) {shapes = combine(layer0, layer1);}
 		if(layer == 2) {shapes = combine(layer0, layer2);}
 		
-		collide(shapes);
-		checkLedge(shapes);
-		stick(shapes);
-	
-		checkGround(shapes);
-		getGroundAxis(shapes);
+		if(shapes != null) {
+			// TODO: fix velocity projection for curves
+			collide(shapes);
+			checkLedge(shapes);
+			stick(shapes);
+		
+			checkGround(shapes);
+			getGroundAxis(shapes);
+		}
 	}
 	
 	private void movement() {
@@ -475,8 +479,8 @@ public class Player {
 		mask = new Circle(MASK_RADIUS * SCALE);
 		mask.relocate(pos);
 		
-		for(int i = 0; i < layer2Triggers.length; i++) {if(checkCollision(mask, layer2Triggers[i])) {layer = 2;}}
-		for(int i = 0; i < layer1Triggers.length; i++) {if(checkCollision(mask, layer1Triggers[i])) {layer = 1;}}
+		if(layer2Triggers != null) {for(int i = 0; i < layer2Triggers.length; i++) {if(checkCollision(mask, layer2Triggers[i])) {layer = 2;}}}
+		if(layer1Triggers != null) {for(int i = 0; i < layer1Triggers.length; i++) {if(checkCollision(mask, layer1Triggers[i])) {layer = 1;}}}
 	}
 	
 	private void collide(Shape[] shapes) {

@@ -13,11 +13,11 @@ import datatypes.Vector;
 
 public class InverseArc extends Shape {
 	public InverseArc() {}
-	/*public InverseArc(Vector a, Vector b, Vector c, Color color) {
+	public InverseArc(Vector a, Vector b, Vector c, Color color) {
 		this.color = color;
 		
 		points = new Vector[]{a, b, c};
-	}*/
+	}
 	public InverseArc(Vector a, Vector b/*, double angle0*/, Color color) {
 		this.color = color;
 		double angle = PI/2; // TEMP
@@ -36,6 +36,11 @@ public class InverseArc extends Shape {
 		
 		//System.out.println("c = (" + points[2].x + ", " + points[2].y + ")");
 	}
+	public InverseArc(Vector a, Vector b, Vector c, double radius, Color color) {
+		this.color = color;
+		
+		points = new Vector[]{a.subtract(b).normalize().scale(radius).add(b), b, c.subtract(b).normalize().scale(radius).add(b)};
+	}
 
 	public Vector getCenter() {return(points[1]);}
 	public double getRadius() {return(points[0].getDistance(points[1]));}
@@ -53,7 +58,8 @@ public class InverseArc extends Shape {
 		botAngle = limitAngle(botAngle);
 		topAngle = limitAngle(topAngle);
 		
-		if(checkAngleBetweenAngles(PI / 4, botAngle, topAngle) || checkAngleBetweenAngles(PI / 4 + PI, botAngle, topAngle)) {return(new Vector(points[0].x, points[2].y));}
+		if(checkAngleBetweenAnglesInclusive(botAngle, 0, PI / 2)      && checkAngleBetweenAnglesInclusive(topAngle, 0, PI / 2) ||
+		   checkAngleBetweenAnglesInclusive(botAngle, PI, PI / 2 + PI) && checkAngleBetweenAnglesInclusive(topAngle, PI, PI / 2 + PI)) {return(new Vector(points[0].x, points[2].y));}
 		else {return(new Vector(points[2].x, points[0].y));}
 	}
 	

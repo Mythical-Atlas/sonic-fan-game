@@ -61,4 +61,20 @@ public class MathFunctions {
 		
 		return(b0 < b2 && b0 != 0);
 	}
+	
+	public static boolean checkAngleBetweenAnglesInclusive(double a0, double a1, double a2) {
+		double b0 = limitAngle(a0);
+		double b1 = limitAngle(a1);
+		double b2 = limitAngle(a2);
+		
+		b0 = limitAngle(b0 - b1);
+		b2 = limitAngle(b2 - b1);
+		
+		/*System.out.println("a0 angle = " + limitAngle(a0));
+		System.out.println("a1 angle = " + limitAngle(a1));
+		System.out.println("a2 angle = " + limitAngle(a2));
+		System.out.println("is a0 between a1 and a2? " + (b0 < b2) + "\n");*/
+		
+		return(b0 <= b2);
+	}
 }
