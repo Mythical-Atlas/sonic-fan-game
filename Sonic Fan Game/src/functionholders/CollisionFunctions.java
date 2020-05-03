@@ -3,6 +3,7 @@ package functionholders;
 import static java.lang.Math.*;
 import static functionholders.MathFunctions.*;
 import static functionholders.ListFunctions.*;
+import static functionholders.DebugFunctions.*;
 
 import datatypes.Shape;
 import datatypes.Vector;
@@ -102,5 +103,59 @@ public class CollisionFunctions {
 		}
 		
 		return(true);
+	}
+	
+	public static Vector getLineIntersection(Vector point0, Vector dir0, Vector point1, Vector dir1) {
+		Vector A = point0;
+		Vector B = point0.add(dir0);
+		Vector C = point1;
+		Vector D = point1.add(dir1);
+		
+        // Line AB represented as a1x + b1y = c1 
+        double a1 = B.y - A.y; 
+        double b1 = B.x - A.x; 
+        double c1 = a1*(A.x) + b1*(A.y); 
+       
+        // Line CD represented as a2x + b2y = c2 
+        double a2 = D.y - C.y; 
+        double b2 = D.x - C.x; 
+        double c2 = a2*(C.x)+ b2*(C.y); 
+       
+        double determinant = a1*b2 - a2*b1; 
+       
+        if (determinant == 0) { 
+            // The lines are parallel
+            return(null); 
+        } 
+        else
+        { 
+            double x = (b2*c1 - b1*c2)/determinant; 
+            double y = (a1*c2 - a2*c1)/determinant; 
+            return new Vector(x, y); 
+        } 
+    }
+	
+	public static Vector getLineArcIntersection(Vector point1, Vector point2, Vector center, double rx, double ry, double smallAngle, double largeAngle) {
+		double xa = center.x;
+		double ya = center.y;
+		double a1 = smallAngle;
+		double a2 = largeAngle;
+		
+		double x1 = point1.x;
+		double x2 = point2.x;
+		double y1 = point1.y;
+		double y2 = point2.y;
+		
+		double dx = x2 - x1;
+		double dy = y2 - y1;
+		double al = atan(dy / dx);
+		
+		if(al < a1 || al > a2) {return(null);}
+		
+		double r = new Vector(cos(al) * rx, sin(al) * ry).getLength();
+		
+		double c = (xa * r * cos(al) - x1) / dx;
+		
+		return(new Vector(x1 + c * dx, y1 + c * dy));
 	}
 }

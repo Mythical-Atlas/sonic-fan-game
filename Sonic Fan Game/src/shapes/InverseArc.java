@@ -2,6 +2,7 @@ package shapes;
 
 import static java.lang.Math.*;
 
+import static functionholders.CollisionFunctions.*;
 import static functionholders.MathFunctions.*;
 import static functionholders.ListFunctions.*;
 
@@ -12,11 +13,17 @@ import datatypes.Shape;
 import datatypes.Vector;
 
 public class InverseArc extends Shape {
+	private double rx;
+	private double ry;
+	
 	public InverseArc() {}
 	public InverseArc(Vector a, Vector b, Vector c, Color color) {
 		this.color = color;
 		
 		points = new Vector[]{a, b, c};
+		
+		rx = a.getDistance(b);
+		ry = a.getDistance(b);
 	}
 	public InverseArc(Vector a, Vector b/*, double angle0*/, Color color) {
 		this.color = color;
@@ -35,15 +42,52 @@ public class InverseArc extends Shape {
 		points = new Vector[]{a, b, b.add(new Vector(cos(topAngle) * a.getDistance(b), -sin(topAngle) * a.getDistance(b)))};
 		
 		//System.out.println("c = (" + points[2].x + ", " + points[2].y + ")");
+		
+		rx = a.getDistance(b);
+		ry = a.getDistance(b);
 	}
 	public InverseArc(Vector a, Vector b, Vector c, double radius, Color color) {
 		this.color = color;
 		
 		points = new Vector[]{a.subtract(b).normalize().scale(radius).add(b), b, c.subtract(b).normalize().scale(radius).add(b)};
+		
+		rx = a.getDistance(b);
+		ry = a.getDistance(b);
+	}
+	/*public InverseArc(Vector point0, Vector dir0, Vector point1, Vector dir1, Color color) {
+		this.color = color;
+		
+		Vector norm0 = dir0.normalize().getPerpendicular();
+		Vector norm1 = dir1.normalize().getPerpendicular();
+		
+		Vector center = getLineIntersection(point0, norm0, point1, norm1);
+		
+		points = new Vector[]{point0, center, point1};
+	}*/
+	public InverseArc(Vector point0, double angle0, Vector point1, double angle1, Color color) {
+		this.color = color;
+		
+		Vector dir0 = new Vector(cos(angle0), sin(angle0));
+		Vector dir1 = new Vector(cos(angle1), sin(angle1));
+		
+		Vector center = getLineIntersection(point0, dir0, point1, dir1);
+		
+		points = new Vector[]{point0, center, point1};
+		
+		System.out.println((point0.x - center.x) + ", " + (point0.y - center.y));
+		System.out.println((point1.x - center.x) + ", " + (point1.y - center.y));
+		
+		rx = abs(point0.subtract(center).x / cos(angle0));
+		ry = abs(point1.subtract(center).y / sin(angle1));
+		
+		System.out.println(rx);
+		System.out.println(ry);
+		
+		System.out.println();
 	}
 
 	public Vector getCenter() {return(points[1]);}
-	public double getRadius() {return(points[0].getDistance(points[1]));}
+	public double getRadius(double angle) {return(new Vector(cos(angle) * rx, sin(angle) * ry).getLength());}
 	
 	public Vector getCorner() {
 		Vector bot = points[0].subtract(points[1]).normalize();
@@ -155,8 +199,8 @@ public class InverseArc extends Shape {
 			System.out.println("is axis 2 between angles? " + checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle));
 		}*/
 		
-		if(checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {largestPoint = getCenter().add(axis.scale(getRadius()));}
-		if(checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle)) {smallestPoint = getCenter().subtract(axis.scale(getRadius()));}
+		if(checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {largestPoint = getCenter().add(axis.scale(getRadius(axisAngle)));}
+		if(checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle)) {smallestPoint = getCenter().subtract(axis.scale(getRadius(limitAngle(axisAngle + PI))));}
 		
 		/*if(largestPoint != null) {System.out.println("largestPoint = (" + (largestPoint.x - getCenter().x) + ", " + (largestPoint.y - getCenter().y) + ")\n");}
 		else {System.out.println();}*/
@@ -211,7 +255,7 @@ public class InverseArc extends Shape {
 		Vector corner = getCorner();
 		
 		graphics.setColor(color);
-		graphics.drawArc((int)(points[1].x - getRadius() - offset.x), (int)(points[1].y - getRadius() - offset.y), (int)getRadius() * 2, (int)getRadius() * 2, (int)toDegrees(botAngle), (int)toDegrees(delAngle));
+		graphics.drawArc((int)(points[1].x - rx - offset.x), (int)(points[1].y - ry - offset.y), (int)(rx * 2), (int)(ry * 2), (int)toDegrees(botAngle), (int)toDegrees(delAngle));
 		graphics.drawPolyline(new int[]{(int)(points[0].x - offset.x), (int)(corner.x - offset.x), (int)(points[2].x - offset.x)}, new int[]{(int)(points[0].y - offset.y), (int)(corner.y - offset.y), (int)(points[2].y - offset.y)}, 3);
 	}
 }

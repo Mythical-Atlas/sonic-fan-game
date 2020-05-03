@@ -176,10 +176,36 @@ public class MainState extends State {
 				if(tile == 66) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h3), new Vector(x + w, y + h6), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 2) {shapes = append(shapes, new Rectangle(new Vector(x, y + s2), new Vector(w, s10), Color.WHITE));}
 				if(tile == 108) {
-					shapes = append(shapes, new Rectangle(new Vector(x, y + h2), new Vector(w2, h2), Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + w2, y + h2), new Vector(x + w, y + h2 + h24), new Vector(x + w, y + h), new Vector(x + w2, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+							new Vector(x + s00, y + s06),
+							new Vector(x + s06, y + s06),
+							new Vector(x + s06, y + s12),
+							new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Arc(
+						new Vector(x + s12 + s04, y + s08),
+						PI / 2 - PI / 8,
+						new Vector(x + s06, y + s06),
+						PI / 2,
+						new Vector(x + s12, y + s07),
+						new Vector(x + s06, y + s06),
+					Color.WHITE));
 				}
-				if(tile == 109) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2 + h24), new Vector(x + w3, y + h3 + h3), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
+				if(tile == 109) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s04, y + s08),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s04, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Arc(
+						new Vector(x + s04, y + s08),
+						PI / 2 - PI / 8,
+						new Vector(x + s06 - s12, y + s06),
+						PI / 2,
+						new Vector(x + s04, y + s08),
+						new Vector(x + s00, y + s07),
+					Color.WHITE));
+				}
 				if(tile == 246) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y + h2 - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 21) {
 					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2 - h24), new Vector(x + w6, y + h2), new Vector(x + w6, y + h), new Vector(x, y + h)}, Color.WHITE));
@@ -189,18 +215,24 @@ public class MainState extends State {
 				if(tile == 180) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w - w12, y), new Vector(x + w, y + h12), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 181) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + s1), new Vector(x + s11, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 172) {
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + s1),
-																   new Vector(x + s3, y + s4),
-																   new Vector(x + s3, y + h),
-																   new Vector(x, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s3, y + s4),
-							                                       new Vector(x + s7, y + s6),
-							                                       new Vector(x + s7, y + h),
-							                                       new Vector(x, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s7, y + s6),
-                                                                   new Vector(x + w, y + s6),
-                                                                   new Vector(x + w, y + h),
-                                                                   new Vector(x, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s06),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s01),
+						new Vector(x + s02, y + s03),
+						new Vector(x + s02, y + s06),
+						new Vector(x + s00, y + s06)
+					}, Color.WHITE));
+					shapes = append(shapes, new InverseArc(
+						new Vector(x + s02, y + s03),
+						PI + PI / 4,
+						new Vector(x + s09, y + s06),
+						PI + PI / 2,
+					Color.WHITE));
 				}
 				if(tile == 4) {shapes = append(shapes, new Rectangle(new Vector(x, y + h2), new Vector(w, s6), Color.WHITE));}
 				if(tile == 8) {shapes = append(shapes, new Rectangle(new Vector(x + w2, y + h2), new Vector(w2, h2), Color.WHITE));}
@@ -444,40 +476,16 @@ public class MainState extends State {
 					Color.WHITE));
 				}
 				if(tile == 111) {
+					shapes = append(shapes, new InverseArc(
+						new Vector(x + s02, y + s02),
+						new Vector(x + s12, y + s02),
+						new Vector(x + s12, y + s12),
+						s10,
+					Color.WHITE));
 					shapes = append(shapes, new Shape(new Vector[]{
 						new Vector(x + s00, y + s00),
 						new Vector(x + s02, y + s00),
-						new Vector(x + s02, y + s03),
-						new Vector(x + s00, y + s03)
-					}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s00, y + s03),
-						new Vector(x + s02, y + s03),
-						new Vector(x + s03, y + s06),
-						new Vector(x + s00, y + s06)
-					}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s00, y + s06),
-						new Vector(x + s03, y + s06),
-						new Vector(x + s04, y + s08),
-						new Vector(x + s00, y + s08)
-					}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s00, y + s08),
-						new Vector(x + s04, y + s08),
-						new Vector(x + s06, y + s10),
-						new Vector(x + s00, y + s10)
-					}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s00, y + s10),
-						new Vector(x + s06, y + s10),
-						new Vector(x + s08, y + s11),
-						new Vector(x + s00, y + s11)
-					}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s00, y + s11),
-						new Vector(x + s08, y + s11),
-						new Vector(x + s10, y + s12),
+						new Vector(x + s02, y + s12),
 						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
 				}
