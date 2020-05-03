@@ -206,10 +206,43 @@ public class MainState extends State {
 						new Vector(x + s00, y + s07),
 					Color.WHITE));
 				}
-				if(tile == 246) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y + h2 - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
+				if(tile == 246) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s10, y + s05),
+						new Vector(x + s10, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s10, y + s06),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s10, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new InverseArc(
+						new Vector(x + s10, y + s05),
+						PI + PI / 2 - PI / 8,
+						new Vector(x + s10 + s05, y + s06),
+						PI + PI / 2,
+						new Vector(x + s10, y + s05),
+						new Vector(x + s12, y + s06),
+					Color.WHITE));
+				}
 				if(tile == 21) {
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2 - h24), new Vector(x + w6, y + h2), new Vector(x + w6, y + h), new Vector(x, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + w6, y + h2), new Vector(x + w, y + h2), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+							new Vector(x + s00, y + s06),
+							new Vector(x + s12, y + s06),
+							new Vector(x + s12, y + s12),
+							new Vector(x + s00, y + s12)
+						}, Color.WHITE));
+						shapes = append(shapes, new InverseArc(
+							new Vector(x - s02, y + s05),
+							PI + PI / 2 - PI / 8,
+							new Vector(x + s03, y + s06),
+							PI + PI / 2,
+							new Vector(x + s00, y + s05),
+							new Vector(x + s03, y + s06),
+						Color.WHITE));
 				}
 				if(tile == 269) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2), new Vector(x + w2, y + h2 + h6 - h24), new Vector(x + w - w12, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 180) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w - w12, y), new Vector(x + w, y + h12), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}

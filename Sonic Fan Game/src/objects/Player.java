@@ -350,6 +350,9 @@ public class Player {
 			if(downArrow && groundSpeed != 0) {
 				if(!spinning) {
 					spinning = true;
+					crouching0 = false;
+					crouching1 = false;
+					spindashReady = false;
 					
 					spinSound.stop();
 					spinSound.flush();
@@ -449,17 +452,15 @@ public class Player {
 		}
 		
 		if(crouching0 && groundSpeed != 0) {
-			if(!spinning) {
-				crouching0 = false;
-				crouching1 = false;
-				spindashReady = false;
-				spinning = true;
-				
-				spinSound.stop();
-				spinSound.flush();
-				spinSound.setFramePosition(0);
-				spinSound.start();
-			}
+			crouching0 = false;
+			crouching1 = false;
+			spindashReady = false;
+			spinning = true;
+			
+			spinSound.stop();
+			spinSound.flush();
+			spinSound.setFramePosition(0);
+			spinSound.start();
 		}
 	}
 

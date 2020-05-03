@@ -72,18 +72,33 @@ public class InverseArc extends Shape {
 		
 		Vector center = getLineIntersection(point0, dir0, point1, dir1);
 		
-		points = new Vector[]{point0, center, point1};
+		rx = abs(point0.subtract(center).x / cos(angle0));
+		ry = abs(point1.subtract(center).y / sin(angle1));
 		
-		System.out.println((point0.x - center.x) + ", " + (point0.y - center.y));
-		System.out.println((point1.x - center.x) + ", " + (point1.y - center.y));
+		points = new Vector[]{point0, center, point1};
+	}
+	public InverseArc(Vector point0, double angle0, Vector point1, double angle1, Vector point2, Vector point3, Color color) {
+		this.color = color;
+		
+		Vector dir0 = new Vector(cos(angle0), sin(angle0));
+		Vector dir1 = new Vector(cos(angle1), sin(angle1));
+		
+		Vector center = getLineIntersection(point0, dir0, point1, dir1);
 		
 		rx = abs(point0.subtract(center).x / cos(angle0));
 		ry = abs(point1.subtract(center).y / sin(angle1));
 		
-		System.out.println(rx);
-		System.out.println(ry);
+		Vector bot = point2.subtract(center).normalize();
+		double botAngle = acos(bot.x);
+		if(bot.y > 0) {botAngle *= -1;}
+		botAngle = limitAngle(botAngle);
 		
-		System.out.println();
+		Vector top = point3.subtract(center).normalize();
+		double topAngle = acos(top.x);
+		if(top.y > 0) {topAngle *= -1;}
+		topAngle = limitAngle(topAngle);
+		
+		points = new Vector[]{center.add(new Vector(rx * cos(botAngle), ry * -sin(botAngle))), center, center.add(new Vector(rx * cos(topAngle), ry * -sin(topAngle)))};
 	}
 
 	public Vector getCenter() {return(points[1]);}
