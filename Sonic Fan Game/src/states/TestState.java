@@ -33,7 +33,7 @@ public class TestState extends State {
 	
 	public TestState(int[][] map) {interpretMap(map);}
 	
-	public void update() {player.update(shapes);}
+	public void update() {player.update(shapes, null, null, null, null);}
 	
 	public void draw(Graphics2D graphics) {
 		graphics.setColor(Color.DARK_GRAY);

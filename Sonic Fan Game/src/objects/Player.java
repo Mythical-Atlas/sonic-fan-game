@@ -4,6 +4,7 @@ import static java.lang.Math.*;
 
 import static functionholders.CollisionFunctions.*;
 import static functionholders.GeometryFunctions.*;
+import static functionholders.ListFunctions.*;
 import static functionholders.MathFunctions.*;
 import static java.awt.event.KeyEvent.*;
 
@@ -26,13 +27,13 @@ import shapes.Rectangle;
 
 public class Player {
 	private final double SPRINT_ACCEL 		= 2;
-	private final double MOVE_ACCEL  		= 0.2;
+	private final double MOVE_ACCEL  		= 0.3;
 	private final double GROUND_ACCEL_LIMIT = 100;
 	private final double SKID_ACCEL  		= 1;
 	private final double DRAG_DECEL   		= 0.25;
-	private final double JUMP_IMPULSE 		= 30;
+	private final double JUMP_IMPULSE 		= 25;
 	private final double JUMP_SWITCH  		= 2;
-	private final double GRAVITY      		= 1;
+	private final double GRAVITY      		= 0.75;
 	private final double SPIN_DECEL			= 0.025;
 	
 	private final double SLOW_MIN_SPEED 	= 20;
@@ -41,16 +42,16 @@ public class Player {
 	private final double FASTEST_MIN_SPEED 	= 80;
 	private final double SKID_MIN_SPEED 	= 5;
 	
-	private final double SPINDASH_MIN_STRENGTH = 10;
+	private final double SPINDASH_MIN_STRENGTH = 50;
 	private final double SPINDASH_CHARGE_SCALE = 10;
-	private final double SPINDASH_MAX_STRENGTH = 60;
+	private final double SPINDASH_MAX_STRENGTH = 100;
 	
 	private final double GROUND_ANGLE_MASK_OFFSET_X  = 0;
 	private final double GROUND_ANGLE_MASK_OFFSET_Y  = 1;
 	private final double GROUND_ANGLE_MASK_RADIUS    = 50;
 	
 	private final double STICK_OFFSET_SCALE = 0.5;
-	private final double STICK_MIN_SPEED    = 20;
+	private final double STICK_MIN_SPEED    = 10;
 	
 	private final double GROUND_MASK_OFFSET_X  = 0;
 	private final double GROUND_MASK_OFFSET_Y  = 1;
@@ -78,7 +79,7 @@ public class Player {
 	private final double MAX_STEP_SPEED 		= 25;
 	private final double MIN_POTENTIAL_GRAVITY 	= 0.25;
 	
-	private final boolean DRAW_MASKS 	= false;
+	public boolean DRAW_MASKS 	= false;
 	private final boolean DRAW_SPRITES	= true;
 	
 	private final int IDLE_ANIM 			= 0;
@@ -128,6 +129,7 @@ public class Player {
 	private double stepTimer;
 	private int stepIndex;
 	private int chargeDustTimer;
+	public int layer;
 	
 	private Shape mask;
 	
@@ -177,6 +179,7 @@ public class Player {
 		groundAxis = new Vector(0, 1);
 		mask = new Circle(MASK_RADIUS);
 		facing = 1;
+		layer = 1;
 		
 		this.idleAnim = Loader.idleAnim;
 		this.runSlowestAnim = Loader.runSlowestAnim;
@@ -211,7 +214,7 @@ public class Player {
 		this.stepSound4 = Loader.stepSound4;
 	}
 	
-	public void update(Shape[] shapes) {
+	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers) {
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 		
@@ -224,6 +227,12 @@ public class Player {
 		
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
 		pos.translate(vel);
+		
+		checkLayer(layer1Triggers, layer2Triggers);
+		
+		Shape[] shapes = null;
+		if(layer == 1) {shapes = combine(layer0, layer1);}
+		if(layer == 2) {shapes = combine(layer0, layer2);}
 		
 		collide(shapes);
 		checkLedge(shapes);
@@ -462,6 +471,14 @@ public class Player {
 		}
 	}
 
+	private void checkLayer(Shape[] layer1Triggers, Shape[] layer2Triggers) {
+		mask = new Circle(MASK_RADIUS * SCALE);
+		mask.relocate(pos);
+		
+		for(int i = 0; i < layer2Triggers.length; i++) {if(checkCollision(mask, layer2Triggers[i])) {layer = 2;}}
+		for(int i = 0; i < layer1Triggers.length; i++) {if(checkCollision(mask, layer1Triggers[i])) {layer = 1;}}
+	}
+	
 	private void collide(Shape[] shapes) {
 		mask = new Circle(MASK_RADIUS * SCALE);
 		mask.relocate(pos);

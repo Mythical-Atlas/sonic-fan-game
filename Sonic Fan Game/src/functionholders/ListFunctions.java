@@ -114,6 +114,14 @@ public class ListFunctions {
 		return(b);
 	}
 	
+	public static Shape[] combine(Shape[] a, Shape[] b) {
+		Shape[] c = null;
+		
+		if(a != null) {for(int i = 0; i < a.length; i++) {c = append(c, a[i]);}}
+		if(b != null) {for(int i = 0; i < b.length; i++) {c = append(c, b[i]);}}
+		
+		return(c);
+	}
 	public static Vector[] combine(Vector[] a, Vector[] b) {
 		Vector[] c = null;
 		

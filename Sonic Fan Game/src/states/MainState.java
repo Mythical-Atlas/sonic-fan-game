@@ -30,16 +30,23 @@ public class MainState extends State {
 	private Shape[] layer0;
 	private Shape[] layer1;
 	private Shape[] layer2;
+	private Shape[] layer1Triggers;
+	private Shape[] layer2Triggers;
 	
 	private double playerStartX;
 	private double playerStartY;
+	
+	private boolean showTileMasks;
+	
+	private boolean toggle0 = true;
+	private boolean toggle1 = true;
 	
 	public MainState() {
 		interpretMap(Loader.leafForest1Map.json);
 	}
 		
 	public void update() {
-		player.update(layer0);
+		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers);
 	}
 	
 	public void draw(Graphics2D graphics) {
@@ -55,17 +62,35 @@ public class MainState extends State {
 		
 		Loader.leafForest1Map.draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);
 		
-		for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}
+		if(showTileMasks) {
+			for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}
+			if(player.layer == 1) {for(int i = 0; i < layer1.length; i++) {layer1[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
+			if(player.layer == 2) {for(int i = 0; i < layer2.length; i++) {layer2[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
+		}
 		
 		player.draw(graphics);
 	}
 	
 	public void keyPressed(int key) {
+		if(key == VK_F1 && toggle0) {
+			toggle0 = false;
+			player.DRAW_MASKS = !player.DRAW_MASKS;
+		}
+		if(key == VK_F2 && toggle1) {
+			toggle1 = false;
+			showTileMasks = !showTileMasks;
+		}
+		
 		if(key == VK_BACK_SPACE) {player = new Player(playerStartX, playerStartY);}
 		player.keyPressed(key);
 		if(key == VK_ESCAPE) {Loader.changeState = 0;}
 	}
-	public void keyReleased(int key) {player.keyReleased(key);}
+	public void keyReleased(int key) {
+		if(key == VK_F1) {toggle0 = true;}
+		if(key == VK_F2) {toggle1 = true;}
+		
+		player.keyReleased(key);
+	}
 
 	public void mouseClicked(MouseEvent mouse) {}
 	public void mouseEntered(MouseEvent mouse) {}
@@ -91,6 +116,8 @@ public class MainState extends State {
 		layer0 = getShapes(json, 3);
 		layer1 = getShapes(json, 4);
 		layer2 = getShapes(json, 5);
+		layer1Triggers = getShapes(json, 6);
+		layer2Triggers = getShapes(json, 7);
 	}
 	
 	private Shape[] getShapes(TiledJSON json, int layer) {
@@ -343,6 +370,26 @@ public class MainState extends State {
 						new Vector(x + s09, y + s12)
 					}, Color.WHITE));
 				}
+				if(tile == 51) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s06, y + s00),
+						new Vector(x + s03, y + s03),
+						new Vector(x + s00, y + s03)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s03),
+						new Vector(x + s03, y + s03),
+						new Vector(x + s02, y + s07),
+						new Vector(x + s00, y + s07)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s07),
+						new Vector(x + s02, y + s07),
+						new Vector(x + s02, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
 				if(tile == 52) {
 					shapes = append(shapes, new Shape(new Vector[]{
 						new Vector(x + s06, y + s00),
@@ -367,6 +414,14 @@ public class MainState extends State {
 						new Vector(x + s12, y + s09),
 						new Vector(x + s12, y + s12),
 						new Vector(x + s09, y + s12)
+					}, Color.WHITE));
+				}
+				if(tile == 71) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s02, y + s00),
+						new Vector(x + s02, y + s12),
+						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
 				}
 				if(tile == 34) {
@@ -419,6 +474,44 @@ public class MainState extends State {
 						new Vector(x + s12, y + s04),
 						new Vector(x + s12, y + s10),
 						new Vector(x + s11, y + s10)
+					}, Color.WHITE));
+				}
+				if(tile == 111) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s02, y + s00),
+						new Vector(x + s02, y + s03),
+						new Vector(x + s00, y + s03)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s03),
+						new Vector(x + s02, y + s03),
+						new Vector(x + s03, y + s06),
+						new Vector(x + s00, y + s06)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s06),
+						new Vector(x + s03, y + s06),
+						new Vector(x + s04, y + s08),
+						new Vector(x + s00, y + s08)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s08),
+						new Vector(x + s04, y + s08),
+						new Vector(x + s06, y + s10),
+						new Vector(x + s00, y + s10)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s10),
+						new Vector(x + s06, y + s10),
+						new Vector(x + s08, y + s11),
+						new Vector(x + s00, y + s11)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s11),
+						new Vector(x + s08, y + s11),
+						new Vector(x + s10, y + s12),
+						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
 				}
 			}
