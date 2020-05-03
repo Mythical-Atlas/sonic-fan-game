@@ -46,6 +46,7 @@ public class TiledJSON {
 		
 		JSONArray layers = (JSONArray)object.get("layers");
 		length = layers.size();
+		this.layers = new String[length];
 		
 		int x1 = (int)(long)((JSONObject)layers.get(0)).get("startx");
 		int y1 = (int)(long)((JSONObject)layers.get(0)).get("starty");
@@ -72,9 +73,9 @@ public class TiledJSON {
 		
 		for(int l = 0; l < length; l++) {
 			JSONObject layer = (JSONObject)layers.get(l);
-			//this.layers[l] = ((String)layer.get("name"));
-			int lx = (int)(long)layer.get("startx");
-			int ly = (int)(long)layer.get("starty");
+			this.layers[l] = ((String)layer.get("name"));
+			//int lx = (int)(long)layer.get("startx");
+			//int ly = (int)(long)layer.get("starty");
 			int lw = (int)(long)layer.get("width");
 			int lh = (int)(long)layer.get("height");
 			
@@ -93,7 +94,8 @@ public class TiledJSON {
 					for(int x = 0; x < cw; x++) {
 						for(int y = 0; y < ch; y++) {
 							int t = x + (y * cw);
-							map[l][x + cx - lx][y + cy - ly] = (int)(long)data.get(t);
+							
+							map[l][x + cx - x1][y + cy - y1] = (int)(long)data.get(t);
 						}
 					}
 				}

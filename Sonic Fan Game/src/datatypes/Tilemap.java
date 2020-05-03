@@ -24,7 +24,7 @@ public class Tilemap {
 		int tw = json.tileWidth * scaleX;
 		int th = json.tileHeight * scaleY;
 		
-		for(int l = 0; l < json.map.length; l++) {
+		for(int l = 0; l < 3; l++) {
 			for(int x = 0; x < json.map[l].length; x++) {
 				for(int y = 0; y < json.map[l][x].length; y++) {
 					int s = -1;
