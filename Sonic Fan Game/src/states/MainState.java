@@ -175,7 +175,7 @@ public class MainState extends State {
 				if(tile == 3) {shapes = append(shapes, new Rectangle(new Vector(x, y + s4), new Vector(w, s8), Color.WHITE));}
 				if(tile == 66) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h3), new Vector(x + w, y + h6), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 2) {shapes = append(shapes, new Rectangle(new Vector(x, y + s2), new Vector(w, s10), Color.WHITE));}
-				/*if(tile == 108) {
+				if(tile == 108) {
 					shapes = append(shapes, new Shape(new Vector[]{
 							new Vector(x + s00, y + s06),
 							new Vector(x + s06, y + s06),
@@ -183,29 +183,44 @@ public class MainState extends State {
 							new Vector(x + s00, y + s12)
 					}, Color.WHITE));
 					shapes = append(shapes, new Arc(
-						new Vector(x + s06, y + s06 + 200 * SCALE),
-						200 * SCALE,
-						new Vector(x + s12, y + s07),
-						new Vector(x + s06, y + s06),
-					Color.WHITE));
-				}*/
-				if(tile == 109) {
-					shapes = append(shapes, new Shape(new Vector[]{
-						new Vector(x + s04, y + s08),
-						new Vector(x + s12, y + s12),
-						new Vector(x + s04, y + s12)
-					}, Color.WHITE));
-					shapes = append(shapes, new Arc(
-						new Vector(x - s06, y + s06 + 200 * SCALE),
-						200 * SCALE,
-						new Vector(x + s04, y + s08),
-						new Vector(x + s00, y + s07),
+						new Vector(x + s12 - s01, y + s06),
+						PI / 2 - PI / 8,
+						PI / 2,
+						s06,
+						PI / 2 - PI / 16,
+						PI / 2,
 					Color.WHITE));
 				}
-				/*if(tile == 246) {
+				if(tile == 109) {
+					Arc a = new Arc(
+						new Vector(x - s01, y + s06),
+						PI / 2 - PI / 8,
+						PI / 2,
+						s06,
+						PI / 2 - PI / 8,
+						PI / 2 - PI / 16,
+					Color.WHITE);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						a.points[0],
+						new Vector(x + s12, y + s12),
+						new Vector(a.points[0].x, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, a);
+				}
+				if(tile == 246) {
+					InverseArc a = new InverseArc(
+						new Vector(x + s12 + s01, y + s06),
+						PI + PI / 2 - PI / 8,
+						PI + PI / 2,
+						s03,
+						PI + PI / 2 - PI / 8,
+						PI + PI / 2 - PI / 16,
+					Color.WHITE);
+					
 					shapes = append(shapes, new Shape(new Vector[]{
 						new Vector(x + s00, y + s00),
-						new Vector(x + s10, y + s05),
+						a.points[0],
 						new Vector(x + s10, y + s12),
 						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
@@ -215,31 +230,26 @@ public class MainState extends State {
 						new Vector(x + s12, y + s12),
 						new Vector(x + s10, y + s12)
 					}, Color.WHITE));
-					shapes = append(shapes, new InverseArc(
-						new Vector(x + s10, y + s05),
-						PI + PI / 2 - PI / 8,
-						new Vector(x + s10 + s05, y + s06),
-						PI + PI / 2,
-						new Vector(x + s10, y + s05),
-						new Vector(x + s12, y + s06),
-					Color.WHITE));
-				}*/
-				/*if(tile == 21) {
+					shapes = append(shapes, a);
+				}
+				if(tile == 21) {
+					InverseArc a = new InverseArc(
+							new Vector(x + s01, y + s06),
+							PI + PI / 2 - PI / 8,
+							PI + PI / 2,
+							s03,
+							PI + PI / 2 - PI / 16,
+							PI + PI / 2,
+						Color.WHITE);
+					
 					shapes = append(shapes, new Shape(new Vector[]{
 						new Vector(x + s00, y + s06),
 						new Vector(x + s12, y + s06),
 						new Vector(x + s12, y + s12),
 						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
-					shapes = append(shapes, new InverseArc(
-						new Vector(x - s02, y + s05),
-						PI + PI / 2 - PI / 8,
-						new Vector(x + s03, y + s06),
-						PI + PI / 2,
-						new Vector(x + s00, y + s05),
-						new Vector(x + s03, y + s06),
-					Color.WHITE));
-				}*/
+					shapes = append(shapes, a);
+				}
 				/*if(tile == 269) {
 					shapes = append(shapes, new Arc(
 						new Vector(x + s08, y + s09),

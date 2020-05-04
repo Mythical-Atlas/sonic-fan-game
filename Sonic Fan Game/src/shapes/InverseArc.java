@@ -45,16 +45,31 @@ public class InverseArc extends Shape {
 	}
 	public InverseArc(Vector a, Vector b, Vector c, double radius, Color color) {
 		this.color = color;
+		this.radius = radius;
 		
 		points = new Vector[]{a.subtract(b).normalize().scale(radius).add(b), b, c.subtract(b).normalize().scale(radius).add(b)};
-		
-		radius = a.getDistance(b);
 	}
 	public InverseArc(Vector center, double radius, Vector point0, Vector point1, Color color) {
 		this.color = color;
 		this.radius = radius;
 		
 		points = new Vector[]{point0, center, point1};
+	}
+	public InverseArc(Vector corner, double angle0, double angle1, double distance, Color color) {
+		this.color = color;
+		
+		Vector point0 = corner.add(new Vector(sin(angle0) * distance, cos(angle0) * distance));
+		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, cos(angle1) * distance));
+		Vector center = getLineLineIntersection(point0, new Vector(cos(angle0), sin(angle0)), point1, new Vector(cos(angle1), sin(angle1)));
+		
+		radius = point0.getDistance(center);
+		points = new Vector[]{point0, center, point1};
+	}
+	public InverseArc(Vector corner, double angle0, double angle1, double distance, double angle2, double angle3, Color color) {
+		this(corner, angle0, angle1, distance, color);
+		
+		points[0] = points[1].add(new Vector(cos(angle2) * radius, -sin(angle2) * radius));
+		points[2] = points[1].add(new Vector(cos(angle3) * radius, -sin(angle3) * radius));
 	}
 
 	public Vector getCenter() {return(points[1]);}

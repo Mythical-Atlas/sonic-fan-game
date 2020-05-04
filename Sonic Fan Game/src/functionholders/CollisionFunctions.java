@@ -105,7 +105,7 @@ public class CollisionFunctions {
 		return(true);
 	}
 	
-	public static Vector getLineIntersection(Vector point0, Vector dir0, Vector point1, Vector dir1) {
+	public static Vector getLineLineIntersection(Vector point0, Vector dir0, Vector point1, Vector dir1) {
 		Vector A = point0;
 		Vector B = point0.add(dir0);
 		Vector C = point1;

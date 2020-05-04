@@ -23,8 +23,10 @@ public class Arc extends Shape {
 		points = new Vector[]{a, b, c};
 		radius = a.getDistance(b);
 	}
-	public Arc(Vector a, Vector b, double angle, Color color) {
+	public Arc(Vector a, Vector center, double angle, Color color) {
 		this.color = color;
+		
+		Vector b = center;
 		
 		Vector bot = a.subtract(b).normalize();
 		double botAngle = acos(bot.x);
@@ -32,8 +34,10 @@ public class Arc extends Shape {
 		botAngle = limitAngle(botAngle);
 		double topAngle = limitAngle(angle + botAngle);
 		
-		points = new Vector[]{a, b, b.add(new Vector(cos(topAngle) * a.getDistance(b), -sin(topAngle) * a.getDistance(b)))};
 		radius = a.getDistance(b);
+		
+		if(angle >= 0) {points = new Vector[]{a, b, b.add(new Vector(cos(topAngle) * a.getDistance(b), -sin(topAngle) * a.getDistance(b)))};}
+		else {points = new Vector[]{b.add(new Vector(cos(topAngle) * a.getDistance(b), -sin(topAngle) * a.getDistance(b))), b, a};}
 	}
 	public Arc(Vector a, Vector b, Vector c, double radius, Color color) {
 		this.color = color;
@@ -46,6 +50,22 @@ public class Arc extends Shape {
 		this.radius = radius;
 		
 		points = new Vector[]{point0, center, point1};
+	}
+	public Arc(Vector corner, double angle0, double angle1, double distance, Color color) {
+		this.color = color;
+		
+		Vector point0 = corner.add(new Vector(sin(angle0) * distance, cos(angle0) * distance));
+		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, cos(angle1) * distance));
+		Vector center = getLineLineIntersection(point0, new Vector(cos(angle0), sin(angle0)), point1, new Vector(cos(angle1), sin(angle1)));
+		
+		radius = point0.getDistance(center);
+		points = new Vector[]{point0, center, point1};
+	}
+	public Arc(Vector corner, double angle0, double angle1, double distance, double angle2, double angle3, Color color) {
+		this(corner, angle0, angle1, distance, color);
+		
+		points[0] = points[1].add(new Vector(cos(angle2) * radius, -sin(angle2) * radius));
+		points[2] = points[1].add(new Vector(cos(angle3) * radius, -sin(angle3) * radius));
 	}
 
 	public Vector getCenter() {return(points[1]);}
