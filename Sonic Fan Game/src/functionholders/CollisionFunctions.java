@@ -134,28 +134,4 @@ public class CollisionFunctions {
             return new Vector(x, y); 
         } 
     }
-	
-	public static Vector getLineArcIntersection(Vector point1, Vector point2, Vector center, double rx, double ry, double smallAngle, double largeAngle) {
-		double xa = center.x;
-		double ya = center.y;
-		double a1 = smallAngle;
-		double a2 = largeAngle;
-		
-		double x1 = point1.x;
-		double x2 = point2.x;
-		double y1 = point1.y;
-		double y2 = point2.y;
-		
-		double dx = x2 - x1;
-		double dy = y2 - y1;
-		double al = atan(dy / dx);
-		
-		if(al < a1 || al > a2) {return(null);}
-		
-		double r = new Vector(cos(al) * rx, sin(al) * ry).getLength();
-		
-		double c = (xa * r * cos(al) - x1) / dx;
-		
-		return(new Vector(x1 + c * dx, y1 + c * dy));
-	}
 }

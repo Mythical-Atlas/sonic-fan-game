@@ -2,6 +2,9 @@ package functionholders;
 
 import static java.lang.Math.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import datatypes.Shape;
 import datatypes.Vector;
 
@@ -76,5 +79,13 @@ public class MathFunctions {
 		System.out.println("is a0 between a1 and a2? " + (b0 < b2) + "\n");*/
 		
 		return(b0 <= b2);
+	}
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+	 
+	    BigDecimal bd = new BigDecimal(Double.toString(value));
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 }
