@@ -214,7 +214,7 @@ public class Player {
 		this.stepSound4 = Loader.stepSound4;
 	}
 	
-	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers) {
+	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms) {
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 		
