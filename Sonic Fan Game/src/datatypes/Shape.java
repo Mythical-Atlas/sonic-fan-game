@@ -99,4 +99,6 @@ public class Shape {
 		graphics.setColor(color);
 		graphics.fillPolygon(xPoints, yPoints, points.length);
 	}
+	
+	public Vector[] getInverseShadow(Vector vector) {return(null);}
 }

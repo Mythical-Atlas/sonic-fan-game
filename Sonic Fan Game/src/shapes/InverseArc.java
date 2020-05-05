@@ -140,18 +140,9 @@ public class InverseArc extends Shape {
 		return(removeDupes(axis));
 	}
 	
-	public Vector[] getShadow(Vector axis1) { // VERY different from arc
-		Vector axis = new Vector(-axis1.x, -axis1.y);
-		
+	public Vector[] getInverseShadow(Vector axis) {
 		Vector smallestPoint = null;
 		Vector largestPoint = null;
-		
-		/*Vector bot = points[1].subtract(points[0]).normalize();
-		Vector top = points[1].subtract(points[2]).normalize();
-		
-		double botAngle = atan(bot.y / bot.x);
-		double topAngle = atan(top.y / top.x);
-		double axisAngle = -atan(axis.y / axis.x);*/
 		
 		Vector bot = points[0].subtract(points[1]).normalize();
 		Vector top = points[2].subtract(points[1]).normalize();
@@ -168,29 +159,55 @@ public class InverseArc extends Shape {
 		topAngle = limitAngle(topAngle);
 		axisAngle = limitAngle(axisAngle);
 		
-		/*System.out.println("axis   = (" + axis.x + ", " + axis.y + ")");
-		System.out.println("axis   = " + axisAngle);
-		System.out.println("is axis between angles?   " + checkAngleBetweenAngles(axisAngle, botAngle, topAngle));
-		System.out.println("is axis 2 between angles? " + checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle));
-		System.out.println();*/
-		
-		/*if(botAngle == PI / 2 && checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {
-			System.out.println("axis   = (" + axis.x + ", " + axis.y + ")");
-			System.out.println("axis   = " + axisAngle);
-			System.out.println("axis 2 = " + limitAngle(axisAngle + PI));
-			//System.out.println("1-0 = (" + bot.x + ", " + bot.y + ")");
-			//System.out.println("1-2 = (" + top.x + ", " + top.y + ")");
-			System.out.println("1-0 = " + botAngle);
-			System.out.println("1-2 = " + topAngle);
-			System.out.println("is axis between angles?   " + checkAngleBetweenAngles(axisAngle, botAngle, topAngle));
-			System.out.println("is axis 2 between angles? " + checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle));
-		}*/
-		
 		if(checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {largestPoint = getCenter().add(axis.scale(getRadius()));}
 		if(checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle)) {smallestPoint = getCenter().subtract(axis.scale(getRadius()));}
 		
-		/*if(largestPoint != null) {System.out.println("largestPoint = (" + (largestPoint.x - getCenter().x) + ", " + (largestPoint.y - getCenter().y) + ")\n");}
-		else {System.out.println();}*/
+		int smallestIndex = -1;
+		int largestIndex = -1;
+		double smallest = 0;
+		double largest = 0;
+		for(int i = 0; i < points.length; i++) {
+			double temp = getProjectedValue(points[i], axis);
+			
+			if(smallestIndex == -1 || temp < smallest) {
+				smallest = temp;
+				smallestIndex = i;
+			}
+			if(largestIndex == -1 || temp > largest) {
+				largest = temp;
+				largestIndex = i;
+			}
+		}
+		
+		if(smallestPoint == null) {smallestPoint = points[smallestIndex];}
+		if(largestPoint == null) {largestPoint = points[largestIndex];}
+		
+		return(new Vector[]{smallestPoint, largestPoint});
+	}
+	
+	public Vector[] getShadow(Vector axis1) { // VERY different from arc
+		Vector axis = new Vector(-axis1.x, -axis1.y);
+		
+		Vector smallestPoint = null;
+		Vector largestPoint = null;
+		
+		Vector bot = points[0].subtract(points[1]).normalize();
+		Vector top = points[2].subtract(points[1]).normalize();
+		
+		double botAngle = acos(bot.x);
+		double topAngle = acos(top.x);
+		double axisAngle = acos(axis.x);
+		
+		if(bot.y > 0) {botAngle *= -1;}
+		if(top.y > 0) {topAngle *= -1;}
+		if(axis.y > 0) {axisAngle *= -1;}
+		
+		botAngle = limitAngle(botAngle);
+		topAngle = limitAngle(topAngle);
+		axisAngle = limitAngle(axisAngle);
+		
+		if(checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {largestPoint = getCenter().add(axis.scale(getRadius()));}
+		if(checkAngleBetweenAngles(limitAngle(axisAngle + PI), botAngle, topAngle)) {smallestPoint = getCenter().subtract(axis.scale(getRadius()));}
 		
 		Vector[] tempPoints = null;
 		
@@ -217,10 +234,9 @@ public class InverseArc extends Shape {
 			}
 		}
 		
+		//if(smallestPoint != null && largestPoint != null) {return(null);}
 		if(smallestPoint == null) {smallestPoint = tempPoints[smallestIndex];}
 		if(largestPoint == null) {largestPoint = tempPoints[largestIndex];}
-		
-		//if(botAngle == PI / 2 && checkAngleBetweenAngles(axisAngle, botAngle, topAngle)) {System.out.println("smallestPoint = (" + (smallestPoint.x - getCenter().x) + ", " + (smallestPoint.y - getCenter().y) + ")\n");}
 		
 		return(new Vector[]{smallestPoint, largestPoint});
 	}
@@ -243,6 +259,6 @@ public class InverseArc extends Shape {
 		
 		graphics.setColor(color);
 		graphics.drawArc((int)(points[1].x - radius - offset.x), (int)(points[1].y - radius - offset.y), (int)(radius * 2), (int)(radius * 2), (int)toDegrees(botAngle), (int)toDegrees(delAngle));
-		graphics.drawPolyline(new int[]{(int)(points[0].x - offset.x), (int)(corner.x - offset.x), (int)(points[2].x - offset.x)}, new int[]{(int)(points[0].y - offset.y), (int)(corner.y - offset.y), (int)(points[2].y - offset.y)}, 3);
+		//graphics.drawPolyline(new int[]{(int)(points[0].x - offset.x), (int)(corner.x - offset.x), (int)(points[2].x - offset.x)}, new int[]{(int)(points[0].y - offset.y), (int)(corner.y - offset.y), (int)(points[2].y - offset.y)}, 3);
 	}
 }

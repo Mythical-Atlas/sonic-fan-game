@@ -401,8 +401,28 @@ public class MainState extends State {
                                                                    new Vector(x, y + h)}, Color.WHITE));
 				}
 				if(tile == 193) {
-					shapes = append(shapes, new Rectangle(new Vector(x, y), new Vector(w2, h), Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + w2, y), new Vector(x + w, y + h24), new Vector(x + w, y + h), new Vector(x + w2, y + h)}, Color.WHITE));
+					Arc a = new Arc(
+						new Vector(x + s12, y + s00),
+						PI / 2 - PI / 8,
+						PI / 2, 
+						s05,
+						PI / 2 - PI / 16,
+						PI / 2, 
+					Color.WHITE);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s07, y + s00),
+						new Vector(x + s07, y + s12),
+						new Vector(x + s00, y + s12),
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s07, y + s00),
+						new Vector(x + s12, a.points[0].y),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, a);
 				}
 				if(tile == 228) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h24), new Vector(x + w, y + h2 - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 173) {

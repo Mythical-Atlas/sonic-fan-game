@@ -8,6 +8,7 @@ import static functionholders.DebugFunctions.*;
 import datatypes.Shape;
 import datatypes.Vector;
 import shapes.Arc;
+import shapes.InverseArc;
 
 public class CollisionFunctions {
 	public static Vector[] getAxisMovements(Shape a, Shape b, Vector axis) {
@@ -89,6 +90,17 @@ public class CollisionFunctions {
 	}
 	
 	public static boolean checkCollision(Shape a, Shape b) {
+		if(b instanceof Arc || b instanceof InverseArc) {
+			Vector[] temp = a.getShadow(b.getAxis(a)[0]);
+			Vector a1 = temp[0];
+			Vector a2 = temp[1];
+			temp = b.getInverseShadow(b.getAxis(a)[0]);
+			Vector c1 = temp[0];
+			Vector c2 = temp[1];
+			
+			if(!checkSegmentsOverlap(a1, a2, c1, c2, b.getAxis(a)[0])) {return(false);}
+		}
+		
 		Vector[] axis = removeDupes(combine(a.getAxis(b), b.getAxis(a)));
 		
 		for(int i = 0; i < axis.length; i++) {
