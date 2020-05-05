@@ -225,6 +225,8 @@ public class Player {
 		crouch();
 		gravity();
 		
+		boolean[] platMasks = checkPlatforms(platforms);
+		
 		// TODO: step velocity 1 unit at a time
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
 		pos.translate(vel);
@@ -234,6 +236,7 @@ public class Player {
 		Shape[] shapes = null;
 		if(layer == 1) {shapes = combine(layer0, layer1);}
 		if(layer == 2) {shapes = combine(layer0, layer2);}
+		shapes = combine(shapes, applyMask(platforms, platMasks));
 		
 		if(shapes != null) {
 			// TODO: fix velocity projection for curves
@@ -495,6 +498,17 @@ public class Player {
 			dir = dir.getPerpendicular();
 			vel = vel.project(dir);
 		}
+	}
+	
+	private boolean[] checkPlatforms(Shape[] shapes) {
+		boolean[] out = new boolean[shapes.length];
+		
+		for(int i = 0; i < shapes.length; i++) {
+			out[i] = true;
+			for(int p = 0; p < shapes[i].points.length; p++) {if(pos.y + MASK_RADIUS * SCALE > shapes[i].points[p].y) {out[i] = false;}}
+		}
+		
+		return(out);
 	}
 
 	private void checkLedge(Shape[] shapes) {

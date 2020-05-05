@@ -175,6 +175,14 @@ public class ListFunctions {
 		return(output);
 	}
 	
+	public static Shape[] applyMask(Shape[] list, boolean[] masks) {
+		Shape[] output = null;
+		
+		for(int i = 0; i < list.length; i++) {if(masks[i]) {output = append(output, list[i]);}}
+		
+		return(output);
+	}
+	
 	public static Vector getSmallest(Vector[] list) {
 		int smallestIndex = -1;
 		double smallest = 0;
