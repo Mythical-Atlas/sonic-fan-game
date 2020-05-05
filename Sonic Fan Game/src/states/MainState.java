@@ -18,6 +18,7 @@ import datatypes.TiledJSON;
 import datatypes.Vector;
 import main.Loader;
 import objects.Player;
+import objects.Ring;
 import shapes.Arc;
 import shapes.Circle;
 import shapes.InverseArc;
@@ -43,12 +44,22 @@ public class MainState extends State {
 	private boolean toggle0 = true;
 	private boolean toggle1 = true;
 	
+	private Ring[] rings;
+	
 	public MainState() {
 		interpretMap(Loader.leafForest1Map.json);
+		
+		rings = new Ring[]{new Ring(17 * SCALE * 96, 16 * SCALE * 96)};
 	}
 		
 	public void update() {
-		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms);
+		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings);
+		
+		if(rings != null) {
+			int[] removals = null;
+			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+		}
 	}
 	
 	public void draw(Graphics2D graphics) {
@@ -78,8 +89,9 @@ public class MainState extends State {
 			if(player.layer == 1 && layer1 != null) {for(int i = 0; i < layer1.length; i++) {layer1[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(player.layer == 2 && layer2 != null) {for(int i = 0; i < layer2.length; i++) {layer2[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-		
 		}
+		
+		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
 		
 		player.draw(graphics);
 		
@@ -96,7 +108,7 @@ public class MainState extends State {
 			showTileMasks = !showTileMasks;
 		}
 		
-		if(key == VK_BACK_SPACE) {player = new Player(playerStartX, playerStartY);}
+		//if(key == VK_BACK_SPACE) {player = new Player(playerStartX, playerStartY);}
 		player.keyPressed(key);
 		if(key == VK_ESCAPE) {Loader.changeState = 0;}
 	}

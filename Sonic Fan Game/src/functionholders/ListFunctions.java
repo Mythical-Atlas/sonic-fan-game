@@ -2,6 +2,7 @@ package functionholders;
 
 import datatypes.Shape;
 import datatypes.Vector;
+import objects.Ring;
 
 public class ListFunctions {
 	public static int[][] append(int[][] existingPoints, int[] pointToCheck) {
@@ -58,6 +59,22 @@ public class ListFunctions {
 		
 		if(pointToCheck != null) {
 			Vector[] newList = new Vector[existingPoints.length + 1];
+			
+			for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+			newList[existingPoints.length] = pointToCheck;
+			
+			return(newList);
+		}
+		else {return(existingPoints);}
+	}
+	public static Ring[] append(Ring[] existingPoints, Ring pointToCheck) {
+		if(existingPoints == null) {
+			if(pointToCheck != null) {return(new Ring[]{pointToCheck});}
+			else {return(null);}
+		}
+		
+		if(pointToCheck != null) {
+			Ring[] newList = new Ring[existingPoints.length + 1];
 			
 			for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 			newList[existingPoints.length] = pointToCheck;
@@ -169,6 +186,13 @@ public class ListFunctions {
 	}
 	public static Shape[] removeIndex(Shape[] list, int index) {
 		Shape[] output = null;
+		
+		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
+		
+		return(output);
+	}
+	public static Ring[] removeIndex(Ring[] list, int index) {
+		Ring[] output = null;
 		
 		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
 		

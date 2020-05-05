@@ -173,6 +173,8 @@ public class Player {
 	private Clip stepSound3;
 	private Clip stepSound4;
 	
+	private Clip ringSound;
+	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
 		vel = new Vector();
@@ -212,9 +214,11 @@ public class Player {
 		this.stepSound2 = Loader.stepSound2;
 		this.stepSound3 = Loader.stepSound3;
 		this.stepSound4 = Loader.stepSound4;
+		
+		this.ringSound = Loader.ringSound;
 	}
 	
-	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms) {
+	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings) {
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 		
@@ -246,6 +250,24 @@ public class Player {
 		
 			checkGround(shapes);
 			getGroundAxis(shapes);
+		}
+		
+		if(rings != null) {
+			for(int i = 0; i < rings.length; i++) {
+				if(rings[i].destroy == 0) {
+					Shape ringMask = new Circle(rings[i].pos, 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, ringMask)) {
+						System.out.println("GOT A RING");
+						rings[i].destroy = 1;
+						ringSound.stop();
+						ringSound.flush();
+						ringSound.setFramePosition(0);
+						ringSound.start();
+					}
+				}
+			}
 		}
 	}
 	

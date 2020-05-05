@@ -83,6 +83,9 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static Animation skirtAnim;
 	public static Animation turnAnim;
 	
+	public static Animation ringAnim;
+	public static Animation sparkleAnim;
+	
 	public static BufferedImage leafBG0;
 	public static BufferedImage leafBG1;
 	
@@ -98,6 +101,8 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static Clip stepSound2;
 	public static Clip stepSound3;
 	public static Clip stepSound4;
+	
+	public static Clip ringSound;
 	
 	public static void main(String[] args) {
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
@@ -159,6 +164,9 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			skirtAnim = new Animation("sonicsprites", "skirt", new int[]{2, 2, 2, 4}, 0);
 			turnAnim = new Animation("sonicsprites", "turn", new int[]{1, 3}, 0);
 			
+			ringAnim = new Animation("objectsprites", "ring", new int[]{8, 8, 8, 8}, 0);
+			sparkleAnim = new Animation("objectsprites", "effect", new int[]{4, 4, 4, 5}, 0);
+			
 			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -10.0f);
 			jumpSound1 = loadSound("/sonicsounds/jump1.wav", -10.0f);
 			landSound = loadSound("/sonicsounds/land.wav", -10.0f);
@@ -171,6 +179,8 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			stepSound2 = loadSound("/sonicsounds/step2.wav", -10.0f);
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
+			
+			ringSound = loadSound("/objectSounds/ring.wav", -10.0f);
 			
 			try {
 				leafBG0 = ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png"));
@@ -236,7 +246,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			try {thread.sleep(wait);}
 			catch(Exception e) {e.printStackTrace();}
 			
-			currentFPS = (int)((1000 / TARGET_FPS) / ((System.nanoTime() - start) / 1000000.0) * 60);
+			currentFPS = (int)((1000 / TARGET_FPS) / ((System.nanoTime() - start) / 1000000.0) * TARGET_FPS);
 		}
 	}
 
