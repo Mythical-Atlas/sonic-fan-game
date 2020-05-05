@@ -2,6 +2,7 @@ package shapes;
 
 import static java.lang.Math.*;
 
+import static functionholders.DebugFunctions.*;
 import static functionholders.CollisionFunctions.*;
 import static functionholders.MathFunctions.*;
 import static functionholders.ListFunctions.*;
@@ -59,7 +60,7 @@ public class InverseArc extends Shape {
 		this.color = color;
 		
 		Vector point0 = corner.add(new Vector(sin(angle0) * distance, cos(angle0) * distance));
-		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, cos(angle1) * distance));
+		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, -cos(angle1) * distance));
 		Vector center = getLineLineIntersection(point0, new Vector(cos(angle0), sin(angle0)), point1, new Vector(cos(angle1), sin(angle1)));
 		
 		radius = point0.getDistance(center);
@@ -88,7 +89,7 @@ public class InverseArc extends Shape {
 		botAngle = limitAngle(botAngle);
 		topAngle = limitAngle(topAngle);
 		
-		if(checkAngleBetweenAnglesInclusive(botAngle, 0, PI / 2)      && checkAngleBetweenAnglesInclusive(topAngle, 0, PI / 2) ||
+		if(checkAngleBetweenAnglesInclusive(botAngle, 0, PI / 2)       && checkAngleBetweenAnglesInclusive(topAngle, 0, PI / 2) ||
 		   checkAngleBetweenAnglesInclusive(botAngle, PI, PI / 2 + PI) && checkAngleBetweenAnglesInclusive(topAngle, PI, PI / 2 + PI)) {return(new Vector(points[0].x, points[2].y));}
 		else {return(new Vector(points[2].x, points[0].y));}
 	}

@@ -4,6 +4,7 @@ import static java.lang.Math.*;
 
 import static java.awt.event.KeyEvent.*;
 import static functionholders.CollisionFunctions.*;
+import static functionholders.DebugFunctions.getVectorString;
 import static functionholders.ListFunctions.*;
 
 import java.awt.Color;
@@ -69,11 +70,12 @@ public class MainState extends State {
 			if(player.layer == 1 && layer1 != null) {for(int i = 0; i < layer1.length; i++) {layer1[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(player.layer == 2 && layer2 != null) {for(int i = 0; i < layer2.length; i++) {layer2[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
+		
 		}
 		
 		player.draw(graphics);
 		
-		Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);
+		if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}
 	}
 	
 	public void keyPressed(int key) {
@@ -321,30 +323,68 @@ public class MainState extends State {
 				}
 				if(tile == 40) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 43) {
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + s11, y + s11), new Vector(x + s11, y + h), new Vector(x, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s11, y + s11), new Vector(x + w, y + h - h24), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));
+					InverseArc a = new InverseArc(
+						new Vector(x + s12, y + s12),
+						PI + PI / 2 - PI / 4,
+						PI + PI / 2,
+						s03,
+						PI + PI / 2 - PI / 4,
+						PI + PI / 2 - PI / 8,
+					Color.WHITE);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						a.points[0],
+						new Vector(a.points[0].x, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, a);
 				}
-				if(tile == 44) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h - h24), new Vector(x + s2, y + h), new Vector(x, y + h)}, Color.WHITE));}
-				if(tile == 251) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w2, y + s1 + h24), new Vector(x + s9, y + s3), new Vector(x + w, y + h2), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
+				if(tile == 44) {
+					InverseArc a = new InverseArc(
+						new Vector(x + s00, y + s12),
+						PI + PI / 2 - PI / 4,
+						PI + PI / 2,
+						s03,
+						PI + PI / 2 - PI / 8,
+						PI + PI / 2,
+					Color.WHITE);
+					shapes = append(shapes, a);
+				}
+				if(tile == 251) {
+					Arc a = new Arc(
+						new Vector(x + s06 - 2 * SCALE, y + s00),
+						PI / 2 - PI / 4,
+						PI / 2,
+						s06,
+					Color.WHITE);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						a.points[0],
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12),
+						new Vector(a.points[0].x, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, a);
+				}
 				if(tile == 127) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + h2), new Vector(x + w2, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 120) {shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y), new Vector(x + w2, y), new Vector(x + w, y + h2), new Vector(x + w, y + h), new Vector(x, y + h)}, Color.WHITE));}
 				if(tile == 200) {
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y + s6),
-							                                       new Vector(x + s3, y + s8),
-							                                       new Vector(x + s3, y + h),
-							                                       new Vector(x, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s3, y + s8),
-									                               new Vector(x + s6, y + s8 + h24),
-									                               new Vector(x + s6, y + h),
-									                               new Vector(x + s3, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s6, y + s8 + h24),
-									                               new Vector(x + s9, y + s8),
-									                               new Vector(x + s9, y + h),
-									                               new Vector(x + s6, y + h)}, Color.WHITE));
-					shapes = append(shapes, new Shape(new Vector[]{new Vector(x + s9, y + s8),
-									                               new Vector(x + w, y + s6),
-									                               new Vector(x + w, y + h),
-									                               new Vector(x + s9, y + h)}, Color.WHITE));
+					InverseArc a = new InverseArc(
+						new Vector(x + s09 + s01 / 2, y + s08 + s01 / 2),
+						PI + PI / 2,
+						PI + PI / 2 + PI / 4,
+						s03 + s01 / 2,
+					Color.WHITE);
+					shapes = append(shapes, a);
+					
+					InverseArc b = new InverseArc(
+						new Vector(x + s02 + s01 / 2, y + s08 + s01 / 2),
+						PI + PI / 2 - PI / 4,
+						PI + PI / 2,
+						s03 + s01 / 2,
+					Color.WHITE);
+					shapes = append(shapes, b);
 				}
 				if(tile == 270) {
 					shapes = append(shapes, new Shape(new Vector[]{new Vector(x, y),

@@ -55,7 +55,7 @@ public class Arc extends Shape {
 		this.color = color;
 		
 		Vector point0 = corner.add(new Vector(sin(angle0) * distance, cos(angle0) * distance));
-		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, cos(angle1) * distance));
+		Vector point1 = corner.add(new Vector(-sin(angle1) * distance, -cos(angle1) * distance));
 		Vector center = getLineLineIntersection(point0, new Vector(cos(angle0), sin(angle0)), point1, new Vector(cos(angle1), sin(angle1)));
 		
 		radius = point0.getDistance(center);
