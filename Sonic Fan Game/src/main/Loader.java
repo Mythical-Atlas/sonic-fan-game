@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -81,6 +82,9 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static Animation spindashChargeDustAnim;
 	public static Animation skirtAnim;
 	public static Animation turnAnim;
+	
+	public static BufferedImage leafBG0;
+	public static BufferedImage leafBG1;
 	
 	public static Clip jumpSound0;
 	public static Clip jumpSound1;
@@ -167,6 +171,12 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			stepSound2 = loadSound("/sonicsounds/step2.wav", -10.0f);
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
+			
+			try {
+				leafBG0 = ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png"));
+				leafBG1 = ImageIO.read(getClass().getResourceAsStream("/maps/bg1.png"));
+			}
+			catch(Exception e) {e.printStackTrace();}
 		}
 	}
 

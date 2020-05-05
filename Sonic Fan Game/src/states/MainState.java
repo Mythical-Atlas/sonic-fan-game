@@ -55,6 +55,14 @@ public class MainState extends State {
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRect(0, 0, Loader.graphicsWidth, Loader.graphicsHeight);
 		
+		/*graphics.drawImage(Loader.leafBG0, (int)(-(player.pos.x % ((256 * 8) * (SCALE + 1))) / 8), 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);
+		graphics.drawImage(Loader.leafBG0, (int)(-(player.pos.x % ((256 * 8) * (SCALE + 1))) / 8) + 256 * (SCALE + 1), 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);
+		graphics.drawImage(Loader.leafBG0, (int)(-(player.pos.x % ((256 * 8) * (SCALE + 1))) / 8) + 256 * (SCALE + 1) * 2, 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);
+		
+		graphics.drawImage(Loader.leafBG1, (int)(-(player.pos.x % ((256 * 4) * (SCALE + 1))) / 4), 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);
+		graphics.drawImage(Loader.leafBG1, (int)(-(player.pos.x % ((256 * 4) * (SCALE + 1))) / 4) + 256 * (SCALE + 1), 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);
+		graphics.drawImage(Loader.leafBG1, (int)(-(player.pos.x % ((256 * 4) * (SCALE + 1))) / 4) + 256 * (SCALE + 1) * 2, 0, 256 * (SCALE + 1), 240 * (SCALE + 1), null);*/
+		
 		graphics.setColor(Color.BLACK);
 		for(int x = 0; x < (int)(Loader.graphicsWidth / 64) + 2; x++) {
 			for(int y = 0; y < (int)(Loader.graphicsHeight / 64) + 2; y++) {
