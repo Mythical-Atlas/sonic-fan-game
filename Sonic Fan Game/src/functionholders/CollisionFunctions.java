@@ -91,6 +91,8 @@ public class CollisionFunctions {
 	
 	public static boolean checkCollision(Shape a, Shape b) {
 		if(b instanceof Arc || b instanceof InverseArc) {
+			if(b.getInverseShadow(b.getAxis(a)[0]) == null) {return(false);}
+			
 			Vector[] temp = a.getShadow(b.getAxis(a)[0]);
 			Vector a1 = temp[0];
 			Vector a2 = temp[1];

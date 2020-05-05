@@ -179,6 +179,7 @@ public class InverseArc extends Shape {
 			}
 		}
 		
+		if(smallestPoint == null && largestPoint == null) {return(null);}
 		if(smallestPoint == null) {smallestPoint = points[smallestIndex];}
 		if(largestPoint == null) {largestPoint = points[largestIndex];}
 		

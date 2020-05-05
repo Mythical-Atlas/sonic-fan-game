@@ -184,6 +184,7 @@ public class Arc extends Shape {
 			}
 		}
 		
+		if(smallestPoint == null && largestPoint == null) {return(null);}
 		if(smallestPoint == null) {smallestPoint = tempPoints[smallestIndex];}
 		if(largestPoint == null) {largestPoint = tempPoints[largestIndex];}
 		
