@@ -175,6 +175,8 @@ public class Player {
 	
 	private Clip ringSound;
 	
+	public int rings;
+	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
 		vel = new Vector();
@@ -229,7 +231,8 @@ public class Player {
 		crouch();
 		gravity();
 		
-		boolean[] platMasks = checkPlatforms(platforms);
+		boolean[] platMasks = null;
+		if(platforms != null) {platMasks = checkPlatforms(platforms);}
 		
 		// TODO: step velocity 1 unit at a time
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
@@ -240,7 +243,7 @@ public class Player {
 		Shape[] shapes = null;
 		if(layer == 1) {shapes = combine(layer0, layer1);}
 		if(layer == 2) {shapes = combine(layer0, layer2);}
-		shapes = combine(shapes, applyMask(platforms, platMasks));
+		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
 			// TODO: fix velocity projection for curves
@@ -259,7 +262,7 @@ public class Player {
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, ringMask)) {
-						System.out.println("GOT A RING");
+						this.rings++;
 						rings[i].destroy = 1;
 						ringSound.stop();
 						ringSound.flush();

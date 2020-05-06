@@ -20,7 +20,7 @@ public class Ring {
 	public void draw(Vector offset, int scaleX, int scaleY, Graphics2D graphics) {
 		if(destroy == 1) {
 			destroy = 2;
-			anim = Loader.sparkleAnim;
+			anim = new Animation(Loader.sparkleAnim.frames, Loader.sparkleAnim.durations, Loader.sparkleAnim.repeatFrame, 1);
 		}
 		
 		anim.draw(graphics, pos.x - offset.x, pos.y - offset.y, scaleX, scaleY);

@@ -52,7 +52,29 @@ public class MainState extends State {
 	public MainState() {
 		interpretMap(Loader.leafForest1Map.json);
 		
-		rings = new Ring[]{new Ring(17 * SCALE * 96, 16 * SCALE * 96)};
+		rings = new Ring[]{
+			new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  1 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  2 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  3 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  4 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  5 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  6 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  7 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  8 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 *  9 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 10 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 11 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 12 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 13 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 14 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 15 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 16 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 17 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 18 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 19 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+		};
 		
 		hud = new HUD();
 	}
