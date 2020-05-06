@@ -1,11 +1,15 @@
 package datatypes;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
 import main.Loader;
+
+import static functionholders.GraphicsFunctions.*;
 
 public class Tileset {
 	public int tileWidth;
@@ -27,8 +31,10 @@ public class Tileset {
 		for(int x = 0; x < tilesetWidth; x++) {
 			for(int y = 0; y < tilesetHeight; y++) {
 				int t = x + (y * tilesetWidth);
-				tiles[t] = image.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+				tiles[t] = scaleImage(image.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight), 2);
 			}
 		}
+		
+		
 	}
 }

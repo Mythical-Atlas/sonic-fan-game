@@ -40,7 +40,7 @@ public class Tilemap {
 					if(
 						(int)-ox + x * tw      < Loader.graphicsWidth && (int)-oy + y * th      < Loader.graphicsHeight &&
 						(int)-ox + x * tw + tw > 0                    && (int)-oy + y * th + th > 0
-					) {graphics.drawImage(tilesets[s].tiles[index], (int)-offset.x + x * tw, (int)-oy + y * th, tw, th, null);}
+					) {graphics.drawImage(tilesets[s].tiles[index], (int)-offset.x + x * tw, (int)-oy + y * th, /*tw, th,*/ null);}
 				}
 			}
 		}

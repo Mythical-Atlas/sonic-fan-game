@@ -38,6 +38,7 @@ public class Button {
 			else {graphics.setColor(Color.GRAY);}
 		}
 		else {graphics.setColor(Color.LIGHT_GRAY);}
+		
 		graphics.fillRect(x, y, w, h);
 		
 		graphics.setColor(Color.BLACK);
@@ -63,12 +64,16 @@ public class Button {
 	
 	private boolean checkMouseHovering() {
 		Vector mousePos = getMousePos();
+		if(mousePos == null) {return(false);}
 		
 		return(mousePos.x >= x && mousePos.x < x + w && mousePos.y >= y && mousePos.y < y + h);
 	}
 	
 	private Vector getMousePos() {
-		Point windowPos = Loader.frame.getLocationOnScreen();
+		Point windowPos = null;
+		try {windowPos = Loader.frame.getLocationOnScreen();}
+		catch(Exception e) {}
+		if(windowPos == null) {return(null);}
 		
 		double mouseDeltaX = MouseInfo.getPointerInfo().getLocation().x - windowPos.x;
 		double mouseDeltaY = MouseInfo.getPointerInfo().getLocation().y - windowPos.y;

@@ -4,9 +4,12 @@ import static java.lang.Math.*;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
+
+import static functionholders.GraphicsFunctions.*;
 
 public class Animation {
 	public double timer;
@@ -15,22 +18,28 @@ public class Animation {
 	private int repeatFrame;
 	public boolean finished; // only for first cycle
 	private BufferedImage[] frames;
+	private BufferedImage[] oppositeFrames;
 	
 	public Animation() {}
 	
-	public Animation(BufferedImage[] frames, int[] durations, int repeatFrame) {
+	/*public Animation(BufferedImage[] frames, int[] durations, int repeatFrame) {
 		this.frames = frames;
 		this.durations = durations;
 		this.repeatFrame = repeatFrame;
 		
 		if(repeatFrame == -1) {this.repeatFrame = frames.length - 1;}
-	}
+	}*/
 	public Animation(String path, String name, int[] durations, int repeatFrame) {
-		frames = loadAnimation(path, name);
 		this.durations = durations;
 		this.repeatFrame = repeatFrame;
 		
+		frames = loadAnimation(path, name);
+		oppositeFrames = loadAnimation(path, name);
+		
 		if(repeatFrame == -1) {this.repeatFrame = frames.length - 1;}
+		
+		for(int i = 0; i < frames.length; i++) {frames[i] = scaleImage(frames[i], 2);}
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = flipImageHorizontally(frames[i]);}
 	}
 	
 	public void reset() {
@@ -85,8 +94,11 @@ public class Animation {
 	public void draw(Graphics2D graphics, int x, int y) {graphics.drawImage (frames[frame], x, y, null);}
 	public void draw(Graphics2D graphics, double x, double y) {graphics.drawImage(frames[frame], (int)x, (int)y, null);}
 	
-	public void draw(Graphics2D graphics, int x, int y, int xScale, int yScale) {graphics.drawImage(frames[frame], x, y, frames[frame].getWidth() * xScale, frames[frame].getHeight() * yScale, null);}
-	public void draw(Graphics2D graphics, double x, double y, int xScale, int yScale) {graphics.drawImage(frames[frame], (int)x, (int)y, frames[frame].getWidth() * xScale, frames[frame].getHeight() * yScale, null);}
+	public void draw(Graphics2D graphics, int x, int y, int xScale, int yScale) {
+		if(xScale > 0) {graphics.drawImage(frames[frame], x, y, null);}
+		if(xScale < 0) {graphics.drawImage(oppositeFrames[frame], x, y, null);}
+	}
+	public void draw(Graphics2D graphics, double x, double y, int xScale, int yScale) {draw(graphics, (int)x, (int)y, xScale, yScale);}
 	
 	public void draw(double x, double y, int xScale, int yScale, double originX, double originY, double angle, Graphics2D graphics) {draw(graphics, (int)x, (int)y, xScale, yScale, (int)originX, (int)originY, angle);}
 	public void draw(Graphics2D graphics, int x, int y, int xScale, int yScale, int originX, int originY, double angle) {
@@ -94,7 +106,8 @@ public class Animation {
 	    AffineTransform a = AffineTransform.getRotateInstance(-angle - PI / 2, originX, originY);
 	    
 	    graphics.setTransform(a);
-	    graphics.drawImage(frames[frame], x, y, frames[frame].getWidth() * xScale, frames[frame].getHeight() * yScale, null);
+	    if(xScale > 0) {graphics.drawImage(frames[frame], x, y, null);}
+	    if(xScale < 0) {graphics.drawImage(oppositeFrames[frame], x, y, null);}
 		graphics.setTransform(backup);
 	}
 }
