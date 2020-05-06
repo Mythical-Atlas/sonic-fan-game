@@ -90,11 +90,10 @@ public class MainState extends State {
 	}
 	
 	public void draw(Graphics2D graphics) {
-		graphics.setColor(Color.DARK_GRAY);
-		graphics.fillRect(0, 0, Loader.graphicsWidth, Loader.graphicsHeight);
+		/*graphics.setColor(Color.DARK_GRAY);
+		graphics.fillRect(0, 0, Loader.graphicsWidth, Loader.graphicsHeight);*/
 		
-		Loader.leafBG0.draw(100, player, graphics);
-		Loader.leafBG1.draw(50, player, graphics);
+		Loader.leafBG.draw(new int[]{20, 10, 5}, player, graphics);
 		
 		/*int w = Loader.leafBG0.getWidth();
 		double x = -player.pos.x + Loader.graphicsWidth / 2;

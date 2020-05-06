@@ -88,8 +88,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static Animation ringAnim;
 	public static Animation sparkleAnim;
 	
-	public static Background leafBG0;
-	public static Background leafBG1;
+	public static Background leafBG;
 	
 	public static Animation hudRingAnim;
 	public static BufferedImage hud;
@@ -191,8 +190,11 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			
 			hudRingAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, HUD.SCALE);
 			
-			leafBG0 = new Background("/maps/bg0.png", 2, 16, 4, 5, 3, 5, 3, 6, 0);
-			leafBG1 = new Background("/maps/bg1.png", 2, 16, 0, 0, 0, 0, 0, 11, 0);
+			leafBG = new Background(new String[]{"/maps/bg0.png", "/maps/bg1.png", "/maps/bg2.png"}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
+			leafBG.setTween(0, 0, new Color(120, 136, 248));
+			leafBG.setTween(0, 1, new Color(128, 160, 248));
+			leafBG.setTween(1, 1, 14, 14);
+			leafBG.setTween(2, 1, 14, 14);
 			
 			try {
 				hud = scaleImage(ImageIO.read(getClass().getResourceAsStream("/hudsprites/rings.png")), HUD.SCALE);
