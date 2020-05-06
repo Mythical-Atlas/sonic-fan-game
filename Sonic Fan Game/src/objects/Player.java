@@ -27,19 +27,19 @@ import shapes.Rectangle;
 
 public class Player {
 	private final double SPRINT_ACCEL 		= 2;
-	private final double MOVE_ACCEL  		= 0.3;
-	private final double GROUND_ACCEL_LIMIT = 100;
+	private final double MOVE_ACCEL  		= 0.15;
+	private final double GROUND_ACCEL_LIMIT = 30;
 	private final double SKID_ACCEL  		= 1;
 	private final double DRAG_DECEL   		= 0.25;
-	private final double JUMP_IMPULSE 		= 25;
+	private final double JUMP_IMPULSE 		= 21;
 	private final double JUMP_SWITCH  		= 2;
 	private final double GRAVITY      		= 0.75;
 	private final double SPIN_DECEL			= 0.025;
 	
-	private final double SLOW_MIN_SPEED 	= 20;
-	private final double NORMAL_MIN_SPEED 	= 40;
-	private final double FAST_MIN_SPEED 	= 60;
-	private final double FASTEST_MIN_SPEED 	= 80;
+	private final double SLOW_MIN_SPEED 	= 10;
+	private final double NORMAL_MIN_SPEED 	= 20;
+	private final double FAST_MIN_SPEED 	= 30;
+	private final double FASTEST_MIN_SPEED 	= 40;
 	private final double SKID_MIN_SPEED 	= 5;
 	
 	private final double SPINDASH_MIN_STRENGTH = 50;
@@ -273,8 +273,8 @@ public class Player {
 	
 	private void movement() {
 		double moveSpeed;
-		if(!shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
-		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
+		/*if(!shiftKey) {*/moveSpeed = MOVE_ACCEL * SCALE;//}
+		//else          {moveSpeed = SPRINT_ACCEL * SCALE;}
 		
 		if(!ground) {
 			skidding = false;
@@ -925,8 +925,8 @@ public class Player {
 			if(anim == TURN_ANIM)            {turnAnim.          draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
 			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
 			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
+			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
+			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
 			if(anim == JUMP_ANIM)            {jumpAnim.          draw(Loader.graphicsWidth / 2 - w / 2 + 16 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) + 36 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
 			if(anim == SPIN_ANIM)            {spinAnim.          draw(Loader.graphicsWidth / 2 - w / 2 + 16 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) + 36 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, -PI / 2, graphics);}
 		
