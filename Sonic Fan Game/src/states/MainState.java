@@ -16,6 +16,7 @@ import datatypes.Shape;
 import datatypes.State;
 import datatypes.TiledJSON;
 import datatypes.Vector;
+import main.HUD;
 import main.Loader;
 import objects.Player;
 import objects.Ring;
@@ -46,10 +47,14 @@ public class MainState extends State {
 	
 	private Ring[] rings;
 	
+	private HUD hud;
+	
 	public MainState() {
 		interpretMap(Loader.leafForest1Map.json);
 		
 		rings = new Ring[]{new Ring(17 * SCALE * 96, 16 * SCALE * 96)};
+		
+		hud = new HUD();
 	}
 		
 	public void update() {
@@ -99,6 +104,8 @@ public class MainState extends State {
 		player.draw(graphics);
 		
 		if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}
+		
+		hud.draw(player, graphics);
 	}
 	
 	public void keyPressed(int key) {

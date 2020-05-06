@@ -134,7 +134,7 @@ public class Player {
 	private Shape mask;
 	
 	public  Vector pos;
-	private Vector vel;
+	public Vector vel;
 	private Vector groundAxis;
 	
 	private Animation idleAnim;

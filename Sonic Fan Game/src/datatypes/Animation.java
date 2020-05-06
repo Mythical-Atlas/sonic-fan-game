@@ -14,21 +14,56 @@ import static functionholders.GraphicsFunctions.*;
 public class Animation {
 	public double timer;
 	public int frame;
-	private int[] durations;
-	private int repeatFrame;
+	public int[] durations;
+	public int repeatFrame;
 	public boolean finished; // only for first cycle
-	private BufferedImage[] frames;
+	public BufferedImage[] frames;
 	private BufferedImage[] oppositeFrames;
 	
 	public Animation() {}
 	
-	/*public Animation(BufferedImage[] frames, int[] durations, int repeatFrame) {
-		this.frames = frames;
+	public Animation(BufferedImage[] frames, int[] durations, int repeatFrame, int scale) {
 		this.durations = durations;
 		this.repeatFrame = repeatFrame;
 		
+		this.frames = new BufferedImage[frames.length];
+		for(int i = 0; i < frames.length; i++) {this.frames[i] = frames[i];}
+		
+		oppositeFrames = new BufferedImage[frames.length];
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = frames[i];}
+		
 		if(repeatFrame == -1) {this.repeatFrame = frames.length - 1;}
-	}*/
+		
+		for(int i = 0; i < frames.length; i++) {this.frames[i] = scaleImage(this.frames[i], scale);}
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = flipImageHorizontally(frames[i]);}
+	}
+	public Animation(BufferedImage[] frames, int[] durations, int repeatFrame) {
+		this.durations = durations;
+		this.repeatFrame = repeatFrame;
+		
+		this.frames = new BufferedImage[frames.length];
+		for(int i = 0; i < frames.length; i++) {this.frames[i] = frames[i];}
+		
+		oppositeFrames = new BufferedImage[frames.length];
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = frames[i];}
+		
+		if(repeatFrame == -1) {this.repeatFrame = frames.length - 1;}
+		
+		for(int i = 0; i < frames.length; i++) {this.frames[i] = scaleImage(this.frames[i], 2);}
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = flipImageHorizontally(frames[i]);}
+	}
+	public Animation(String path, String name, int[] durations, int repeatFrame, int scale) {
+		this.durations = durations;
+		this.repeatFrame = repeatFrame;
+		
+		frames = loadAnimation(path, name);
+		oppositeFrames = loadAnimation(path, name);
+		
+		if(repeatFrame == -1) {this.repeatFrame = frames.length - 1;}
+		
+		for(int i = 0; i < frames.length; i++) {frames[i] = scaleImage(frames[i], scale);}
+		for(int i = 0; i < frames.length; i++) {oppositeFrames[i] = flipImageHorizontally(frames[i]);}
+	}
 	public Animation(String path, String name, int[] durations, int repeatFrame) {
 		this.durations = durations;
 		this.repeatFrame = repeatFrame;

@@ -91,6 +91,11 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static BufferedImage leafBG0;
 	public static BufferedImage leafBG1;
 	
+	public static Animation hudRingAnim;
+	public static BufferedImage hud;
+	public static BufferedImage time;
+	public static BufferedImage[] numbers;
+	
 	public static Clip jumpSound0;
 	public static Clip jumpSound1;
 	public static Clip landSound;
@@ -166,7 +171,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			skirtAnim = new Animation("sonicsprites", "skirt", new int[]{2, 2, 2, 4}, 0);
 			turnAnim = new Animation("sonicsprites", "turn", new int[]{1, 3}, 0);
 			
-			ringAnim = new Animation("objectsprites", "ring", new int[]{8, 8, 8, 8}, 0);
+			ringAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, 2);
 			sparkleAnim = new Animation("objectsprites", "effect", new int[]{4, 4, 4, 5}, 0);
 			
 			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -10.0f);
@@ -184,9 +189,17 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			
 			ringSound = loadSound("/objectSounds/ring.wav", -10.0f);
 			
+			hudRingAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, HUD.SCALE);
+			
 			try {
-				leafBG0 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png")), 5);
-				leafBG1 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg1.png")), 5);
+				leafBG0 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png")), 2);
+				leafBG1 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg1.png")), 2);
+				
+				hud = scaleImage(ImageIO.read(getClass().getResourceAsStream("/hudsprites/rings.png")), HUD.SCALE);
+				time = scaleImage(ImageIO.read(getClass().getResourceAsStream("/hudsprites/time.png")), HUD.SCALE);
+				
+				numbers = new BufferedImage[10];
+				for(int i = 0; i < 10; i++) {numbers[i] = scaleImage(ImageIO.read(getClass().getResourceAsStream("/hudsprites/" + i + ".png")), HUD.SCALE);}
 			}
 			catch(Exception e) {e.printStackTrace();}
 		}
@@ -235,7 +248,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			}
 			
 			graphics.setColor(Color.WHITE);
-			graphics.drawString(currentFPS + " FPS", 0, 10);
+			graphics.drawString(currentFPS + " FPS", graphicsWidth - 40, graphicsHeight);
 			
 			Graphics graphicsTemp = getGraphics();
 			
