@@ -34,7 +34,5 @@ public class Tileset {
 				tiles[t] = scaleImage(image.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight), 2);
 			}
 		}
-		
-		
 	}
 }

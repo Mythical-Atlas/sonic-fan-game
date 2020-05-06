@@ -93,6 +93,9 @@ public class MainState extends State {
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRect(0, 0, Loader.graphicsWidth, Loader.graphicsHeight);
 		
+		Loader.leafBG0.draw(100, player, graphics);
+		Loader.leafBG1.draw(50, player, graphics);
+		
 		/*int w = Loader.leafBG0.getWidth();
 		double x = -player.pos.x + Loader.graphicsWidth / 2;
 		
@@ -104,12 +107,12 @@ public class MainState extends State {
 		graphics.drawImage(Loader.leafBG1, (int)(x % (w * 4)) / 4 + w, 0, null);
 		graphics.drawImage(Loader.leafBG1, (int)(x % (w * 4)) / 4 + w * 2, 0, null);*/
 		
-		graphics.setColor(Color.BLACK);
+		/*graphics.setColor(Color.BLACK);
 		for(int x = 0; x < (int)(Loader.graphicsWidth / 64) + 2; x++) {
 			for(int y = 0; y < (int)(Loader.graphicsHeight / 64) + 2; y++) {
 				graphics.drawRect((int)(x * 64 - (((int)player.pos.x % 128) / 2)), (int)(y * 64 -  (((int)player.pos.y % 128) / 2)), 64, 64);
 			}
-		}
+		}*/
 		
 		Loader.leafForest1Map.draw(0, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);
 		Loader.leafForest1Map.draw(1, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);
