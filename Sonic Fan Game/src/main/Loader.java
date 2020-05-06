@@ -1,6 +1,6 @@
 package main;
 
-import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,6 +35,8 @@ import datatypes.Tileset;
 import states.MainState;
 import states.MenuState;
 import states.TestState;
+
+import static functionholders.GraphicsFunctions.*;
 
 @SuppressWarnings("serial")
 public class Loader extends JPanel implements MouseListener, KeyListener, Runnable {
@@ -183,8 +185,8 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			ringSound = loadSound("/objectSounds/ring.wav", -10.0f);
 			
 			try {
-				leafBG0 = ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png"));
-				leafBG1 = ImageIO.read(getClass().getResourceAsStream("/maps/bg1.png"));
+				leafBG0 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg0.png")), 5);
+				leafBG1 = scaleImage(ImageIO.read(getClass().getResourceAsStream("/maps/bg1.png")), 5);
 			}
 			catch(Exception e) {e.printStackTrace();}
 		}
