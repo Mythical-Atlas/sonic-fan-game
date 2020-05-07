@@ -20,6 +20,7 @@ import main.HUD;
 import main.Loader;
 import objects.Player;
 import objects.Ring;
+import objects.Spring;
 import shapes.Arc;
 import shapes.Circle;
 import shapes.InverseArc;
@@ -46,6 +47,7 @@ public class MainState extends State {
 	private boolean toggle1 = true;
 	
 	private Ring[] rings;
+	private Spring[] springs;
 	
 	private HUD hud;
 	
@@ -76,11 +78,15 @@ public class MainState extends State {
 			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 		};
 		
+		springs = new Spring[]{
+			new Spring(21 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 14 * SCALE, 3 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 15, 0),
+		};
+		
 		hud = new HUD();
 	}
 		
 	public void update() {
-		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings);
+		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
 		
 		if(rings != null) {
 			int[] removals = null;
@@ -123,6 +129,7 @@ public class MainState extends State {
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 		}
 		
+		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
 		
 		player.draw(graphics);

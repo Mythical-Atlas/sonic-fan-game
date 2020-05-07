@@ -85,6 +85,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	public static Animation skirtAnim;
 	public static Animation turnAnim;
 	
+	public static Animation springAnim;
 	public static Animation ringAnim;
 	public static Animation sparkleAnim;
 	
@@ -170,6 +171,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			skirtAnim = new Animation("sonicsprites", "skirt", new int[]{2, 2, 2, 4}, 0);
 			turnAnim = new Animation("sonicsprites", "turn", new int[]{1, 3}, 0);
 			
+			springAnim = new Animation("objectsprites", "spring", new int[]{2, 2, 1, 5, 3}, 0, 2);
 			ringAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, 2);
 			sparkleAnim = new Animation("objectsprites", "effect", new int[]{4, 4, 4, 5}, 0);
 			

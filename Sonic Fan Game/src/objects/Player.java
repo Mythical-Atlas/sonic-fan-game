@@ -220,7 +220,7 @@ public class Player {
 		this.ringSound = Loader.ringSound;
 	}
 	
-	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings) {
+	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 		
@@ -268,6 +268,21 @@ public class Player {
 						ringSound.flush();
 						ringSound.setFramePosition(0);
 						ringSound.start();
+					}
+				}
+			}
+		}
+		
+		if(springs != null) {
+			for(int i = 0; i < springs.length; i++) {
+				if(!springs[i].bouncing) {
+					Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, springMask)) {
+						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
+						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
+						springs[i].bouncing = true;
 					}
 				}
 			}
