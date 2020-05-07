@@ -31,6 +31,7 @@ public class Player {
 	private final double GROUND_ACCEL_LIMIT = 30;
 	private final double SKID_ACCEL  		= 1;
 	private final double DRAG_DECEL   		= 0.25;
+	private final double DEBUG_JUMP_IMPULSE = 42;
 	private final double JUMP_IMPULSE 		= 21;
 	private final double JUMP_SWITCH  		= 2;
 	private final double GRAVITY      		= 0.75;
@@ -291,8 +292,8 @@ public class Player {
 	
 	private void movement() {
 		double moveSpeed;
-		/*if(!shiftKey) {*/moveSpeed = MOVE_ACCEL * SCALE;//}
-		//else          {moveSpeed = SPRINT_ACCEL * SCALE;}
+		if(!shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
+		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
 		
 		if(!ground) {
 			skidding = false;
@@ -310,9 +311,9 @@ public class Player {
 							if(facing == 1) {skirting = true;}
 						}
 						
-						if(groundSpeed > -GROUND_ACCEL_LIMIT * SCALE) {
+						if(groundSpeed > -GROUND_ACCEL_LIMIT * SCALE || shiftKey) {
 							groundSpeed -= moveSpeed;
-							if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+							if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
 						}
 					}
 					else {
@@ -328,9 +329,9 @@ public class Player {
 							if(facing == -1) {skirting = true;}
 						}
 						
-						if(groundSpeed < GROUND_ACCEL_LIMIT * SCALE) {
+						if(groundSpeed < GROUND_ACCEL_LIMIT * SCALE || shiftKey) {
 							groundSpeed += moveSpeed;
-							if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+							if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
 						}
 					}
 					else {
@@ -421,11 +422,17 @@ public class Player {
 			jumpReady = false;
 			ground = false;
 			jumping = true;
-			jumpSlowed = groundAxis.y * -JUMP_IMPULSE * SCALE;
 			jumpSlowing = false;
 			spinning = false;
 			
-			vel.translate(groundAxis.scale(-JUMP_IMPULSE * SCALE));
+			if(!shiftKey) {
+				jumpSlowed = groundAxis.y * -JUMP_IMPULSE * SCALE;
+				vel.translate(groundAxis.scale(-JUMP_IMPULSE * SCALE));
+			}
+			else {
+				jumpSlowed = groundAxis.y * -DEBUG_JUMP_IMPULSE * SCALE;
+				vel.translate(groundAxis.scale(-DEBUG_JUMP_IMPULSE * SCALE));
+			}
 		}
 		else {
 			if(jumping) {
