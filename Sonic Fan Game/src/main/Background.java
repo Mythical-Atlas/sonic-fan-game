@@ -37,7 +37,7 @@ public class Background {
 		
 		int[] actualIndices = new int[3];
 		actualIndices[0] = 2;
-		actualIndices[1] = 6;
+		actualIndices[1] = 4;
 		actualIndices[2] = 10;
 		
 		for(int l = 0; l < layers.length; l++) {

@@ -246,7 +246,7 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
-			// TODO: fix velocity projection for curves
+			// TODO: fix velocity projection for curves?
 			collide(shapes);
 			checkLedge(shapes);
 			stick(shapes);
@@ -294,8 +294,11 @@ public class Player {
 							skidding = false;
 							if(facing == 1) {skirting = true;}
 						}
-						groundSpeed -= moveSpeed;
-						if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+						
+						if(groundSpeed > -GROUND_ACCEL_LIMIT * SCALE) {
+							groundSpeed -= moveSpeed;
+							if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+						}
 					}
 					else {
 						groundSpeed -= SKID_ACCEL * SCALE;
@@ -309,8 +312,11 @@ public class Player {
 							skidding = false;
 							if(facing == -1) {skirting = true;}
 						}
-						groundSpeed += moveSpeed;
-						if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+						
+						if(groundSpeed < GROUND_ACCEL_LIMIT * SCALE) {
+							groundSpeed += moveSpeed;
+							if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+						}
 					}
 					else {
 						groundSpeed += SKID_ACCEL * SCALE;
@@ -458,6 +464,7 @@ public class Player {
 				spindashReady = false;
 				spindashing = false;
 				spinning = true;
+				jumpReady = false;
 				groundSpeed += spindashStrength * facing;
 				
 				spindashReleaseSound.stop();

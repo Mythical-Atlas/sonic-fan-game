@@ -93,7 +93,7 @@ public class MainState extends State {
 		/*graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRect(0, 0, Loader.graphicsWidth, Loader.graphicsHeight);*/
 		
-		Loader.leafBG.draw(new int[]{20, 10, 5}, player, graphics);
+		Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);
 		
 		/*int w = Loader.leafBG0.getWidth();
 		double x = -player.pos.x + Loader.graphicsWidth / 2;

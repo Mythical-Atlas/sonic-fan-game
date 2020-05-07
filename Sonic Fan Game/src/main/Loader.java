@@ -186,7 +186,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
 			
-			ringSound = loadSound("/objectSounds/ring.wav", -10.0f);
+			ringSound = loadSound("/objectSounds/ring.wav", -20.0f);
 			
 			hudRingAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, HUD.SCALE);
 			

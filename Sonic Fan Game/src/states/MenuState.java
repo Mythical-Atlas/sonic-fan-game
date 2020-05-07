@@ -71,9 +71,10 @@ public class MenuState extends State {
 		drawString(x, y, 11, "Shift = Debug Boost", graphics);
 		drawString(x, y, 12, "(will not be present in final game)", graphics);
 		drawString(x, y, 14, "F12 = Fullscreen", graphics);
-		drawString(x, y, 15, "Escape = Back", graphics);
-		drawString(x, y, 18, "F1 = Show/Hide Player Collision Masks", graphics);
-		drawString(x, y, 20, "F2 = Show/Hide Tile Collision Masks", graphics);
+		drawString(x, y, 15, "(can cause lag)", graphics);
+		drawString(x, y, 17, "Escape = Back", graphics);
+		drawString(x, y, 19, "F1 = Show/Hide Player Collision Masks", graphics);
+		drawString(x, y, 21, "F2 = Show/Hide Tile Collision Masks", graphics);
 	}
 	
 	public void keyPressed(int key) {if(key == VK_ESCAPE) {System.exit(0);}}
