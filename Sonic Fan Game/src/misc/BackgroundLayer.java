@@ -1,4 +1,4 @@
-package main;
+package misc;
 
 import static java.lang.Math.*;
 import static functionholders.GraphicsFunctions.*;
@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import main.Loader;
 import objects.Player;
 
 public class BackgroundLayer {

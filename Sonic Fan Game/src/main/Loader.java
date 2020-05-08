@@ -32,6 +32,8 @@ import datatypes.State;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import datatypes.Tileset;
+import misc.Background;
+import misc.HUD;
 import states.MainState;
 import states.MenuState;
 import states.TestState;
@@ -111,7 +113,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	
 	public static Clip ringSound;
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 		
 		frameWidth = DEFAULT_FRAME_WIDTH * SCALE;
@@ -127,7 +129,7 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 		frame.setVisible(true);
 		
 		changeState = -1;
-	}
+	}*/
 	
 	public static void resetFrame() {
 		if(frame != null) {frame.dispose();}
