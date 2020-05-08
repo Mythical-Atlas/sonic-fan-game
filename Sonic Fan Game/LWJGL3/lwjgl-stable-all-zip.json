@@ -1,0 +1,17 @@
+{
+  "build": "stable",
+  "mode": "zip",
+  "selectedAddons": [],
+  "platform": [
+    "windows"
+  ],
+  "descriptions": false,
+  "compact": false,
+  "hardcoded": false,
+  "javadoc": true,
+  "includeJSON": true,
+  "source": true,
+  "osgi": false,
+  "language": "groovy",
+  "preset": "all"
+}
