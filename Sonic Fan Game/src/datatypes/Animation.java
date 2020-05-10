@@ -79,4 +79,5 @@ public class Animation {
 	}
 	
 	public void draw(double x, double y, int xScale, int yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, xScale, yScale, shader, camera);}
+	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, ox, oy, angle, xScale, yScale, shader, camera);}
 }

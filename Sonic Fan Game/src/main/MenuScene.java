@@ -28,6 +28,8 @@ public class MenuScene extends Scene {
 	
 	private Animation testAnim;
 	
+	private double angle;
+	
 	public MenuScene() {}
 	
 	public void init() {
@@ -56,10 +58,12 @@ public class MenuScene extends Scene {
 			camera.position.y += 100f * dt;
 		}
 		
-		//sprite0.draw(0, 0, 1, 1, defaultShader, camera);
-		//sprite1.draw(600, 300, -1, 1, defaultShader, camera);
+		sprite0.draw(0, 0, 1, 1, defaultShader, camera);
+		sprite1.draw(600, 300, -1, 1, defaultShader, camera);
 		
-		testAnim.draw(0, 0, -2, 2, defaultShader, camera);
+		angle += 0.1;
+		
+		testAnim.draw(100, 100, 100 + 32 * 2, 100 + 64 * 2, angle, 2, 2, defaultShader, camera);
 		testAnim.update(1);
 	}
 }
