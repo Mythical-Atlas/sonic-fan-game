@@ -2,7 +2,7 @@ package main;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -89,7 +89,7 @@ public class Window {
 		
 		GL.createCapabilities();
 		
-		Window.changeScene(0);
+		changeScene(0);
 	}
 	
 	public void loop() {
@@ -110,6 +110,8 @@ public class Window {
 			endTime = Time.getTime();
 			dt = endTime - beginTime;
 			beginTime = endTime;
+			
+			System.out.println("" + (1.0f / dt) + " FPS");
 		}
 	}
 }
