@@ -6,6 +6,9 @@ import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -17,6 +20,9 @@ public class Window {
 	private static Window window = null;
 	
 	private static Scene currentScene = null;
+	
+	private int initWidth;
+	private int initHeight;
 	
 	private Window() {}
 	
@@ -59,7 +65,7 @@ public class Window {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+		glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 		
 		glfwWindow = glfwCreateWindow(Loader.DEFAULT_FRAME_WIDTH, Loader.DEFAULT_FRAME_HEIGHT, Loader.TITLE, NULL, NULL);
 		if(glfwWindow == NULL) {throw new IllegalStateException("Failed to create the GLFW window.");}
@@ -77,6 +83,9 @@ public class Window {
 		GL.createCapabilities();
 		
 		changeScene(0);
+		
+		initWidth = getWidth();
+		initHeight = getHeight();
 	}
 	
 	public void loop() {
@@ -98,7 +107,27 @@ public class Window {
 			dt = endTime - beginTime;
 			beginTime = endTime;
 			
-			System.out.println("" + (1.0f / dt) + " FPS");
+			//System.out.println("" + (1.0f / dt) + " FPS");
 		}
+	}
+	
+	public static int getInitialWidth() {return(get().initWidth);}
+	public static int getInitialHeight() {return(get().initHeight);}
+	
+	public static int getWidth() {
+		IntBuffer w = BufferUtils.createIntBuffer(1);
+		IntBuffer h = BufferUtils.createIntBuffer(1);
+		glfwGetFramebufferSize(get().glfwWindow, w, h);
+		int width = w.get(0);
+		
+		return(width);
+	}
+	public static int getHeight() {
+		IntBuffer w = BufferUtils.createIntBuffer(1);
+		IntBuffer h = BufferUtils.createIntBuffer(1);
+		glfwGetFramebufferSize(get().glfwWindow, w, h);
+		int height = h.get(0);
+		
+		return(height);
 	}
 }

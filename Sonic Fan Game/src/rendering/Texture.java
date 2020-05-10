@@ -24,14 +24,6 @@ public class Texture {
 	private int texID;
 	
 	public Texture(String filepath) {
-		texID = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, texID);
-		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		
 		InputStream is = getClass().getResourceAsStream(filepath);
 		byte[] bytes = null;
 		
@@ -45,6 +37,19 @@ public class Texture {
 		imageBuffer.put(bytes);
 		imageBuffer.flip();
 		
+		load(imageBuffer);
+	}
+	public Texture(ByteBuffer imageBuffer) {load(imageBuffer);}
+	
+	private void load(ByteBuffer imageBuffer) {
+		texID = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, texID);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
 		IntBuffer width = BufferUtils.createIntBuffer(1);
 		IntBuffer height = BufferUtils.createIntBuffer(1);
 		IntBuffer channels = BufferUtils.createIntBuffer(1);
@@ -56,9 +61,9 @@ public class Texture {
 		if(image != null) {
 			if(channels.get(0) == 3) {glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, image);}
 			else if(channels.get(0) == 4) {glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);}
-			else {assert(false) : "Error: unknown number of channels '" + channels.get(0) + "' in '" + filepath + "'";}
+			else {assert(false) : "Error: unknown number of channels '" + channels.get(0);}
 		}
-		else {assert(false) : "Error: Could not load image '" + filepath + "'";}
+		else {assert(false) : "Error: Could not load image";}
 		
 		stbi_image_free(image);
 	}

@@ -20,8 +20,11 @@ public class Camera {
 	}
 	
 	public void adjustProjection() {
+		float width = 32.0f * 40.0f;
+		float height = 32.0f * 21.0f;
+		
 		projectionMatrix.identity();
-		projectionMatrix.ortho(0.0f, 32.0f * 40.0f, 0.0f, 32.0f * 21.0f, 0.0f, 100.0f);
+		projectionMatrix.ortho(0.0f, width, height, 0.0f, 0.0f, 100.0f);
 	}
 	
 	public Matrix4f getViewMatrix() {
