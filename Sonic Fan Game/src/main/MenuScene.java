@@ -22,8 +22,8 @@ import java.nio.IntBuffer;
 public class MenuScene extends Scene {
 	private Shader defaultShader;
 	
-	private Image sprite0;
-	private Image sprite1;
+	private TestSprite sprite0;
+	private TestSprite sprite1;
 	
 	public MenuScene() {}
 	
@@ -33,25 +33,23 @@ public class MenuScene extends Scene {
 		defaultShader = new Shader("/shaders/default.glsl");
 		defaultShader.compile();
 		
-		sprite0 = new Image(Loader.idleAnim[0]);
-		sprite1 = new Image(Loader.runFastestAnim[0]);
+		sprite0 = new TestSprite("/sonicsprites/idle0.png", 0, 0);
+		sprite1 = new TestSprite("/sonicsprites/fastest0.png", 0, 300);
 	}
 	
 	public void update(float dt) {
-		//System.out.println(camera.position.x + ", " + camera.position.y);
-		
 		 if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT)) {
 	            camera.position.x += 100f * dt;
 	        } else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT)) {
 	            camera.position.x -= 100f * dt;
 	        }
 	        if (KeyListener.isKeyPressed(GLFW_KEY_UP)) {
-	            camera.position.y -= 100f * dt;
-	        } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
 	            camera.position.y += 100f * dt;
+	        } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
+	            camera.position.y -= 100f * dt;
 	        }
 		
-		sprite0.draw(0, 0, 1, 1, defaultShader, camera);
-		sprite1.draw(600, 300, -1, 1, defaultShader, camera);
+		sprite0.draw(defaultShader, camera);
+		sprite1.draw(defaultShader, camera);
 	}
 }

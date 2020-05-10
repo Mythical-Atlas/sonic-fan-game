@@ -3,16 +3,11 @@ package main;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
-
-import org.lwjgl.BufferUtils;
 
 import datatypes.Animation;
 import datatypes.TiledJSON;
@@ -41,35 +36,35 @@ public class Loader {
 	
 	public static Tilemap leafForest1Map;
 	
-	public static ByteBuffer[] idleAnim;
-	public static ByteBuffer[] runSlowestAnim;
-	public static ByteBuffer[] runSlowAnim;
-	public static ByteBuffer[] runNormalAnim;
-	public static ByteBuffer[] runFastAnim;
-	public static ByteBuffer[] runFastestAnim;
-	public static ByteBuffer[] fallAnim;
-	public static ByteBuffer[] jumpAnim;
-	public static ByteBuffer[] skidAnim;
-	public static ByteBuffer[] spinAnim;
-	public static ByteBuffer[] crouchAnim0;
-	public static ByteBuffer[] crouchAnim1;
-	public static ByteBuffer[] spindashAnim;
-	public static ByteBuffer[] spindashChargeAnim;
-	public static ByteBuffer[] spindashDustAnim;
-	public static ByteBuffer[] spindashChargeDustAnim;
-	public static ByteBuffer[] skirtAnim;
-	public static ByteBuffer[] turnAnim;
+	public static Animation idleAnim;
+	public static Animation runSlowestAnim;
+	public static Animation runSlowAnim;
+	public static Animation runNormalAnim;
+	public static Animation runFastAnim;
+	public static Animation runFastestAnim;
+	public static Animation fallAnim;
+	public static Animation jumpAnim;
+	public static Animation skidAnim;
+	public static Animation spinAnim;
+	public static Animation crouchAnim0;
+	public static Animation crouchAnim1;
+	public static Animation spindashAnim;
+	public static Animation spindashChargeAnim;
+	public static Animation spindashDustAnim;
+	public static Animation spindashChargeDustAnim;
+	public static Animation skirtAnim;
+	public static Animation turnAnim;
 	
-	public static ByteBuffer[] springAnim;
-	public static ByteBuffer[] ringAnim;
-	public static ByteBuffer[] sparkleAnim;
+	public static Animation springAnim;
+	public static Animation ringAnim;
+	public static Animation sparkleAnim;
 	
-	public static ByteBuffer leafBG;
+	public static Background leafBG;
 	
-	public static ByteBuffer[] hudRingAnim;
-	public static ByteBuffer hud;
-	public static ByteBuffer time;
-	public static ByteBuffer[] numbers;
+	public static Animation hudRingAnim;
+	public static BufferedImage hud;
+	public static BufferedImage time;
+	public static BufferedImage[] numbers;
 	
 	public static Clip jumpSound0;
 	public static Clip jumpSound1;
@@ -100,28 +95,28 @@ public class Loader {
 			
 			leafForest1Map = new Tilemap("/maps/leaf.json", "/maps/");
 			
-			idleAnim = loadImages("/sonicsprites", "idle");
-			runSlowestAnim = loadImages("/sonicsprites", "slowest");
-			runSlowAnim    = loadImages("/sonicsprites", "slow");
-			runNormalAnim  = loadImages("/sonicsprites", "run");
-			runFastAnim    = loadImages("/sonicsprites", "fast");
-			runFastestAnim = loadImages("/sonicsprites", "fastest");
-			fallAnim = loadImages("/sonicsprites", "fall");
-			jumpAnim = loadImages("/sonicsprites", "jump");
-			skidAnim = loadImages("/sonicsprites", "skid");
-			spinAnim = loadImages("/sonicsprites", "spin");
-			crouchAnim0 = loadImages("/sonicsprites", "crouchDown");
-			crouchAnim1 = loadImages("/sonicsprites", "crouchUp");
-			spindashAnim = loadImages("/sonicsprites", "spindash");
-			spindashChargeAnim = loadImages("/sonicsprites", "charge");
-			spindashDustAnim = loadImages("/sonicsprites", "dust");
-			spindashChargeDustAnim = loadImages("/sonicsprites", "chargeDust");
-			skirtAnim = loadImages("/sonicsprites", "skirt");
-			turnAnim = loadImages("/sonicsprites", "turn");
+			idleAnim = new Animation("sonicsprites", "idle", new int[]{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 12, 6, 6, 6, 12, 8}, 0);
+			runSlowestAnim = new Animation("sonicsprites", "slowest", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+			runSlowAnim    = new Animation("sonicsprites", "slow", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+			runNormalAnim  = new Animation("sonicsprites", "run", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+			runFastAnim    = new Animation("sonicsprites", "fast", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+			runFastestAnim = new Animation("sonicsprites", "fastest", new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+			fallAnim = new Animation("sonicsprites", "fall", new int[]{3, 3, 3}, 0);
+			jumpAnim = new Animation("sonicsprites", "jump", new int[]{3, 3, 2, 2, 2, 2, 2, 2, 2, 2}, 2);
+			skidAnim = new Animation("sonicsprites", "skid", new int[]{2, 4, 4}, 1);
+			spinAnim = new Animation("sonicsprites", "spin", new int[]{2, 2, 2, 2}, 0);
+			crouchAnim0 = new Animation("sonicsprites", "crouchDown", new int[]{1, 1, 1, 1}, 3);
+			crouchAnim1 = new Animation("sonicsprites", "crouchUp", new int[]{1, 3}, 2);
+			spindashAnim = new Animation("sonicsprites", "spindash", new int[]{2, 2, 2, 2}, 0);
+			spindashChargeAnim = new Animation("sonicsprites", "charge", new int[]{2, 2, 2, 3}, 0);
+			spindashDustAnim = new Animation("sonicsprites", "dust", new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+			spindashChargeDustAnim = new Animation("sonicsprites", "chargeDust", new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+			skirtAnim = new Animation("sonicsprites", "skirt", new int[]{2, 2, 2, 4}, 0);
+			turnAnim = new Animation("sonicsprites", "turn", new int[]{1, 3}, 0);
 			
-			springAnim = loadImages("/objectsprites", "spring");
-			ringAnim = loadImages("/hudsprites", "ring");
-			sparkleAnim = loadImages("/objectsprites", "effect");
+			springAnim = new Animation("objectsprites", "spring", new int[]{2, 2, 1, 5, 3}, 0, 2);
+			ringAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, 2);
+			sparkleAnim = new Animation("objectsprites", "effect", new int[]{4, 4, 4, 5}, 0);
 			
 			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -10.0f);
 			jumpSound1 = loadSound("/sonicsounds/jump1.wav", -10.0f);
@@ -138,9 +133,9 @@ public class Loader {
 			
 			ringSound = loadSound("/objectSounds/ring.wav", -20.0f);
 			
-			hudRingAnim = loadImages("/hudsprites", "ring");
+			hudRingAnim = new Animation("hudsprites", "ring", new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0, HUD.SCALE);
 			
-			/*leafBG = new Background(new String[]{"/maps/bg0.png", "/maps/bg1.png", "/maps/bg2.png"}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
+			leafBG = new Background(new String[]{"/maps/bg0.png", "/maps/bg1.png", "/maps/bg2.png"}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 			leafBG.setTween(0, 0, new Color(120, 136, 248));
 			leafBG.setTween(0, 1, new Color(128, 160, 248));
 			leafBG.setTween(1, 1, 14, 14);
@@ -153,37 +148,8 @@ public class Loader {
 				numbers = new BufferedImage[10];
 				for(int i = 0; i < 10; i++) {numbers[i] = scaleImage(ImageIO.read(getClass().getResourceAsStream("/hudsprites/" + i + ".png")), HUD.SCALE);}
 			}
-			catch(Exception e) {e.printStackTrace();}*/
+			catch(Exception e) {e.printStackTrace();}
 		}
-	}
-	
-	private ByteBuffer[] loadImages(String dir, String name) {
-		int length = 0;
-		
-		while(true) {
-			InputStream is = getClass().getResourceAsStream(dir + "/" + name + length + ".png");
-			if(is == null) {break;}
-			
-			length++;
-		}
-		
-		ByteBuffer[] images = new ByteBuffer[length];
-		
-		try {
-			for(int i = 0; i < length; i++) {
-				InputStream is = getClass().getResourceAsStream(dir + "/" + name + i + ".png");
-				byte[] bytes = is.readAllBytes();
-				
-				ByteBuffer imageBuffer = BufferUtils.createByteBuffer(bytes.length);
-				imageBuffer.put(bytes);
-				imageBuffer.flip();
-				
-				images[i] = imageBuffer;
-			}
-		}
-		catch(Exception e) {e.printStackTrace();}
-		
-		return(images);
 	}
 	
 	private Clip loadSound(String path, float amp) {

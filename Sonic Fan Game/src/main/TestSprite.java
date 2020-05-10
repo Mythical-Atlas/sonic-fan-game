@@ -2,7 +2,6 @@ package main;
 
 import static org.lwjgl.opengl.GL33.*;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -32,54 +31,6 @@ public class TestSprite {
 	
 	public TestSprite(String filepath, double x, double y) {
 		tex = new Texture(filepath);
-		
-		vertexArray[0] = tex.width;
-		vertexArray[18] = tex.width;
-		vertexArray[10] = tex.height;
-		vertexArray[19] = tex.height;
-		
-		vertexArray[0] += (float)x;
-		vertexArray[9] += (float)x;
-		vertexArray[18] += (float)x;
-		vertexArray[27] += (float)x;
-		vertexArray[1] += (float)y;
-		vertexArray[10] += (float)y;
-		vertexArray[19] += (float)y;
-		vertexArray[28] += (float)y;
-		
-		vaoID = glGenVertexArrays();
-		glBindVertexArray(vaoID);
-		
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.length);
-		vertexBuffer.put(vertexArray).flip();
-		
-		vboID = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-		
-		IntBuffer elementBuffer = BufferUtils.createIntBuffer(elementArray.length);
-		elementBuffer.put(elementArray).flip();
-		
-		eboID = glGenBuffers();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
-		
-		int positionsSize = 3;
-		int colorSize = 4;
-		int uvSize = 2;
-		int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
-		
-		glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
-		glEnableVertexAttribArray(0);
-		
-		glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
-		glEnableVertexAttribArray(1);
-		
-		glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
-		glEnableVertexAttribArray(2);
-	}
-	public TestSprite(ByteBuffer imageBuffer, double x, double y) {
-		tex = new Texture(imageBuffer);
 		
 		vertexArray[0] = tex.width;
 		vertexArray[18] = tex.width;
