@@ -1,14 +1,5 @@
-/maps/
-/objectsounds/
-/objectsprites/
-/shaders/
-/sonicsounds/
-/sonicsprites/
-/datatypes/
-/functionholders/
 /main/
-/misc/
 /objects/
-/rendering/
-/shapes/
+/misc/
 /states/
+/shaders/

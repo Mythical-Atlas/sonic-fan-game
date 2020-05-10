@@ -1,8 +1,6 @@
 package main;
 
 public abstract class Scene {
-	protected Camera camera;
-	
 	public Scene() {}
 	
 	public abstract void init();

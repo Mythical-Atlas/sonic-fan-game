@@ -2,37 +2,53 @@ package main;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL33.*;
+//import static org.lwjgl.opengl.GL11.*;
+//import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-import org.joml.Vector2f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
-
-import rendering.Shader;
-import rendering.Texture;
 
 import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class MenuScene extends Scene {
+	private String vertexShaderSrc = "#version 330 core\r\n" + 
+			"\r\n" + 
+			"layout (location=0) in vec3 aPos;\r\n" + 
+			"layout (location=1) in vec4 aColor;\r\n" + 
+			"\r\n" + 
+			"out vec4 fColor;\r\n" + 
+			"\r\n" + 
+			"void main() {\r\n" + 
+			"	fColor = aColor;\r\n" + 
+			"	gl_Position = vec4(aPos, 1.0);\r\n" + 
+			"}";
+	private String fragmentShaderSrc = "#version 330 core\r\n" + 
+			"\r\n" + 
+			"in vec4 fColor;\r\n" + 
+			"out vec4 color;\r\n" + 
+			"\r\n" + 
+			"void main() {color = fColor;}";
+	
+	private int vertexID;
+	private int fragmentID;
+	private int shaderProgram;
+	
 	private int vaoID;
 	private int vboID;
 	private int eboID;
 	
-	private Shader defaultShader;
-	
-	private Texture testTex;
-	
 	private float[] vertexArray = {
-			 100.5f,   0.5f, 0.0f,		1.0f, 0.0f, 0.0f, 1.0f,		1, 1,
-			   0.5f, 100.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f,		0, 0,
-			 100.5f, 100.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f,		1, 0,
-			   0.5f,   0.5f, 0.0f,		1.0f, 1.0f, 0.0f, 1.0f,		0, 1
+			 0.5f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 0.0f, 1.0f,
 	};
 	
 	private int[] elementArray = {
@@ -40,15 +56,49 @@ public class MenuScene extends Scene {
 			0, 1, 3
 	};
 	
-	public MenuScene() {}
+	public MenuScene() {
+		
+	}
 	
 	public void init() {
-		camera = new Camera(new Vector2f());
+		vertexID = glCreateShader(GL_VERTEX_SHADER);
 		
-		defaultShader = new Shader("assets/shaders/default.glsl");
-		defaultShader.compile();
+		glShaderSource(vertexID, vertexShaderSrc);
+		glCompileShader(vertexID);
 		
-		testTex = new Texture("assets/sonicsprites/idle0.png");
+		int success = glGetShaderi(vertexID, GL_COMPILE_STATUS);
+		if(success == GL_FALSE) {
+			int len = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
+			System.out.println("ERROR: Vertex shader compilation failed.");
+			System.out.println(glGetShaderInfoLog(vertexID, len));
+			assert(false) : "";
+		}
+		
+		fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
+		
+		glShaderSource(fragmentID, fragmentShaderSrc);
+		glCompileShader(fragmentID);
+		
+		success = glGetShaderi(fragmentID, GL_COMPILE_STATUS);
+		if(success == GL_FALSE) {
+			int len = glGetShaderi(fragmentID, GL_INFO_LOG_LENGTH);
+			System.out.println("ERROR: Fragment shader compilation failed.");
+			System.out.println(glGetShaderInfoLog(fragmentID, len));
+			assert(false) : "";
+		}
+		
+		shaderProgram = glCreateProgram();
+		glAttachShader(shaderProgram, vertexID);
+		glAttachShader(shaderProgram, fragmentID);
+		glLinkProgram(shaderProgram);
+		
+		success = glGetProgrami(shaderProgram, GL_LINK_STATUS);
+		if(success == GL_FALSE) {
+			int len = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
+			System.out.println("ERROR: Shader linking failed.");
+			System.out.println(glGetProgramInfoLog(shaderProgram, len));
+			assert(false) : "";
+		}
 		
 		vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
@@ -69,32 +119,18 @@ public class MenuScene extends Scene {
 		
 		int positionsSize = 3;
 		int colorSize = 4;
-		int uvSize = 2;
-		int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
+		int floatSizeBytes = 4;
+		int vertexSizeBytes = (positionsSize + colorSize) * floatSizeBytes;
 		
 		glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
 		glEnableVertexAttribArray(0);
 		
-		glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
+		glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * floatSizeBytes);
 		glEnableVertexAttribArray(1);
-		
-		glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
-		glEnableVertexAttribArray(2);
 	}
 	
 	public void update(float dt) {
-		camera.position.x -= dt * 50.0f;
-		
-		defaultShader.use();
-		
-		defaultShader.uploadTexture("TEX_SAMPLER", 0);
-		glActiveTexture(GL_TEXTURE0);
-		testTex.bind();
-		
-		defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-		defaultShader.uploadMat4f("uView", camera.getViewMatrix());
-		defaultShader.uploadFloat("uTime", Time.getTime());
-		
+		glUseProgram(shaderProgram);
 		glBindVertexArray(vaoID);
 		
 		glEnableVertexAttribArray(0);
@@ -106,7 +142,6 @@ public class MenuScene extends Scene {
 		glDisableVertexAttribArray(1);
 		
 		glBindVertexArray(0);
-		
-		defaultShader.detach();
+		glUseProgram(0);
 	}
 }
