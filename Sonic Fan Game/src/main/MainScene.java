@@ -7,8 +7,7 @@ public class MainScene extends Scene {
 		Window.get().b = 1.0f;
 	}
 	
-	public void init() {}
-	
+	@Override
 	public void update(float dt) {
 		System.out.println("" + (1.0f / dt) + " FPS");
 	}
