@@ -39,24 +39,27 @@ public class MenuScene extends Scene {
 		sprite0 = new Image(Loader.idleAnim[0]);
 		sprite1 = new Image(Loader.runFastestAnim[0]);
 		
-		//testAnim = new Animation(Loader.runFastestAnim);
+		testAnim = new Animation(Loader.runFastestAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
 	}
 	
 	public void update(float dt) {
 		//System.out.println(camera.position.x + ", " + camera.position.y);
 		
-		 if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT)) {
-	            camera.position.x += 100f * dt;
-	        } else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT)) {
-	            camera.position.x -= 100f * dt;
-	        }
-	        if (KeyListener.isKeyPressed(GLFW_KEY_UP)) {
-	            camera.position.y -= 100f * dt;
-	        } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
-	            camera.position.y += 100f * dt;
-	        }
+		if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT)) {
+			camera.position.x += 100f * dt;
+		} else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT)) {
+			camera.position.x -= 100f * dt;
+		}
+		if (KeyListener.isKeyPressed(GLFW_KEY_UP)) {
+			camera.position.y -= 100f * dt;
+		} else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
+			camera.position.y += 100f * dt;
+		}
 		
-		sprite0.draw(0, 0, 1, 1, defaultShader, camera);
-		sprite1.draw(600, 300, -1, 1, defaultShader, camera);
+		//sprite0.draw(0, 0, 1, 1, defaultShader, camera);
+		//sprite1.draw(600, 300, -1, 1, defaultShader, camera);
+		
+		testAnim.draw(0, 0, -2, 2, defaultShader, camera);
+		testAnim.update(1);
 	}
 }
