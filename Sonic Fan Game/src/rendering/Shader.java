@@ -3,7 +3,6 @@ package rendering;
 import static org.lwjgl.opengl.GL33.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,10 +27,7 @@ public class Shader {
 		this.filepath = filepath;
 		
 		try {
-			InputStream is = getClass().getResourceAsStream(filepath);
-			byte[] bytes = is.readAllBytes();
-			
-			String source = new String(bytes);
+			String source = new String(Files.readAllBytes(Paths.get(filepath)));
 			String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
 			
 			int index = source.indexOf("#type") + 6;
