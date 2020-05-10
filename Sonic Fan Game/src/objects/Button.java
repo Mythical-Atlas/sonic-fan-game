@@ -71,8 +71,8 @@ public class Button {
 	
 	private Vector getMousePos() {
 		Point windowPos = null;
-		//try {windowPos = Loader.frame.getLocationOnScreen();}
-		//catch(Exception e) {}
+		try {windowPos = Loader.frame.getLocationOnScreen();}
+		catch(Exception e) {}
 		if(windowPos == null) {return(null);}
 		
 		double mouseDeltaX = MouseInfo.getPointerInfo().getLocation().x - windowPos.x;

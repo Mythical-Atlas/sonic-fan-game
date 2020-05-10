@@ -1,4 +1,4 @@
-package misc;
+package main;
 
 import static java.lang.Math.*;
 
@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import datatypes.Animation;
-import main.Loader;
 import objects.Player;
 
 public class HUD {
