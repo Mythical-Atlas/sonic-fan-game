@@ -12,7 +12,6 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
-import datatypes.Animation;
 import rendering.Shader;
 import rendering.Texture;
 
@@ -26,8 +25,6 @@ public class MenuScene extends Scene {
 	private Image sprite0;
 	private Image sprite1;
 	
-	private Animation testAnim;
-	
 	public MenuScene() {}
 	
 	public void init() {
@@ -38,8 +35,6 @@ public class MenuScene extends Scene {
 		
 		sprite0 = new Image(Loader.idleAnim[0]);
 		sprite1 = new Image(Loader.runFastestAnim[0]);
-		
-		//testAnim = new Animation(Loader.runFastestAnim);
 	}
 	
 	public void update(float dt) {

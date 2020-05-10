@@ -109,7 +109,4 @@ public class Image {
 		
 		shader.detach();
 	}
-	
-	public int getWidth() {return(tex.width);}
-	public int getHeight() {return(tex.height);}
 }
