@@ -12,26 +12,13 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 public class Window {
-	private int width;
-	private int height;
-	private String title;
-	
 	private long glfwWindow;
 	
 	private static Window window = null;
 	
 	private static Scene currentScene = null;
 	
-	public float r = 1.0f;
-	public float g = 1.0f;
-	public float b = 1.0f;
-	public float a = 1.0f;
-	
-	private Window() {
-		width = 1280;
-		height = 720;
-		title = "Sonic Fan Game";
-	}
+	private Window() {}
 	
 	public static Window get() {
 		if(window == null) {window = new Window();}
@@ -74,7 +61,7 @@ public class Window {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 		
-		glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+		glfwWindow = glfwCreateWindow(Loader.DEFAULT_FRAME_WIDTH, Loader.DEFAULT_FRAME_HEIGHT, Loader.TITLE, NULL, NULL);
 		if(glfwWindow == NULL) {throw new IllegalStateException("Failed to create the GLFW window.");}
 		
 		glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
@@ -100,7 +87,7 @@ public class Window {
 		while(!glfwWindowShouldClose(glfwWindow)) {
 			glfwPollEvents();
 			
-			glClearColor(r, g, b, a);
+			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
 			if(dt >= 0) {currentScene.update(dt);}

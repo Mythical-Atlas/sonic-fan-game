@@ -1,67 +1,35 @@
 package main;
 
-import static java.awt.event.KeyEvent.*;
-
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import datatypes.Animation;
-import datatypes.State;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
-import datatypes.Tileset;
 import misc.Background;
 import misc.HUD;
-import states.MainState;
-import states.MenuState;
-import states.TestState;
 
 import static functionholders.GraphicsFunctions.*;
 
-@SuppressWarnings("serial")
-public class Loader extends JPanel implements MouseListener, KeyListener, Runnable {
-	private static final String TITLE = "Sonic Fan Game";
-	private static final int TARGET_FPS = 60;
-	private static final int SCALE = 1;
-	private static final int DEFAULT_FRAME_WIDTH = 1280;
-	private static final int DEFAULT_FRAME_HEIGHT = 720;
-	private static boolean loadedAssets;
+public class Loader {
+	public static final String TITLE = "Sonic Fan Game";
+	public static final int TARGET_FPS = 60;
+	public static final int SCALE = 1;
+	public static final int DEFAULT_FRAME_WIDTH = 1280;
+	public static final int DEFAULT_FRAME_HEIGHT = 720;
+	public static boolean loadedAssets;
 	
-	private Thread thread;
-	public static JFrame frame;
-	private static State currentState;
+	public static Scene currentScene;
 	public static boolean fullscreen;
-	private static int frameX;
-	private static int frameY;
-	private static int frameWidth;
-	private static int frameHeight;
 	
 	public static int graphicsWidth;
 	public static int graphicsHeight;
-	
-	public static int changeState;
 	
 	public static int[][] testMap1;
 	public static int[][] testMap2;
@@ -113,39 +81,12 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 	
 	public static Clip ringSound;
 	
-	/*public static void main(String[] args) {
-		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		
-		frameWidth = DEFAULT_FRAME_WIDTH * SCALE;
-		frameHeight = DEFAULT_FRAME_HEIGHT * SCALE;
-		frameX = center.x - frameWidth / 2;
-		frameY =  center.y - frameHeight / 2;
-		graphicsWidth = DEFAULT_FRAME_WIDTH;
-		graphicsHeight = DEFAULT_FRAME_HEIGHT;
-		loadedAssets = false;
-		
-		resetFrame();
-		frame.pack();
-		frame.setVisible(true);
-		
-		changeState = -1;
-	}*/
-	
-	public static void resetFrame() {
-		if(frame != null) {frame.dispose();}
-		frame = new JFrame(TITLE);
-		
-		frame.setBounds(frameX, frameY, frameWidth, frameHeight);
-		frame.setContentPane(new Loader());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+	public static void main(String[] args) {
+		new Loader();
+		Window.get().run();
 	}
 
 	public Loader() {
-		setPreferredSize(new Dimension(frameWidth, frameHeight));
-		setFocusable(true);
-		requestFocus();
-		
 		if(!loadedAssets) {
 			loadedAssets = true;
 			
@@ -210,114 +151,6 @@ public class Loader extends JPanel implements MouseListener, KeyListener, Runnab
 			catch(Exception e) {e.printStackTrace();}
 		}
 	}
-
-	public void addNotify() {
-		super.addNotify();
-		
-		addKeyListener(this);
-		addMouseListener(this);
-		
-		thread = new Thread(this);
-		thread.start();
-	}
-
-	@SuppressWarnings("static-access")
-	public void run() {
-		BufferedImage image = new BufferedImage(graphicsWidth, graphicsHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics2D graphics = (Graphics2D)image.getGraphics();
-		
-		if(currentState == null) {currentState = new MenuState();}
-		
-		int currentFPS = 0;
-		
-		while(true) {
-			long start = System.nanoTime();
-					
-			currentState.update();	
-			currentState.draw(graphics);
-			
-			if(changeState == 0) {
-				currentState = new MenuState();
-				changeState = -1;
-			}
-			if(changeState == 1) {
-				currentState = new TestState(testMap1);
-				changeState = -1;
-			}
-			if(changeState == 2) {
-				currentState = new TestState(testMap2);
-				changeState = -1;
-			}
-			if(changeState == 3) {
-				currentState = new MainState();
-				changeState = -1;
-			}
-			
-			graphics.setColor(Color.WHITE);
-			graphics.drawString(currentFPS + " FPS", graphicsWidth - 40, graphicsHeight);
-			
-			Graphics graphicsTemp = getGraphics();
-			
-			graphicsTemp.drawImage(image, 0, 0, frameWidth, frameHeight, null);
-			graphicsTemp.dispose();
-			
-			long wait = 1000 / TARGET_FPS - (System.nanoTime() - start) / 1000000;
-			if(wait <= 0) {wait = 0;}
-			
-			try {thread.sleep(wait);}
-			catch(Exception e) {e.printStackTrace();}
-			
-			currentFPS = (int)((1000 / TARGET_FPS) / ((System.nanoTime() - start) / 1000000.0) * TARGET_FPS);
-		}
-	}
-
-	public void keyTyped(KeyEvent key) {}
-	public void keyPressed(KeyEvent key) {
-		if(key.getKeyCode() == KeyEvent.VK_F12) {
-			fullscreen = !fullscreen;
-			
-			if(fullscreen) {
-				frameWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-				frameHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-				graphicsWidth = frameWidth;
-				graphicsHeight = frameHeight;
-				
-				resetFrame();
-				frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-				frame.setUndecorated(true);
-				frame.pack();
-				frame.setVisible(true);
-			}
-			else {
-				//Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-				
-				//frameX = center.x - frameWidth / 2;
-				//frameY =  center.y - frameHeight / 2;
-				frameWidth = DEFAULT_FRAME_WIDTH * SCALE;
-				frameHeight = DEFAULT_FRAME_HEIGHT * SCALE;
-				graphicsWidth = DEFAULT_FRAME_WIDTH;
-				graphicsHeight = DEFAULT_FRAME_HEIGHT;
-				
-				resetFrame();
-				frame.pack();
-				frame.setVisible(true);
-			}
-		}
-		currentState.keyPressed(key.getKeyCode());
-	}
-	public void keyReleased(KeyEvent key) {currentState.keyReleased(key.getKeyCode());}
-	
-	public void mouseClicked(MouseEvent mouse) {currentState.mouseClicked(mouse);}
-	public void mouseEntered(MouseEvent mouse) {
-		try {currentState.mouseEntered(mouse);}
-		catch(Exception e) {}
-	}
-	public void mouseExited(MouseEvent mouse) {
-		try {currentState.mouseExited(mouse);}
-		catch(Exception e) {}
-	}
-	public void mousePressed(MouseEvent mouse) {currentState.mousePressed(mouse);}
-	public void mouseReleased(MouseEvent mouse) {currentState.mouseReleased(mouse);}
 	
 	private Clip loadSound(String path, float amp) {
 		Clip sound = null;

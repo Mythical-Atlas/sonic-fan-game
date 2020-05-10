@@ -1,11 +1,7 @@
 package main;
 
 public class MainScene extends Scene {
-	public MainScene() {
-		Window.get().r = 1.0f;
-		Window.get().g = 1.0f;
-		Window.get().b = 1.0f;
-	}
+	public MainScene() {}
 	
 	public void init() {}
 	
