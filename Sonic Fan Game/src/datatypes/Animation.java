@@ -60,24 +60,6 @@ public class Animation {
 	
 	public int[] getCurrentSize() {return(new int[]{frames[frame].getWidth(), frames[frame].getHeight()});}
 	
-	public BufferedImage[] loadAnimation(String path, String name) {
-		int length = 0;
-		
-		while(true) {
-			try {ImageIO.read(getClass().getResourceAsStream("/" + path + "/" + name + length + ".png"));}
-			catch(Exception e) {break;}
-			
-			length++;
-		}
-		
-		BufferedImage[] images = new BufferedImage[length];
-		
-		try {for(int i = 0; i < length; i++) {images[i] = ImageIO.read(getClass().getResourceAsStream("/" + path + "/" + name + i + ".png"));}}
-		catch(Exception e) {e.printStackTrace();}
-		
-		return(images);
-	}
-	
 	public void draw(double x, double y, int xScale, int yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, xScale, yScale, shader, camera);}
 	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, ox, oy, angle, xScale, yScale, shader, camera);}
 }

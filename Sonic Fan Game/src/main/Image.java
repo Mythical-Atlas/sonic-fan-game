@@ -1,6 +1,5 @@
 package main;
 
-import static functionholders.MathFunctions.getAngleOfVector;
 import static java.lang.Math.*;
 import static org.lwjgl.opengl.GL33.*;
 
@@ -10,7 +9,6 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-import datatypes.Vector;
 import rendering.Shader;
 import rendering.Texture;
 
@@ -35,6 +33,17 @@ public class Image {
 	
 	public Image(String filepath) {tex = new Texture(filepath);}
 	public Image(ByteBuffer imageBuffer) {tex = new Texture(imageBuffer);}
+	
+	public void setUVMap(float[] map) {
+		vertexArray[7]  = map[0];
+		vertexArray[8]  = map[1];
+		vertexArray[16] = map[2];
+		vertexArray[17] = map[3];
+		vertexArray[25] = map[4];
+		vertexArray[26] = map[5];
+		vertexArray[34] = map[6];
+		vertexArray[35] = map[7];
+	}
 	
 	private void load() {
 		vaoID = glGenVertexArrays();
@@ -100,9 +109,14 @@ public class Image {
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
 		
-		load();
+		if(
+			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
+		) {return;}
 		
-		System.out.println((Window.getInitialHeight() - Window.getHeight()));
+		load();
 		
 		shader.use();
 		
@@ -176,6 +190,13 @@ public class Image {
 		vertexArray[27] = (float)r3[0];
 		vertexArray[28] = (float)r3[1];
 		
+		if(
+			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
+			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
+		) {return;}
+		
 		load();
 		
 		shader.use();
@@ -213,5 +234,12 @@ public class Image {
 		double ty = oy + (x - ox) * sin(angle) + (y - oy) * cos(angle);
 		
 		return(new double[]{tx, ty});
+	}
+	
+	private boolean checkOnScreen(float[] point, Camera cam) {
+		return(
+			point[0] >= 0 && point[0] < cam.position.x + Window.getWidth() &&
+			point[1] >= 0 && point[1] < cam.position.y + Window.getHeight()
+		);
 	}
 }

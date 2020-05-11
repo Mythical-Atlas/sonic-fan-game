@@ -1,7 +1,7 @@
 package objects;
 
 import static java.lang.Math.*;
-
+import static org.lwjgl.glfw.GLFW.*;
 import static functionholders.CollisionFunctions.*;
 import static functionholders.GeometryFunctions.*;
 import static functionholders.ListFunctions.*;
@@ -21,7 +21,10 @@ import javax.sound.sampled.FloatControl;
 import datatypes.Animation;
 import datatypes.Shape;
 import datatypes.Vector;
+import main.Camera;
+import main.KeyListener;
 import main.Loader;
+import rendering.Shader;
 import shapes.Circle;
 import shapes.Rectangle;
 
@@ -186,42 +189,44 @@ public class Player {
 		facing = 1;
 		layer = 1;
 		
-		this.idleAnim = Loader.idleAnim;
-		this.runSlowestAnim = Loader.runSlowestAnim;
-		this.runSlowAnim    = Loader.runSlowAnim;
-		this.runNormalAnim  = Loader.runNormalAnim;
-		this.runFastAnim    = Loader.runFastAnim;
-		this.runFastestAnim = Loader.runFastestAnim;
-		this.fallAnim = Loader.fallAnim;
-		this.jumpAnim = Loader.jumpAnim;
-		this.skidAnim = Loader.skidAnim;
-		this.spinAnim = Loader.spinAnim;
-		this.crouchAnim0 = Loader.crouchAnim0;
-		this.crouchAnim1 = Loader.crouchAnim1;
-		this.spindashAnim = Loader.spindashAnim;
-		this.spindashChargeAnim = Loader.spindashChargeAnim;
-		this.spindashDustAnim = Loader.spindashDustAnim;
-		this.spindashChargeDustAnim = Loader.spindashChargeDustAnim;
-		this.skirtAnim = Loader.skirtAnim;
-		this.turnAnim = Loader.turnAnim;
+		idleAnim = new Animation(Loader.idleAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 12, 6, 6, 6, 12, 8}, 0);
+		runSlowestAnim = new Animation(Loader.runSlowestAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		runSlowAnim    = new Animation(Loader.runSlowAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		runNormalAnim  = new Animation(Loader.runNormalAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		runFastAnim    = new Animation(Loader.runFastAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		runFastestAnim = new Animation(Loader.runFastestAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		fallAnim = new Animation(Loader.fallAnim, new int[]{3, 3, 3}, 0);
+		jumpAnim = new Animation(Loader.jumpAnim, new int[]{3, 3, 2, 2, 2, 2, 2, 2, 2, 2}, 2);
+		skidAnim = new Animation(Loader.skidAnim, new int[]{2, 4, 4}, 1);
+		spinAnim = new Animation(Loader.spinAnim, new int[]{2, 2, 2, 2}, 0);
+		crouchAnim0 = new Animation(Loader.crouchAnim0, new int[]{1, 1, 1, 1}, 3);
+		crouchAnim1 = new Animation(Loader.crouchAnim1, new int[]{1, 3}, 2);
+		spindashAnim = new Animation(Loader.spindashAnim, new int[]{2, 2, 2, 2}, 0);
+		spindashChargeAnim = new Animation(Loader.spindashChargeAnim, new int[]{2, 2, 2, 3}, 0);
+		spindashDustAnim = new Animation(Loader.spindashDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+		spindashChargeDustAnim = new Animation(Loader.spindashChargeDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+		skirtAnim = new Animation(Loader.skirtAnim, new int[]{2, 2, 2, 4}, 0);
+		turnAnim = new Animation(Loader.turnAnim, new int[]{1, 3}, 0);
 		
-		this.jumpSound0 = Loader.jumpSound0;
-		this.jumpSound1 = Loader.jumpSound1;
-		this.landSound = Loader.landSound;
-		this.skidSound = Loader.skidSound;
-		this.spinSound = Loader.spinSound;
-		this.spindashChargeSound = Loader.spindashChargeSound;
-		this.spindashReleaseSound = Loader.spindashReleaseSound;
-		this.stepSound0 = Loader.stepSound0;
-		this.stepSound1 = Loader.stepSound1;
-		this.stepSound2 = Loader.stepSound2;
-		this.stepSound3 = Loader.stepSound3;
-		this.stepSound4 = Loader.stepSound4;
+		jumpSound0 = Loader.jumpSound0;
+		jumpSound1 = Loader.jumpSound1;
+		landSound = Loader.landSound;
+		skidSound = Loader.skidSound;
+		spinSound = Loader.spinSound;
+		spindashChargeSound = Loader.spindashChargeSound;
+		spindashReleaseSound = Loader.spindashReleaseSound;
+		stepSound0 = Loader.stepSound0;
+		stepSound1 = Loader.stepSound1;
+		stepSound2 = Loader.stepSound2;
+		stepSound3 = Loader.stepSound3;
+		stepSound4 = Loader.stepSound4;
 		
-		this.ringSound = Loader.ringSound;
+		ringSound = Loader.ringSound;
 	}
 	
 	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
+		checkKeys();
+		
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 		
@@ -912,10 +917,10 @@ public class Player {
 		}
 	}
 	
-	public void draw(Graphics2D graphics) {
+	public void draw(Shader shader, Camera camera) {
 		manageAnimations();
 		
-		if(DRAW_MASKS) {
+		/*if(DRAW_MASKS) {
 			Shape temp;
 			
 			temp = getRotatedCircle(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2), GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);
@@ -938,54 +943,43 @@ public class Player {
 			temp.relocate(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2));
 			if(ground) {temp.color = Color.GREEN;}
 			temp.draw(graphics, new Vector());
-		}
+		}*/
 		if(DRAW_SPRITES) {
-			double w = idleAnim.getCurrentSize()[0];
-			double h = idleAnim.getCurrentSize()[1];
+			double w = idleAnim.getCurrentSize()[0] * 2;
+			double h = idleAnim.getCurrentSize()[1] * 2;
+			double t = limitAngle(getAngleOfVector(groundAxis) * -1 - PI / 2);
 			
 			if(anim == RUN_ANIM) {
-				     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {runFastestAnim.draw(Loader.graphicsWidth / 2 - w / 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE), -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-				else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {runFastAnim.   draw(Loader.graphicsWidth / 2 - w / 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE), -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-				else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {runNormalAnim. draw(Loader.graphicsWidth / 2 - w / 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE), -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(Loader.graphicsWidth / 2 - w / 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE), -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-				else                                                   {runSlowestAnim.draw(Loader.graphicsWidth / 2 - w / 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE), -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
+				     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {runFastestAnim.draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+				else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {runFastAnim.   draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+				else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {runNormalAnim. draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			}
-			if(anim == IDLE_ANIM)            {idleAnim.          draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == FALL_ANIM)            {fallAnim.          draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SKID_ANIM)            {skidAnim.          draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SKIRT_ANIM)           {skirtAnim.         draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == TURN_ANIM)            {turnAnim.          draw(Loader.graphicsWidth / 2 - w / 2,          Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE),                             -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(Loader.graphicsWidth / 2 - w / 2 -  4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == JUMP_ANIM)            {jumpAnim.          draw(Loader.graphicsWidth / 2 - w / 2 + 16 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) + 36 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(anim == SPIN_ANIM)            {spinAnim.          draw(Loader.graphicsWidth / 2 - w / 2 + 16 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) + 36 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, -PI / 2, graphics);}
+			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == FALL_ANIM)            {fallAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SKID_ANIM)            {skidAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SKIRT_ANIM)           {skirtAnim.         draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == TURN_ANIM)            {turnAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 		
-			if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.      draw(Loader.graphicsWidth / 2 - w / 2 - 4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
-			if(dustAnim == CHARGE_DUST_ANIM)  {spindashChargeDustAnim.draw(Loader.graphicsWidth / 2 - w / 2 - 4 * 2, Loader.graphicsHeight / 2 - h / 2 - SPRITE_SCALE * SCALE / 2 - 14 * (SPRITE_SCALE * SCALE) -  3 * SPRITE_SCALE * SCALE, -facing, 1, Loader.graphicsWidth / 2, Loader.graphicsHeight / 2, getAngleOfVector(groundAxis), graphics);}
+			if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(dustAnim == CHARGE_DUST_ANIM)  {spindashChargeDustAnim.draw(pos.x - w / 2, pos.y - h / 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 		}
 	}
 
-	public void keyPressed(int key) {
-		switch(key) {
-			case(VK_UP): {upArrow = true; break;}
-			case(VK_DOWN): {downArrow = true; break;}
-			case(VK_LEFT): {leftArrow = true; break;}
-			case(VK_RIGHT): {rightArrow = true; break;}
-			case(VK_SPACE): {spaceBar = true; break;}
-			case(VK_SHIFT): {shiftKey = true; break;}
-		}
-	}
-	public void keyReleased(int key) {
-		switch(key) {
-			case(VK_UP): {upArrow = false; break;}
-			case(VK_DOWN): {downArrow = false; break;}
-			case(VK_LEFT): {leftArrow = false; break;}
-			case(VK_RIGHT): {rightArrow = false; break;}
-			case(VK_SPACE): {spaceBar = false; break;}
-			case(VK_SHIFT): {shiftKey = false; break;}
-		}
+	public void checkKeys() {
+		upArrow = KeyListener.isKeyPressed(GLFW_KEY_UP);
+		downArrow = KeyListener.isKeyPressed(GLFW_KEY_DOWN);
+		leftArrow = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
+		rightArrow = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
+		spaceBar = KeyListener.isKeyPressed(GLFW_KEY_SPACE);
+		shiftKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT);
 	}
 	
 	private Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {

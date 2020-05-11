@@ -23,6 +23,8 @@ import misc.HUD;
 import static functionholders.GraphicsFunctions.*;
 
 public class Loader {
+	private static Loader singleton = null;
+	
 	public static final String TITLE = "Sonic Fan Game";
 	public static final int TARGET_FPS = 60;
 	public static final int SCALE = 1;
@@ -38,8 +40,6 @@ public class Loader {
 	
 	public static int[][] testMap1;
 	public static int[][] testMap2;
-	
-	public static Tilemap leafForest1Map;
 	
 	public static ByteBuffer[] idleAnim;
 	public static ByteBuffer[] runSlowestAnim;
@@ -73,6 +73,8 @@ public class Loader {
 	public static ByteBuffer time;
 	public static ByteBuffer[] numbers;
 	
+	public static Image testBuffer;
+	
 	public static Clip jumpSound0;
 	public static Clip jumpSound1;
 	public static Clip landSound;
@@ -89,18 +91,23 @@ public class Loader {
 	public static Clip ringSound;
 	
 	public static void main(String[] args) {
-		new Loader();
+		get().init();
 		Window.get().run();
 	}
 
-	public Loader() {
+	public static Loader get() {
+		if(singleton == null) {singleton = new Loader();}
+		return(singleton);
+	}
+	
+	private Loader() {}
+	
+	public void init() {
 		if(!loadedAssets) {
 			loadedAssets = true;
 			
 			testMap1 = new TiledJSON("/maps/testMap1.json").map[0];
 			testMap2 = new TiledJSON("/maps/testMap2.json").map[0];
-			
-			leafForest1Map = new Tilemap("/maps/leaf.json", "/maps/");
 			
 			idleAnim = loadImages("/sonicsprites", "idle");
 			runSlowestAnim = loadImages("/sonicsprites", "slowest");
@@ -189,7 +196,7 @@ public class Loader {
 		
 		return(images);
 	}
-	private ByteBuffer loadImage(String path) {
+	public ByteBuffer loadImage(String path) {
 		ByteBuffer out = null;
 		
 		try {

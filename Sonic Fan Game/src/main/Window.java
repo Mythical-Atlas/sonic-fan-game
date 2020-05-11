@@ -35,11 +35,11 @@ public class Window {
 	public static void changeScene(int newScene) {
 		switch(newScene) {
 			case(0):
-				currentScene = new MenuScene();
+				currentScene = new MainState2();
 				currentScene.init();
 				break;
 			case(1):
-				currentScene = new MainScene();
+				currentScene = new MenuScene();
 				currentScene.init();
 				break;
 			default:
