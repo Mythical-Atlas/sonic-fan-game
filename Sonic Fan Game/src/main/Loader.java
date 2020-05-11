@@ -19,6 +19,8 @@ import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import misc.Background;
 import misc.HUD;
+import rendering.Image;
+import rendering.Shader;
 
 import static functionholders.GraphicsFunctions.*;
 
@@ -67,6 +69,9 @@ public class Loader {
 	public static ByteBuffer leafBG0;
 	public static ByteBuffer leafBG1;
 	public static ByteBuffer leafBG2;
+	
+	public static ByteBuffer leafLayer1;
+	public static ByteBuffer leafLayer2;
 	
 	public static ByteBuffer[] hudRingAnim;
 	public static ByteBuffer hud;
@@ -152,6 +157,9 @@ public class Loader {
 			leafBG0 = loadImage("/maps/bg0.png");
 			leafBG1 = loadImage("/maps/bg0.png");
 			leafBG2 = loadImage("/maps/bg0.png");
+			
+			leafLayer1 = loadImage("/maps/Leaf_Forest_Act_1.png");
+			leafLayer2 = loadImage("/maps/Leaf_Forest_Act_1.png");
 			
 			/*
 			leafBG = new Background(new String[]{"/maps/bg0.png", "/maps/bg1.png", "/maps/bg2.png"}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);

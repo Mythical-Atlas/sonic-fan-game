@@ -15,8 +15,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import main.Image;
 import main.Loader;
+import rendering.Image;
 
 import static functionholders.GraphicsFunctions.*;
 
@@ -24,7 +24,8 @@ public class Tileset {
 	public int tileWidth;
 	public int tileHeight;
 	public Image image;
-	public float[][] tiles;
+	
+	public float[][] uvMaps;
 	
 	public Tileset(ByteBuffer imageBuffer, int tileWidth, int tileHeight) {
 		this.tileWidth = tileWidth;
@@ -34,16 +35,16 @@ public class Tileset {
 		
 		int tilesetWidth = image.getWidth() / tileWidth;
 		int tilesetHeight = image.getHeight() / tileHeight;
-		tiles = new float[tilesetWidth * tilesetHeight][8];
+		uvMaps = new float[tilesetWidth * tilesetHeight][8];
 		
 		for(int x = 0; x < tilesetWidth; x++) {
 			for(int y = 0; y < tilesetHeight; y++) {
 				int t = x + (y * tilesetWidth);
 				
-				float fx = (float)((1.0f * x * tileWidth) / image.getWidth());
-				float fy = (float)((1.0f * y * tileHeight) / image.getHeight());
-				float fw = (float)((1.0f * tileWidth) / image.getWidth());
-				float fh = (float)((1.0f * tileHeight) / image.getHeight());
+				float fx = (float)((1.0f * x * tileWidth) / (1.0f * image.getWidth()));
+				float fy = (float)((1.0f * y * tileHeight) / (1.0f * image.getHeight()));
+				float fw = (float)((1.0f * tileWidth) / (1.0f * image.getWidth()));
+				float fh = (float)((1.0f * tileHeight) / (1.0f * image.getHeight()));
 				
 				float[] map = new float[]{
 					fx + fw, fy + fh,
@@ -52,14 +53,7 @@ public class Tileset {
 					fx,      fy + fh
 				};
 				
-				/*map = new float[]{
-					1, 1,
-					fx + fw, fy,
-					1, fy,
-					fx + fw, 1
-				};*/
-				
-				tiles[t] = map;
+				uvMaps[t] = map;
 			}
 		}
 	}

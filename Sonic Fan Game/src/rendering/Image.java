@@ -1,4 +1,4 @@
-package main;
+package rendering;
 
 import static java.lang.Math.*;
 import static org.lwjgl.opengl.GL33.*;
@@ -7,17 +7,17 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
-import rendering.Shader;
-import rendering.Texture;
+import main.Window;
 
 public class Image {
 	private int vaoID;
 	private int vboID;
 	private int eboID;
 	
-	private Texture tex;
+	public Texture tex;
 	
 	private float[] vertexArray = {
 		 0.0f, 0.0f, 0.0f,		1.0f, 0.0f, 0.0f, 1.0f,		1, 1,
@@ -31,8 +31,48 @@ public class Image {
 		0, 1, 3
 	};
 	
-	public Image(String filepath) {tex = new Texture(filepath);}
-	public Image(ByteBuffer imageBuffer) {tex = new Texture(imageBuffer);}
+	public Image(String filepath) {
+		tex = new Texture(filepath);
+		load();
+	}
+	public Image(ByteBuffer imageBuffer) {
+		tex = new Texture(imageBuffer);
+		load();
+	}
+	
+	public void setPositions(double x, double y, double xScale, double yScale) {
+		vertexArray[0]  = (float)x + (float)(tex.width * xScale);
+		vertexArray[1]  = (float)y;
+		
+		vertexArray[9]  = (float)x;
+		vertexArray[10] = (float)y + (float)(tex.height * -yScale);
+		
+		vertexArray[18] = (float)x + (float)(tex.width * xScale);
+		vertexArray[19] = (float)y + (float)(tex.height * -yScale);
+		
+		vertexArray[27] = (float)x;
+		vertexArray[28] = (float)y;
+		
+		vertexArray[1]  += (float)(tex.height * yScale);
+		vertexArray[10] += (float)(tex.height * yScale);
+		vertexArray[19] += (float)(tex.height * yScale);
+		vertexArray[28] += (float)(tex.height * yScale);
+		
+		if(xScale < 0) {
+			vertexArray[0]  -= (float)(tex.width * xScale);
+			vertexArray[9]  -= (float)(tex.width * xScale);
+			vertexArray[18] -= (float)(tex.width * xScale);
+			vertexArray[27] -= (float)(tex.width * xScale);
+		}
+		if(yScale < 0) {
+			vertexArray[1]  -= (float)(tex.height * yScale);
+			vertexArray[10] -= (float)(tex.height * yScale);
+			vertexArray[19] -= (float)(tex.height * yScale);
+			vertexArray[28] -= (float)(tex.height * yScale);
+		}
+		
+		load();
+	}
 	
 	public void setUVMap(float[] map) {
 		vertexArray[7]  = map[0];
@@ -43,25 +83,51 @@ public class Image {
 		vertexArray[26] = map[5];
 		vertexArray[34] = map[6];
 		vertexArray[35] = map[7];
+		load();
+	}
+	
+	public float[] getPositions() {
+		return(
+			new float[]{
+				vertexArray[ 0], vertexArray[ 1],
+				vertexArray[ 9], vertexArray[10],
+				vertexArray[18], vertexArray[19],
+				vertexArray[27], vertexArray[28]
+			}
+		);
+	}
+	public float[] getColors() {
+		return(
+			new float[]{
+					vertexArray[ 3], vertexArray[ 4], vertexArray[ 5], vertexArray[ 6],
+					vertexArray[12], vertexArray[13], vertexArray[14], vertexArray[15],
+					vertexArray[21], vertexArray[22], vertexArray[23], vertexArray[24],
+					vertexArray[30], vertexArray[31], vertexArray[32], vertexArray[33]
+			}
+		);
+	}
+	public float[] getUVMaps() {
+		return(
+			new float[]{
+				vertexArray[ 7], vertexArray[ 8],
+				vertexArray[16], vertexArray[17],
+				vertexArray[25], vertexArray[26],
+				vertexArray[34], vertexArray[35]
+			}
+		);
 	}
 	
 	private void load() {
 		vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
 		
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.length);
-		vertexBuffer.put(vertexArray).flip();
-		
 		vboID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-		
-		IntBuffer elementBuffer = BufferUtils.createIntBuffer(elementArray.length);
-		elementBuffer.put(elementArray).flip();
+		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_STATIC_DRAW);
 		
 		eboID = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementArray, GL_STATIC_DRAW);
 		
 		int positionsSize = 3;
 		int colorSize = 4;
@@ -76,6 +142,34 @@ public class Image {
 		
 		glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
 		glEnableVertexAttribArray(2);
+	}
+	
+	public void draw(Shader shader, Camera camera) {
+		shader.use();
+		
+		shader.uploadTexture("TEX_SAMPLER", 0);
+		glActiveTexture(GL_TEXTURE0);
+		tex.bind();
+		
+		shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+		shader.uploadMat4f("uView", camera.getViewMatrix());
+		
+		glBindVertexArray(vaoID);
+		
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
+		
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		
+		glBindVertexArray(0);
+		
+		shader.detach();
 	}
 	
 	public void draw(double x, double y, double xScale, double yScale, Shader shader, Camera camera) {
@@ -109,12 +203,12 @@ public class Image {
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
 		
-		if(
+		/*if(
 			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
-		) {return;}
+		) {return;}*/
 		
 		load();
 		
@@ -133,7 +227,7 @@ public class Image {
 		glEnableVertexAttribArray(1);
 		
 		glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
 		
@@ -190,12 +284,12 @@ public class Image {
 		vertexArray[27] = (float)r3[0];
 		vertexArray[28] = (float)r3[1];
 		
-		if(
+		/*if(
 			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
-		) {return;}
+		) {return;}*/
 		
 		load();
 		

@@ -8,8 +8,10 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
-import main.Camera;
 import main.Loader;
+import rendering.Camera;
+import rendering.RenderBatch;
+import rendering.Renderer;
 import rendering.Shader;
 
 import java.nio.ByteBuffer;
@@ -18,35 +20,95 @@ public class Tilemap {
 	private Tileset[] tilesets;
 	public TiledJSON json;
 	
+	private Renderer[] batches;
+	
 	public Tilemap(String mapPath, String tilesetsDir) {
 		json = new TiledJSON(mapPath);
 		tilesets = new Tileset[json.tilesets.length];
+		batches = new Renderer[json.map.length];
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
+		
+		int scaleX = 2;
+		int scaleY = 2;
+		
+		int tw = json.tileWidth * scaleX;
+		int th = json.tileHeight * scaleY;
+		
+		float[] colors = new float[]{
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f
+		};
+		
+		for(int l = 0; l < json.map.length; l++) {
+			for(int x = 0; x < json.map[l].length; x++) {
+				for(int y = 0; y < json.map[l][x].length; y++) {
+					int s = -1;
+					int index = 0;
+					for(int i = 0; i < json.offsets.length; i++) {
+						if(json.map[l][x][y] >= json.offsets[i]) {
+							s = i;
+							index = json.map[l][x][y] - json.offsets[i];
+						}
+					}
+					
+					if(s > -1) {
+						float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
+						
+						if(batches[l] == null) {batches[l] = new Renderer(tilesets[s].image.tex);}
+						batches[l].add(positions, colors, tilesets[s].uvMaps[index]);
+					}
+				}
+			}
+			
+			if(batches[l] != null) {batches[l].load();}
+		}
 	}
 	
 	public void draw(int layer, int scaleX, int scaleY, Shader shader, Camera camera) {
-		int tw = json.tileWidth * scaleX;
-		int th = json.tileHeight * scaleY;
 		int l = layer;
+		if(batches[l] != null) {batches[l].draw(shader, camera);}
+	}
+	
+	public float[] setPositions(double x, double y, double width, double height, double xScale, double yScale) {
+		float[] vertexArray = new float[12];
 		
-		for(int x = 0; x < json.map[l].length; x++) {
-			for(int y = 0; y < json.map[l][x].length; y++) {
-				int s = -1;
-				int index = 0;
-				for(int i = 0; i < json.offsets.length; i++) {
-					if(json.map[l][x][y] >= json.offsets[i]) {
-						s = i;
-						index = json.map[l][x][y] - json.offsets[i];
-					}
-				}
-				
-				if(s > -1) {
-					System.out.println(tilesets[s].tiles[index][2]);
-					tilesets[s].image.setUVMap(tilesets[s].tiles[index]);
-					tilesets[s].image.draw(x * tw, y * th, (float)((1.0f * tilesets[s].tileWidth) / tilesets[s].image.getWidth()) * scaleX, (float)((1.0f * tilesets[s].tileHeight) / tilesets[s].image.getHeight()) * scaleY, shader, camera);
-				}
-			}
+		vertexArray[ 0] = (float)x + (float)(width * xScale);
+		vertexArray[ 1] = (float)y;
+		vertexArray[ 2] = 0.0f;
+		
+		vertexArray[ 3] = (float)x;
+		vertexArray[ 4] = (float)y + (float)(height * -yScale);
+		vertexArray[ 5] = 0.0f;
+		
+		vertexArray[ 6] = (float)x + (float)(width * xScale);
+		vertexArray[ 7] = (float)y + (float)(height * -yScale);
+		vertexArray[ 8] = 0.0f;
+		
+		vertexArray[ 9] = (float)x;
+		vertexArray[10] = (float)y;
+		vertexArray[11] = 0.0f;
+		
+		vertexArray[ 1] += (float)(height * yScale);
+		vertexArray[ 4] += (float)(height * yScale);
+		vertexArray[ 7] += (float)(height * yScale);
+		vertexArray[10] += (float)(height * yScale);
+		
+		if(xScale < 0) {
+			vertexArray[ 0] -= (float)(width * xScale);
+			vertexArray[ 3] -= (float)(width * xScale);
+			vertexArray[ 6] -= (float)(width * xScale);
+			vertexArray[ 9] -= (float)(width * xScale);
 		}
+		if(yScale < 0) {
+			vertexArray[ 1] -= (float)(height * yScale);
+			vertexArray[ 4] -= (float)(height * yScale);
+			vertexArray[ 7] -= (float)(height * yScale);
+			vertexArray[10] -= (float)(height * yScale);
+		}
+		
+		return(vertexArray);
 	}
 }

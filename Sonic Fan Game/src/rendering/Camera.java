@@ -1,8 +1,10 @@
-package main;
+package rendering;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import main.Window;
 
 public class Camera {
 	private Matrix4f projectionMatrix;
@@ -24,7 +26,7 @@ public class Camera {
 		float height = 32.0f * 21.0f;
 		
 		projectionMatrix.identity();
-		projectionMatrix.ortho(0.0f, width, height, 0.0f, 0.0f, 100.0f);
+		projectionMatrix.ortho(0.0f, Window.getWidth(), Window.getHeight(), 0.0f, 0.0f, 100.0f);
 	}
 	
 	public Matrix4f getViewMatrix() {
@@ -37,5 +39,8 @@ public class Camera {
 		return(viewMatrix);
 	}
 	
-	public Matrix4f getProjectionMatrix() {return(projectionMatrix);}
+	public Matrix4f getProjectionMatrix() {
+		//adjustProjection();
+		return(projectionMatrix);
+	}
 }

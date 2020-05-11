@@ -23,6 +23,8 @@ import misc.HUD;
 import objects.Player;
 import objects.Ring;
 import objects.Spring;
+import rendering.Camera;
+import rendering.Image;
 import rendering.Shader;
 import shapes.Arc;
 import shapes.Circle;
@@ -31,8 +33,6 @@ import shapes.Rectangle;
 import shapes.Triangle;
 
 public class MainState2 extends Scene {
-	private Shader defaultShader;
-	
 	private final int SCALE = 2;
 	
 	private Player player;
@@ -58,13 +58,24 @@ public class MainState2 extends Scene {
 	
 	private Tilemap leafForest1Map;
 	
+	private Image leafLayer1;
+	private Image leafLayer2;
+	
+	private Shader defaultShader;
+	
 	public void init() {
-		camera = new Camera(new Vector2f());
-		
 		defaultShader = new Shader("/shaders/default.glsl");
 		defaultShader.compile();
 		
+		camera = new Camera(new Vector2f());
+		
 		leafForest1Map = new Tilemap("/maps/leaf.json", "/maps");
+		
+		leafLayer1 = new Image(Loader.leafLayer1);
+		leafLayer2 = new Image(Loader.leafLayer2);
+		
+		leafLayer1.setPositions(0, 0, 2, 2);
+		leafLayer2.setPositions(0, 0, 2, 2);
 		
 		interpretMap(leafForest1Map.json);
 		
@@ -113,8 +124,8 @@ public class MainState2 extends Scene {
 		
 		Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
 		
-		leafForest1Map.draw(0, SCALE, SCALE, defaultShader, camera);
-		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
+		//leafForest1Map.draw(0, SCALE, SCALE, defaultShader, camera);
+		//leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
 		/*if(showTileMasks) {
 			if(layer0 != null) {for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
@@ -126,9 +137,16 @@ public class MainState2 extends Scene {
 		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}*/
 		
-		camera.position = new Vector2f((float)player.pos.x - Window.getWidth() / 2, (float)player.pos.y - Window.getHeight() / 2);
+		camera.position = new Vector2f((float)(player.pos.x - Window.getWidth() / 2), (float)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
+		
+		//leafLayer1.draw(defaultShader, camera);
+		//leafLayer2.draw(defaultShader, camera);
+		
+		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
 		player.draw(defaultShader, camera);
+		
+		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
 		
 		/*if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}
 		

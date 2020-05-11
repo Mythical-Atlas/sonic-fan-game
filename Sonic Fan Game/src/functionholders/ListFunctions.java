@@ -3,6 +3,7 @@ package functionholders;
 import datatypes.Shape;
 import datatypes.Vector;
 import objects.Ring;
+import rendering.RenderBatch;
 
 public class ListFunctions {
 	public static int[][] append(int[][] existingPoints, int[] pointToCheck) {
@@ -25,6 +26,36 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new Shape[]{pointToCheck});}
 		
 		Shape[] newList = new Shape[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static boolean[] append(boolean[] existingPoints, boolean pointToCheck) {
+		if(existingPoints == null) {return(new boolean[]{pointToCheck});}
+		
+		boolean[] newList = new boolean[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static RenderBatch[] append(RenderBatch[] existingPoints, RenderBatch pointToCheck) {
+		if(existingPoints == null) {return(new RenderBatch[]{pointToCheck});}
+		
+		RenderBatch[] newList = new RenderBatch[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static float[] append(float[] existingPoints, float pointToCheck) {
+		if(existingPoints == null) {return(new float[]{pointToCheck});}
+		
+		float[] newList = new float[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

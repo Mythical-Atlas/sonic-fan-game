@@ -14,12 +14,14 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import rendering.Camera;
+
 public class Window {
 	private long glfwWindow;
 	
 	private static Window window = null;
 	
-	private static Scene currentScene = null;
+	private Scene currentScene = null;
 	
 	private int initWidth;
 	private int initHeight;
@@ -35,17 +37,19 @@ public class Window {
 	public static void changeScene(int newScene) {
 		switch(newScene) {
 			case(0):
-				currentScene = new MainState2();
-				currentScene.init();
+				get().currentScene = new MainState2();
+				get().currentScene.init();
 				break;
 			case(1):
-				currentScene = new MenuScene();
-				currentScene.init();
+				get().currentScene = new MenuScene();
+				get().currentScene.init();
 				break;
 			default:
 				assert(false): "Unknown scene " + newScene + ".";
 		}
 	}
+	
+	public static Scene getScene() {return(get().currentScene);}
 	
 	public void run() {
 		init();
@@ -65,7 +69,7 @@ public class Window {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 		
 		glfwWindow = glfwCreateWindow(Loader.DEFAULT_FRAME_WIDTH, Loader.DEFAULT_FRAME_HEIGHT, Loader.TITLE, NULL, NULL);
 		if(glfwWindow == NULL) {throw new IllegalStateException("Failed to create the GLFW window.");}
@@ -107,12 +111,12 @@ public class Window {
 			dt = endTime - beginTime;
 			beginTime = endTime;
 			
-			//System.out.println("" + (1.0f / dt) + " FPS");
+			System.out.println("" + (1.0f / dt) + " FPS");
 		}
 	}
 	
-	public static int getInitialWidth() {return(get().initWidth);}
-	public static int getInitialHeight() {return(get().initHeight);}
+	public static int getInitWidth() {return(get().initWidth);}
+	public static int getInitHeight() {return(get().initHeight);}
 	
 	public static int getWidth() {
 		IntBuffer w = BufferUtils.createIntBuffer(1);

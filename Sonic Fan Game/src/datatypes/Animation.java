@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import main.Camera;
-import main.Image;
+import rendering.Camera;
+import rendering.Image;
 import rendering.Shader;
 
 import static functionholders.GraphicsFunctions.*;
