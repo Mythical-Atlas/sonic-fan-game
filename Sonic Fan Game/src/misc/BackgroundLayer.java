@@ -44,9 +44,9 @@ public class BackgroundLayer {
 			
 			int w = image.getWidth() / tileSize;
 			int h = image.getHeight() / tileSize;
-			tiles = new BufferedImage[w][h];
+			//tiles = new BufferedImage[w][h];
 			
-			for(int x = 0; x < w; x++) {for(int y = 0; y < h; y++) {tiles[x][y] = scaleImage(image.getSubimage(x * tileSize, y * tileSize, tileSize, tileSize), scale);}}
+			//for(int x = 0; x < w; x++) {for(int y = 0; y < h; y++) {tiles[x][y] = scaleImage(image.getSubimage(x * tileSize, y * tileSize, tileSize, tileSize), scale);}}
 		}
 		catch(Exception e) {e.printStackTrace();}
 	}
@@ -64,11 +64,11 @@ public class BackgroundLayer {
 	public void setTween(int tween, int x, int y) {
 		if(tween == 0) {
 			tweenType0 = TILE;
-			tileTween0 = tiles[x][y];
+			//tileTween0 = tiles[x][y];
 		}
 		if(tween == 1) {
 			tweenType1 = TILE;
-			tileTween1 = tiles[x][y];
+			//tileTween1 = tiles[x][y];
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class BackgroundLayer {
 			int x = (i + iOffset) % tiles.length;
 			while(x < 0) {x += tiles.length;}
 			
-			for(int y = 0; y < size; y++) {graphics.drawImage(tiles[x][y], -(int)xOffset + i * tiles[x][y].getWidth(), (y + yStart) * tiles[x][y].getHeight(), null);}
+			//for(int y = 0; y < size; y++) {graphics.drawImage(tiles[x][y], -(int)xOffset + i * tiles[x][y].getWidth(), (y + yStart) * tiles[x][y].getHeight(), null);}
 			
 			if(tweenType0 == TILE && yStart > 0)                   {for(int y = 0; y < yStart; y++)                     {graphics.drawImage(tileTween0, -(int)xOffset + i * tileTween0.getWidth(), y * tileTween0.getHeight(), null);}}
 			if(tweenType1 == TILE && yStart + size < screenHeight) {for(int y = (yStart + size); y < screenHeight; y++) {graphics.drawImage(tileTween1, -(int)xOffset + i * tileTween1.getWidth(), y * tileTween1.getHeight(), null);}}

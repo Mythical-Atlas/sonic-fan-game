@@ -1,4 +1,4 @@
-package states;
+package scenes;
 
 import static java.lang.Math.*;
 
@@ -33,7 +33,7 @@ public class TestState extends State {
 	
 	public TestState(int[][] map) {interpretMap(map);}
 	
-	public void update() {player.update(shapes, null, null, null, null, null, null, null);}
+	public void update() {/*player.update(shapes, null, null, null, null, null, null, null);*/}
 	
 	public void draw(Graphics2D graphics) {
 		graphics.setColor(Color.DARK_GRAY);
@@ -48,15 +48,15 @@ public class TestState extends State {
 		
 		for(int i = 0; i < shapes.length; i++) {shapes[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}
 		
-		player.draw(graphics);
+		//player.draw(graphics);
 	}
 	
 	public void keyPressed(int key) {
-		if(key == VK_BACK_SPACE) {player = new Player(playerStartX, playerStartY);}
+		/*if(key == VK_BACK_SPACE) {player = new Player(playerStartX, playerStartY);}
 		player.keyPressed(key);
-		if(key == VK_ESCAPE) {Loader.changeState = 0;}
+		if(key == VK_ESCAPE) {Loader.changeState = 0;}*/
 	}
-	public void keyReleased(int key) {player.keyReleased(key);}
+	public void keyReleased(int key) {/*player.keyReleased(key);*/}
 
 	public void mouseClicked(MouseEvent mouse) {}
 	public void mouseEntered(MouseEvent mouse) {}

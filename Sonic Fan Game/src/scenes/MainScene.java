@@ -1,4 +1,4 @@
-package main;
+package scenes;
 
 import static java.lang.Math.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -20,6 +20,10 @@ import datatypes.State;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import datatypes.Vector;
+import main.KeyListener;
+import main.Loader;
+import main.Scene;
+import main.Window;
 import misc.HUD;
 import objects.Player;
 import objects.Ring;
@@ -33,7 +37,7 @@ import shapes.InverseArc;
 import shapes.Rectangle;
 import shapes.Triangle;
 
-public class MainState2 extends Scene {
+public class MainScene extends Scene {
 	private final int SCALE = 2;
 	
 	private Player player;
@@ -104,9 +108,9 @@ public class MainState2 extends Scene {
 			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 		};
 		
-		/*springs = new Spring[]{
+		springs = new Spring[]{
 			new Spring(21 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 14 * SCALE, 3 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 15, 0),
-		};*/
+		};
 		
 		hud = new HUD();
 	}
@@ -133,9 +137,7 @@ public class MainState2 extends Scene {
 			if(player.layer == 1 && layer1 != null) {for(int i = 0; i < layer1.length; i++) {layer1[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(player.layer == 2 && layer2 != null) {for(int i = 0; i < layer2.length; i++) {layer2[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-		}
-		
-		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}*/
+		}*/
 		
 		camera.position = new Vector2f((float)(int)(player.pos.x - Window.getWidth() / 2), (float)(int)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
 		
@@ -143,8 +145,12 @@ public class MainState2 extends Scene {
 		//leafLayer2.draw(defaultShader, camera);
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
+		
+		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		
 		player.draw(dt, defaultShader, camera);
+		
 		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
 		
 		hud.draw(dt, player, defaultShader);

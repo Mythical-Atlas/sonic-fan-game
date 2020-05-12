@@ -15,6 +15,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import rendering.Camera;
+import scenes.MainScene;
 
 public class Window {
 	private long glfwWindow;
@@ -37,7 +38,7 @@ public class Window {
 	public static void changeScene(int newScene) {
 		switch(newScene) {
 			case(0):
-				get().currentScene = new MainState2();
+				get().currentScene = new MainScene();
 				get().currentScene.init();
 				break;
 			case(1):
@@ -113,7 +114,7 @@ public class Window {
 			dt = endTime - beginTime;
 			beginTime = endTime;
 			
-			System.out.println("" + (1.0f / dt) + " FPS");
+			//System.out.println("" + (1.0f / dt) + " FPS");
 		}
 	}
 	

@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
+import rendering.Camera;
+import rendering.Shader;
 
 public class Spring {
 	public Vector pos;
@@ -21,15 +23,15 @@ public class Spring {
 		this.type = type;
 		
 		pos = new Vector(x, y);
-		anim = new Animation(Loader.springAnim.frames, Loader.springAnim.durations, Loader.springAnim.repeatFrame, 1);
+		anim = new Animation(Loader.springAnim, new int[]{2, 2, 1, 5, 3}, 0);
 		bouncing = false;
 	}
 	
-	public void draw(Vector offset, int scaleX, int scaleY, Graphics2D graphics) {
-		if(!bouncing) {anim.draw(graphics, pos.x - offset.x, pos.y - offset.y, scaleX, scaleY);}
+	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
+		if(!bouncing) {anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);}
 		else {
-			anim.draw(graphics, pos.x - offset.x, pos.y - offset.y, scaleX, scaleY);
-			anim.update(1);
+			anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
+			anim.update(dt / (1.0f / 60.0f));
 			if(anim.finished) {
 				anim.reset();
 				bouncing = false;

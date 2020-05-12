@@ -1,4 +1,4 @@
-package states;
+package scenes;
 
 import static java.lang.Math.*;
 
@@ -47,9 +47,9 @@ public class MenuState extends State {
 		if(buttons[2].checkPressed()) {map = 3;}
 		//if(buttons[3].checkPressed()) {map = 3;}
 		
-		if(map == 1) {Loader.changeState = 1;}
+		/*if(map == 1) {Loader.changeState = 1;}
 		if(map == 2) {Loader.changeState = 2;}
-		if(map == 3) {Loader.changeState = 3;}
+		if(map == 3) {Loader.changeState = 3;}*/
 	}
 	
 	public void draw(Graphics2D graphics) {
