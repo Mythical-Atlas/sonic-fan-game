@@ -5,16 +5,23 @@ import static java.lang.Math.*;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.joml.Vector2f;
+
 import datatypes.Animation;
 import main.Loader;
+import main.Window;
 import objects.Player;
+import rendering.Camera;
+import rendering.Image;
+import rendering.Shader;
 
 public class HUD {
+	public static final int FPS_SAMPLE_SIZE = 10;
 	public static final int SCALE = 3;
 	
-	private BufferedImage hud;
-	private BufferedImage time;
-	private BufferedImage[] numbers;
+	private Image hud;
+	private Image time;
+	private Image[] numbers;
 	
 	private Animation ring;
 	
@@ -22,20 +29,53 @@ public class HUD {
 	
 	private long start;
 	
+	private Camera camera;
+	
+	private float[] frames;
+	private int numFrames;
+	
+	private int fps;
+	
 	public HUD() {
-		hud = Loader.hud;
-		time = Loader.time;
-		numbers = Loader.numbers;
-		ring = Loader.hudRingAnim;
+		camera = new Camera(new Vector2f());
+		
+		hud = new Image(Loader.hud);
+		time = new Image(Loader.time);
+		
+		numbers = new Image[Loader.numbers.length];
+		for(int i = 0; i < numbers.length; i++) {numbers[i] = new Image(Loader.numbers[i]);}
+		
+		ring = new Animation(Loader.hudRingAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0);
 		
 		start = System.nanoTime();
+		
+		hud.setPositions(1 * SCALE, 3 * SCALE, SCALE, SCALE);
+		
+		frames = new float[10];
+		numFrames = 0;
+		
+		fps = 0;
 	}
 	
-	public void draw(Player p, Graphics2D graphics) {
-		graphics.drawImage(hud, 1 * SCALE, 3 * SCALE, null);
-		ring.draw(graphics, 7 * SCALE, 8 * SCALE);
-		ring.update(p.vel.getLength() / 10 + 1);
-		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, graphics);
+	public void draw(float dt, Player p, Shader shader) {
+		frames[numFrames] = dt;
+		numFrames++;
+		if(numFrames == FPS_SAMPLE_SIZE) {
+			float temp = 0;
+			for(int i = 0; i < numFrames; i++) {temp += frames[i];}
+			temp /= (numFrames * 1.0f);
+			fps = (int)(1.0f / temp);
+			numFrames = 0;
+		}
+		
+		camera.position = new Vector2f(0, (float)(int)(Window.getHeight() - Window.getInitHeight()));
+		
+		hud.draw(shader, camera);
+		
+		ring.draw(7 * SCALE, 8 * SCALE, SCALE, SCALE, shader, camera);
+		ring.update((p.vel.getLength() / 10 + 1) * (dt / (1.0f / 60.0f)));
+		
+		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader);
 
 		long change = System.nanoTime() - start;
 		
@@ -43,16 +83,18 @@ public class HUD {
 		int s = (int)(ms / 100);
 		int m = (int)(s / 60);
 		
-		graphics.drawImage(time, Loader.graphicsWidth / 2 - time.getWidth() / 2, 3 * SCALE, null);
-		drawNumber(Loader.graphicsWidth / 2 - time.getWidth() / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, graphics);
-		drawNumber(Loader.graphicsWidth / 2 - time.getWidth() / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, graphics);
-		drawNumber(Loader.graphicsWidth / 2 - time.getWidth() / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, graphics);
+		time.draw( Window.getWidth() / 2 - time.getWidth() * SCALE / 2, 3 * SCALE, SCALE, SCALE, shader, camera);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, shader);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, shader);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, shader);
+		
+		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, shader);
 	}
 	
-	private void drawNumber(int x, int y, int num, int places, Graphics2D graphics) {
+	private void drawNumber(int x, int y, int num, int places, Shader shader) {
 		for(int i = 0; i < places; i++) {
 			int n = (int)floor(num / pow(10, places - i - 1)) % 10;
-			graphics.drawImage(numbers[n], x + i * 8 * SCALE, y, null);
+			numbers[n].draw(x + i * 8 * SCALE, y, SCALE, SCALE, shader, camera);
 		}
 	}
 }

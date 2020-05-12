@@ -2,6 +2,7 @@ package main;
 
 import static java.lang.Math.*;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL33.*;
 import static java.awt.event.KeyEvent.*;
 import static functionholders.CollisionFunctions.*;
 import static functionholders.DebugFunctions.*;
@@ -105,16 +106,16 @@ public class MainState2 extends Scene {
 		
 		springs = new Spring[]{
 			new Spring(21 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 14 * SCALE, 3 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 15, 0),
-		};
+		};*/
 		
-		hud = new HUD();*/
+		hud = new HUD();
 	}
 		
 	public void update(float dt) {
 		checkKeysPressed();
 		checkKeysReleased();
 		
-		player.update(layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
+		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
 		
 		/*if(rings != null) {
 			int[] removals = null;
@@ -137,20 +138,20 @@ public class MainState2 extends Scene {
 		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}*/
 		
-		camera.position = new Vector2f((float)(player.pos.x - Window.getWidth() / 2), (float)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
+		camera.position = new Vector2f((float)(int)(player.pos.x - Window.getWidth() / 2), (float)(int)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
 		
 		//leafLayer1.draw(defaultShader, camera);
 		//leafLayer2.draw(defaultShader, camera);
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
-		player.draw(defaultShader, camera);
+		player.draw(dt, defaultShader, camera);
 		
 		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
 		
-		/*if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}
+		/*if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}*/
 		
-		hud.draw(player, graphics);*/
+		hud.draw(dt, player, defaultShader);
 	}
 	
 	public void checkKeysPressed() {
@@ -162,7 +163,7 @@ public class MainState2 extends Scene {
 			toggle1 = false;
 			showTileMasks = !showTileMasks;
 		}
-		//if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {Loader.changeState = 0;}
+		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {glfwSetWindowShouldClose(Window.getWindow(), true);}
 	}
 	public void checkKeysReleased() {
 		if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}

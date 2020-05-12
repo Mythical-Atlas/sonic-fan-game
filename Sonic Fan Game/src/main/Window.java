@@ -55,10 +55,10 @@ public class Window {
 		init();
 		loop();
 		
-		glfwFreeCallbacks(glfwWindow);
+		/*glfwFreeCallbacks(glfwWindow);
 		glfwDestroyWindow(glfwWindow);
 		glfwTerminate();
-		glfwSetErrorCallback(null).free();
+		glfwSetErrorCallback(null).free();*/
 	}
 	
 	public void init() {
@@ -134,4 +134,6 @@ public class Window {
 		
 		return(height);
 	}
+	
+	public static long getWindow() {return(get().glfwWindow);}
 }

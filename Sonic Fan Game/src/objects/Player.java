@@ -224,7 +224,7 @@ public class Player {
 		ringSound = Loader.ringSound;
 	}
 	
-	public void update(Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
 		checkKeys();
 		
 		groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
@@ -240,9 +240,8 @@ public class Player {
 		boolean[] platMasks = null;
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
 		
-		// TODO: step velocity 1 unit at a time
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
-		pos.translate(vel);
+		pos.translate(vel.scale(dt / (1.0f / 60.0f)));
 		
 		checkLayer(layer1Triggers, layer2Triggers);
 		
@@ -252,7 +251,6 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
-			// TODO: fix velocity projection for curves?
 			collide(shapes);
 			checkLedge(shapes);
 			stick(shapes);
@@ -648,17 +646,17 @@ public class Player {
 		else {groundAxis = new Vector(0, 1);}
 	}
 	
-	private void manageAnimations() {
+	private void manageAnimations(float dt) {
 		if(spindashing) {
 			if(!spindashCharge) {
 				if(anim == SPINDASH_CHARGE_ANIM) {
-					spindashChargeAnim.update(1);
+					spindashChargeAnim.update((dt / (1.0f / 60.0f)));
 					if(spindashChargeAnim.finished) {
 						anim = SPINDASH_ANIM;
 						spindashAnim.reset();
 					}
 				}
-				else if(anim == SPINDASH_ANIM) {spindashAnim.update(1);}
+				else if(anim == SPINDASH_ANIM) {spindashAnim.update((dt / (1.0f / 60.0f)));}
 				else {
 					anim = SPINDASH_ANIM;
 					spindashAnim.reset();
@@ -671,14 +669,14 @@ public class Player {
 			}
 			
 			if(chargeDustTimer == 0) {
-				if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1);}
+				if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update((dt / (1.0f / 60.0f)));}
 				else {
 					dustAnim = REGULAR_DUST_ANIM;
 					spindashDustAnim.reset();
 				}
 			}
 			else {
-				if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1);}
+				if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update((dt / (1.0f / 60.0f)));}
 				else {
 					dustAnim = CHARGE_DUST_ANIM;
 					spindashChargeDustAnim.reset();
@@ -692,7 +690,7 @@ public class Player {
 			
 			if(crouching1) {
 				if(anim == CROUCH_ANIM_0) {
-					crouchAnim0.update(1);
+					crouchAnim0.update((dt / (1.0f / 60.0f)));
 					if(crouchAnim0.finished) {spindashReady = true;}
 				}
 				else {
@@ -702,7 +700,7 @@ public class Player {
 			}
 			else if(crouching0) {
 				if(anim == CROUCH_ANIM_1) {
-					crouchAnim1.update(1);
+					crouchAnim1.update((dt / (1.0f / 60.0f)));
 					if(crouchAnim1.finished) {
 						anim = IDLE_ANIM;
 						idleAnim.reset();
@@ -716,7 +714,7 @@ public class Player {
 			}
 			else {
 				if(spinning) {
-					if(anim == SPIN_ANIM) {spinAnim.update(1);}
+					if(anim == SPIN_ANIM) {spinAnim.update((dt / (1.0f / 60.0f)));}
 					else {
 						anim = SPIN_ANIM;
 						spinAnim.reset();
@@ -725,7 +723,7 @@ public class Player {
 				else {
 					if(ground) {
 						if(groundSpeed == 0 && !turning && !skidding && !skirting) {
-							if(anim == IDLE_ANIM) {idleAnim.update(1);}
+							if(anim == IDLE_ANIM) {idleAnim.update((dt / (1.0f / 60.0f)));}
 							else {
 								anim = IDLE_ANIM;
 								idleAnim.reset();
@@ -734,7 +732,7 @@ public class Player {
 						else {
 							if(skidding || skirting) {
 								if(skidding) {
-									if(anim == SKID_ANIM) {skidAnim.update(1);}
+									if(anim == SKID_ANIM) {skidAnim.update((dt / (1.0f / 60.0f)));}
 									else {
 										anim = SKID_ANIM;
 										skidAnim.reset();
@@ -748,7 +746,7 @@ public class Player {
 								else {
 									if(skirting) {
 										if(anim == SKIRT_ANIM) {
-											skirtAnim.update(1);
+											skirtAnim.update((dt / (1.0f / 60.0f)));
 											if(skirtAnim.finished) {
 												skirting = false;
 												
@@ -794,7 +792,7 @@ public class Player {
 									turning = true;
 									
 									if(anim == TURN_ANIM) {
-										turnAnim.update(1);
+										turnAnim.update((dt / (1.0f / 60.0f)));
 										if(turnAnim.finished) {
 											turning = false;
 											
@@ -821,11 +819,11 @@ public class Player {
 								}
 								else {
 									if(anim == RUN_ANIM) {
-										runSlowestAnim.update(abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25);
-										runSlowAnim.   update(abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25);
-										runNormalAnim. update(abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25);
-										runFastAnim.   update(abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25);
-										runFastestAnim.update(abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25);
+										runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
+										runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
+										runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
+										runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
+										runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
 										
 										stepTimer += min(abs(groundSpeed) * SCALE * STEP_SPEED_SCALE + STEP_SPEED_OFFSET, MAX_STEP_SPEED);
 										if(stepTimer >= STEP_SOUND_SPEED) {
@@ -902,7 +900,7 @@ public class Player {
 							}
 						}
 						
-						if(anim == FALL_ANIM) {fallAnim.update(1);}
+						if(anim == FALL_ANIM) {fallAnim.update((dt / (1.0f / 60.0f)));}
 						else {
 							if(anim != JUMP_ANIM) {
 								anim = FALL_ANIM;
@@ -910,15 +908,15 @@ public class Player {
 							}
 						}
 						
-						if(anim == JUMP_ANIM) {jumpAnim.update(1);}
+						if(anim == JUMP_ANIM) {jumpAnim.update((dt / (1.0f / 60.0f)));}
 					}
 				}
 			}
 		}
 	}
 	
-	public void draw(Shader shader, Camera camera) {
-		manageAnimations();
+	public void draw(float dt, Shader shader, Camera camera) {
+		manageAnimations(dt);
 		
 		/*if(DRAW_MASKS) {
 			Shape temp;
