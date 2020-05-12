@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
+import rendering.Camera;
+import rendering.Shader;
 
 public class Ring {
 	public Vector pos;
@@ -13,18 +15,18 @@ public class Ring {
 	
 	public Ring(double x, double y) {
 		pos = new Vector(x, y);
-		anim = new Animation(Loader.ringAnim.frames, Loader.ringAnim.durations, Loader.ringAnim.repeatFrame, 1);
+		anim = new Animation(Loader.ringAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0);
 		destroy = 0;
 	}
 	
-	public void draw(Vector offset, int scaleX, int scaleY, Graphics2D graphics) {
+	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
 		if(destroy == 1) {
 			destroy = 2;
-			anim = new Animation(Loader.sparkleAnim.frames, Loader.sparkleAnim.durations, Loader.sparkleAnim.repeatFrame, 1);
+			anim = new Animation(Loader.sparkleAnim, new int[]{4, 4, 4, 5}, 0);
 		}
 		
-		anim.draw(graphics, pos.x - offset.x, pos.y - offset.y, scaleX, scaleY);
-		anim.update(1);
+		anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
+		anim.update(dt / (1.0f / 60.0f));
 		
 		if(destroy == 2 && anim.finished) {destroy = 3;}
 	}

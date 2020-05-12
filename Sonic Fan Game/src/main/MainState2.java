@@ -80,7 +80,7 @@ public class MainState2 extends Scene {
 		
 		interpretMap(leafForest1Map.json);
 		
-		/*rings = new Ring[]{
+		rings = new Ring[]{
 			new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 *  1 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 *  2 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
@@ -104,7 +104,7 @@ public class MainState2 extends Scene {
 			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 		};
 		
-		springs = new Spring[]{
+		/*springs = new Spring[]{
 			new Spring(21 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 14 * SCALE, 3 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 15, 0),
 		};*/
 		
@@ -117,13 +117,13 @@ public class MainState2 extends Scene {
 		
 		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
 		
-		/*if(rings != null) {
+		if(rings != null) {
 			int[] removals = null;
 			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
 			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
 		}
 		
-		Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
+		/*Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
 		
 		//leafForest1Map.draw(0, SCALE, SCALE, defaultShader, camera);
 		//leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
@@ -135,8 +135,7 @@ public class MainState2 extends Scene {
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 		}
 		
-		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}
-		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}*/
+		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}}*/
 		
 		camera.position = new Vector2f((float)(int)(player.pos.x - Window.getWidth() / 2), (float)(int)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
 		
@@ -144,12 +143,9 @@ public class MainState2 extends Scene {
 		//leafLayer2.draw(defaultShader, camera);
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
-		
+		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		player.draw(dt, defaultShader, camera);
-		
-		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
-		
-		/*if(!showTileMasks) {Loader.leafForest1Map.draw(2, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2), SCALE, SCALE, graphics);}*/
+		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
 		
 		hud.draw(dt, player, defaultShader);
 	}
