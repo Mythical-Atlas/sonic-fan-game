@@ -70,6 +70,7 @@ public class Window {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
 		
 		glfwWindow = glfwCreateWindow(Loader.DEFAULT_FRAME_WIDTH, Loader.DEFAULT_FRAME_HEIGHT, Loader.TITLE, NULL, NULL);
 		if(glfwWindow == NULL) {throw new IllegalStateException("Failed to create the GLFW window.");}
@@ -105,7 +106,8 @@ public class Window {
 			
 			if(dt >= 0) {currentScene.update(dt);}
 			
-			glfwSwapBuffers(glfwWindow);
+			glFlush();
+			//glfwSwapBuffers(glfwWindow);
 			
 			endTime = Time.getTime();
 			dt = endTime - beginTime;

@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import java.nio.ByteBuffer;
+
 import javax.imageio.ImageIO;
 
 import main.Loader;
@@ -27,7 +29,7 @@ public class BackgroundLayer {
 	private int tweenType0;
 	private int tweenType1;
 	
-	private BufferedImage[][] tiles;
+	private ByteBuffer[][] tiles;
 	
 	public BackgroundLayer(String path, int index, int size, int scale, int tileSize) {
 		this.index = index;
