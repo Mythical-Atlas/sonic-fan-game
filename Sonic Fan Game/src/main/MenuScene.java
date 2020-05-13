@@ -13,6 +13,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import datatypes.Animation;
+import datatypes.Scene;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Shader;

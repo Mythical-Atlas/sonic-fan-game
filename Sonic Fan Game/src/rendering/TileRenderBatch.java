@@ -9,13 +9,13 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-public class RenderBatch {
+public class TileRenderBatch {
 	private static final int POSITIONS_SIZE = 3;
 	private static final int COLORS_SIZE = 4;
 	private static final int UV_MAPS_SIZE = 2;
 	private static final int VERTEX_ARRAY_SIZE = (POSITIONS_SIZE + COLORS_SIZE + UV_MAPS_SIZE) * Float.BYTES;
 	
-	public static final int MAX_BATCH_SIZE = 1000000000;
+	public static final int MAX_BATCH_SIZE = 1048576 / Float.BYTES;
 	
 	public float[] positions;
 	public float[] colors;
@@ -32,7 +32,7 @@ public class RenderBatch {
 	
 	public Texture tex;
 	
-	public RenderBatch(Texture tex) {
+	public TileRenderBatch(Texture tex) {
 		this.tex = tex;
 	
 		positions = null;
@@ -79,7 +79,7 @@ public class RenderBatch {
 		
 		vboID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_STATIC_DRAW);
 		
 		eboID = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);

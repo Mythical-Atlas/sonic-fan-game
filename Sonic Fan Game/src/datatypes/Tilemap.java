@@ -10,8 +10,8 @@ import org.lwjgl.BufferUtils;
 
 import main.Loader;
 import rendering.Camera;
-import rendering.RenderBatch;
-import rendering.Renderer;
+import rendering.TileRenderBatch;
+import rendering.TileRenderer;
 import rendering.Shader;
 
 import java.nio.ByteBuffer;
@@ -20,12 +20,12 @@ public class Tilemap {
 	private Tileset[] tilesets;
 	public TiledJSON json;
 	
-	private Renderer[] batches;
+	private TileRenderer[] batches;
 	
 	public Tilemap(String mapPath, String tilesetsDir) {
 		json = new TiledJSON(mapPath);
 		tilesets = new Tileset[json.tilesets.length];
-		batches = new Renderer[json.map.length];
+		batches = new TileRenderer[json.map.length];
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
 		
@@ -57,7 +57,7 @@ public class Tilemap {
 					if(s > -1) {
 						float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
 						
-						if(batches[l] == null) {batches[l] = new Renderer(tilesets[s].image.tex);}
+						if(batches[l] == null) {batches[l] = new TileRenderer(tilesets[s].image.tex);}
 						batches[l].add(positions, colors, tilesets[s].uvMaps[index]);
 					}
 				}

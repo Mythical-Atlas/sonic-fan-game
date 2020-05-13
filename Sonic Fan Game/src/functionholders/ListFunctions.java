@@ -3,7 +3,10 @@ package functionholders;
 import datatypes.Shape;
 import datatypes.Vector;
 import objects.Ring;
-import rendering.RenderBatch;
+import rendering.Image;
+import rendering.SpriteRenderBatch;
+import rendering.Texture;
+import rendering.TileRenderBatch;
 
 public class ListFunctions {
 	public static int[][] append(int[][] existingPoints, int[] pointToCheck) {
@@ -32,6 +35,26 @@ public class ListFunctions {
 		
 		return(newList);
 	}
+	public static Texture[] append(Texture[] existingPoints, Texture pointToCheck) {
+		if(existingPoints == null) {return(new Texture[]{pointToCheck});}
+		
+		Texture[] newList = new Texture[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static Image[] append(Image[] existingPoints, Image pointToCheck) {
+		if(existingPoints == null) {return(new Image[]{pointToCheck});}
+		
+		Image[] newList = new Image[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
 	public static boolean[] append(boolean[] existingPoints, boolean pointToCheck) {
 		if(existingPoints == null) {return(new boolean[]{pointToCheck});}
 		
@@ -42,10 +65,20 @@ public class ListFunctions {
 		
 		return(newList);
 	}
-	public static RenderBatch[] append(RenderBatch[] existingPoints, RenderBatch pointToCheck) {
-		if(existingPoints == null) {return(new RenderBatch[]{pointToCheck});}
+	public static TileRenderBatch[] append(TileRenderBatch[] existingPoints, TileRenderBatch pointToCheck) {
+		if(existingPoints == null) {return(new TileRenderBatch[]{pointToCheck});}
 		
-		RenderBatch[] newList = new RenderBatch[existingPoints.length + 1];
+		TileRenderBatch[] newList = new TileRenderBatch[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static SpriteRenderBatch[] append(SpriteRenderBatch[] existingPoints, SpriteRenderBatch pointToCheck) {
+		if(existingPoints == null) {return(new SpriteRenderBatch[]{pointToCheck});}
+		
+		SpriteRenderBatch[] newList = new SpriteRenderBatch[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

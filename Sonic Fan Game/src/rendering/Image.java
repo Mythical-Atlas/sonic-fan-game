@@ -20,10 +20,10 @@ public class Image {
 	public Texture tex;
 	
 	private float[] vertexArray = {
-		 0.0f, 0.0f, 0.0f,		1.0f, 0.0f, 0.0f, 1.0f,		1, 1,
-		 0.0f, 0.0f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f,		0, 0,
-		 0.0f, 0.0f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f,		1, 0,
-		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 0.0f, 1.0f,		0, 1
+		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1, 1,
+		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0, 0,
+		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1, 0,
+		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0, 1
 	};
 	
 	private int[] elementArray = {
@@ -33,11 +33,11 @@ public class Image {
 	
 	public Image(String filepath) {
 		tex = new Texture(filepath);
-		load();
+		//load();
 	}
 	public Image(ByteBuffer imageBuffer) {
 		tex = new Texture(imageBuffer);
-		load();
+		//load();
 	}
 	
 	public void setPositions(double x, double y, double xScale, double yScale) {
@@ -71,7 +71,7 @@ public class Image {
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
 		
-		load();
+		//load();
 	}
 	
 	public void setUVMap(float[] map) {
@@ -83,7 +83,7 @@ public class Image {
 		vertexArray[26] = map[5];
 		vertexArray[34] = map[6];
 		vertexArray[35] = map[7];
-		load();
+		//load();
 	}
 	
 	public float[] getPositions() {
@@ -96,6 +96,17 @@ public class Image {
 			}
 		);
 	}
+	public float[] getPositions2() {
+		return(
+			new float[]{
+				vertexArray[ 0], vertexArray[ 1], vertexArray[ 2],
+				vertexArray[ 9], vertexArray[10], vertexArray[11],
+				vertexArray[18], vertexArray[19], vertexArray[20],
+				vertexArray[27], vertexArray[28], vertexArray[29]
+			}
+		);
+	}
+	
 	public float[] getColors() {
 		return(
 			new float[]{
@@ -145,7 +156,9 @@ public class Image {
 	}
 	
 	public void draw(Shader shader, Camera camera) {
-		shader.use();
+		SpriteRenderer.add(this);
+		
+		/*shader.use();
 		
 		shader.uploadTexture("TEX_SAMPLER", 0);
 		glActiveTexture(GL_TEXTURE0);
@@ -169,7 +182,7 @@ public class Image {
 		
 		glBindVertexArray(0);
 		
-		shader.detach();
+		shader.detach();*/
 	}
 	
 	public void draw(double x, double y, double xScale, double yScale, Shader shader, Camera camera) {
@@ -203,6 +216,8 @@ public class Image {
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
 		
+		SpriteRenderer.add(this);
+		
 		/*if(
 			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
 			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
@@ -210,7 +225,7 @@ public class Image {
 			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
 		) {return;}*/
 		
-		load();
+		/*load();
 		
 		shader.use();
 		
@@ -236,7 +251,7 @@ public class Image {
 		
 		glBindVertexArray(0);
 		
-		shader.detach();
+		shader.detach();*/
 	}
 	
 	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {
@@ -291,7 +306,9 @@ public class Image {
 			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
 		) {return;}*/
 		
-		load();
+		SpriteRenderer.add(this);
+		
+		/*load();
 		
 		shader.use();
 		
@@ -317,7 +334,7 @@ public class Image {
 		
 		glBindVertexArray(0);
 		
-		shader.detach();
+		shader.detach();*/
 	}
 	
 	public int getWidth() {return(tex.width);}

@@ -2,18 +2,18 @@ package rendering;
 
 import static functionholders.ListFunctions.*;
 
-public class Renderer {
+public class TileRenderer {
 	private Texture tex;
-	private RenderBatch[] batches;
+	private TileRenderBatch[] batches;
 	
-	public Renderer(Texture tex) {this.tex = tex;}
+	public TileRenderer(Texture tex) {this.tex = tex;}
 	
 	public void add(float[] positions, float[] colors, float[] uvMaps) {
-		if(batches == null) {batches = append(batches, new RenderBatch(tex));}
+		if(batches == null) {batches = append(batches, new TileRenderBatch(tex));}
 		
 		boolean success = batches[batches.length - 1].add(positions, colors, uvMaps);
 		if(!success) {
-			batches = append(batches, new RenderBatch(tex));
+			batches = append(batches, new TileRenderBatch(tex));
 			batches[batches.length - 1].add(positions, colors, uvMaps);
 		}
 	}

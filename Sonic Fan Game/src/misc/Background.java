@@ -29,7 +29,7 @@ public class Background {
 		for(int i = 0; i < paths.length; i++) {layers[i] = new BackgroundLayer(paths[i], indices[i], sizes[i], scale, tileSize);}
 	}
 	
-	public void setTween(int layer, int tween, Color color) {layers[layer].setTween(tween, color);}
+	public void setTween(int layer, int tween, float[] color) {layers[layer].setTween(tween, color);}
 	public void setTween(int layer, int tween, int x, int y) {layers[layer].setTween(tween, x, y);}
 	
 	public void draw(int[] scrollSpeeds, Player p, Graphics2D graphics) {

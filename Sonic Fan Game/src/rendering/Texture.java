@@ -41,6 +41,8 @@ public class Texture {
 	}
 	public Texture(ByteBuffer imageBuffer) {load(imageBuffer);}
 	
+	public boolean equals(Texture other) {return(texID == other.texID);}
+	
 	private void load(ByteBuffer imageBuffer) {
 		texID = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, texID);

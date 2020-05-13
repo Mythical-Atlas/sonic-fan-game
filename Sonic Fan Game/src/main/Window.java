@@ -14,6 +14,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import datatypes.Scene;
 import rendering.Camera;
 import scenes.MainScene;
 
@@ -55,6 +56,9 @@ public class Window {
 	public void run() {
 		init();
 		loop();
+		
+		// commented out because it causes massive lag when trying to terminate window
+		// probably a bad idea...but the OS should handle deallocating resources anyways *shrug*
 		
 		/*glfwFreeCallbacks(glfwWindow);
 		glfwDestroyWindow(glfwWindow);

@@ -241,7 +241,7 @@ public class Player {
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
 		
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
-		pos.translate(vel.scale(dt / (1.0f / 60.0f)));
+		pos.translate(vel/*.scale(dt / (1.0f / 60.0f))*/);
 		
 		checkLayer(layer1Triggers, layer2Triggers);
 		
@@ -650,13 +650,13 @@ public class Player {
 		if(spindashing) {
 			if(!spindashCharge) {
 				if(anim == SPINDASH_CHARGE_ANIM) {
-					spindashChargeAnim.update((dt / (1.0f / 60.0f)));
+					spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 					if(spindashChargeAnim.finished) {
 						anim = SPINDASH_ANIM;
 						spindashAnim.reset();
 					}
 				}
-				else if(anim == SPINDASH_ANIM) {spindashAnim.update((dt / (1.0f / 60.0f)));}
+				else if(anim == SPINDASH_ANIM) {spindashAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 				else {
 					anim = SPINDASH_ANIM;
 					spindashAnim.reset();
@@ -669,14 +669,14 @@ public class Player {
 			}
 			
 			if(chargeDustTimer == 0) {
-				if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update((dt / (1.0f / 60.0f)));}
+				if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 				else {
 					dustAnim = REGULAR_DUST_ANIM;
 					spindashDustAnim.reset();
 				}
 			}
 			else {
-				if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update((dt / (1.0f / 60.0f)));}
+				if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 				else {
 					dustAnim = CHARGE_DUST_ANIM;
 					spindashChargeDustAnim.reset();
@@ -690,7 +690,7 @@ public class Player {
 			
 			if(crouching1) {
 				if(anim == CROUCH_ANIM_0) {
-					crouchAnim0.update((dt / (1.0f / 60.0f)));
+					crouchAnim0.update(1 /** (dt / (1.0f / 60.0f))*/);
 					if(crouchAnim0.finished) {spindashReady = true;}
 				}
 				else {
@@ -700,7 +700,7 @@ public class Player {
 			}
 			else if(crouching0) {
 				if(anim == CROUCH_ANIM_1) {
-					crouchAnim1.update((dt / (1.0f / 60.0f)));
+					crouchAnim1.update(1 /** (dt / (1.0f / 60.0f))*/);
 					if(crouchAnim1.finished) {
 						anim = IDLE_ANIM;
 						idleAnim.reset();
@@ -714,7 +714,7 @@ public class Player {
 			}
 			else {
 				if(spinning) {
-					if(anim == SPIN_ANIM) {spinAnim.update((dt / (1.0f / 60.0f)));}
+					if(anim == SPIN_ANIM) {spinAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 					else {
 						anim = SPIN_ANIM;
 						spinAnim.reset();
@@ -723,7 +723,7 @@ public class Player {
 				else {
 					if(ground) {
 						if(groundSpeed == 0 && !turning && !skidding && !skirting) {
-							if(anim == IDLE_ANIM) {idleAnim.update((dt / (1.0f / 60.0f)));}
+							if(anim == IDLE_ANIM) {idleAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 							else {
 								anim = IDLE_ANIM;
 								idleAnim.reset();
@@ -732,7 +732,7 @@ public class Player {
 						else {
 							if(skidding || skirting) {
 								if(skidding) {
-									if(anim == SKID_ANIM) {skidAnim.update((dt / (1.0f / 60.0f)));}
+									if(anim == SKID_ANIM) {skidAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 									else {
 										anim = SKID_ANIM;
 										skidAnim.reset();
@@ -746,7 +746,7 @@ public class Player {
 								else {
 									if(skirting) {
 										if(anim == SKIRT_ANIM) {
-											skirtAnim.update((dt / (1.0f / 60.0f)));
+											skirtAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 											if(skirtAnim.finished) {
 												skirting = false;
 												
@@ -792,7 +792,7 @@ public class Player {
 									turning = true;
 									
 									if(anim == TURN_ANIM) {
-										turnAnim.update((dt / (1.0f / 60.0f)));
+										turnAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 										if(turnAnim.finished) {
 											turning = false;
 											
@@ -819,11 +819,11 @@ public class Player {
 								}
 								else {
 									if(anim == RUN_ANIM) {
-										runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
-										runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
-										runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
-										runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
-										runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25) * (dt / (1.0f / 60.0f)));
+										runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+										runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+										runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+										runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+										runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
 										
 										stepTimer += min(abs(groundSpeed) * SCALE * STEP_SPEED_SCALE + STEP_SPEED_OFFSET, MAX_STEP_SPEED);
 										if(stepTimer >= STEP_SOUND_SPEED) {
@@ -900,7 +900,7 @@ public class Player {
 							}
 						}
 						
-						if(anim == FALL_ANIM) {fallAnim.update((dt / (1.0f / 60.0f)));}
+						if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 						else {
 							if(anim != JUMP_ANIM) {
 								anim = FALL_ANIM;
@@ -908,7 +908,7 @@ public class Player {
 							}
 						}
 						
-						if(anim == JUMP_ANIM) {jumpAnim.update((dt / (1.0f / 60.0f)));}
+						if(anim == JUMP_ANIM) {jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 					}
 				}
 			}
@@ -964,7 +964,7 @@ public class Player {
 			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
 			if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(dustAnim == CHARGE_DUST_ANIM)  {spindashChargeDustAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}

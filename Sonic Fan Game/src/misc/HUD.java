@@ -14,6 +14,7 @@ import objects.Player;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Shader;
+import rendering.SpriteRenderer;
 
 public class HUD {
 	public static final int FPS_SAMPLE_SIZE = 10;
@@ -29,7 +30,7 @@ public class HUD {
 	
 	private long start;
 	
-	private Camera camera;
+	//private Camera camera;
 	
 	private float[] frames;
 	private int numFrames;
@@ -37,7 +38,7 @@ public class HUD {
 	private int fps;
 	
 	public HUD() {
-		camera = new Camera(new Vector2f());
+		//camera = new Camera(new Vector2f());
 		
 		hud = new Image(Loader.hud);
 		time = new Image(Loader.time);
@@ -57,7 +58,7 @@ public class HUD {
 		fps = 0;
 	}
 	
-	public void draw(float dt, Player p, Shader shader) {
+	public void draw(float dt, Player p, Shader shader, Camera camera) {
 		frames[numFrames] = dt;
 		numFrames++;
 		if(numFrames == FPS_SAMPLE_SIZE) {
@@ -68,14 +69,16 @@ public class HUD {
 			numFrames = 0;
 		}
 		
-		camera.position = new Vector2f(0, (float)(int)(Window.getHeight() - Window.getInitHeight()));
+		float xOffset = camera.position.x;
+		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
 		
-		hud.draw(shader, camera);
+		hud.setPositions(xOffset + 1 * SCALE, yOffset + 3 * SCALE, SCALE, SCALE);
+		SpriteRenderer.add(hud);
 		
-		ring.draw(7 * SCALE, 8 * SCALE, SCALE, SCALE, shader, camera);
+		ring.draw(xOffset + 7 * SCALE, yOffset + 8 * SCALE, SCALE, SCALE, shader, camera);
 		ring.update((p.vel.getLength() / 10 + 1) * (dt / (1.0f / 60.0f)));
 		
-		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader);
+		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);
 
 		long change = System.nanoTime() - start;
 		
@@ -83,18 +86,25 @@ public class HUD {
 		int s = (int)(ms / 100);
 		int m = (int)(s / 60);
 		
-		time.draw( Window.getWidth() / 2 - time.getWidth() * SCALE / 2, 3 * SCALE, SCALE, SCALE, shader, camera);
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, shader);
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, shader);
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, shader);
+		time.setPositions(xOffset + Window.getWidth() / 2 - time.getWidth() * SCALE / 2, yOffset + 3 * SCALE, SCALE, SCALE);
+		SpriteRenderer.add(time);
 		
-		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, shader);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, shader, camera);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, shader, camera);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, shader, camera);
+		
+		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, shader, camera);
 	}
 	
-	private void drawNumber(int x, int y, int num, int places, Shader shader) {
+	private void drawNumber(int x, int y, int num, int places, Shader shader, Camera camera) {
+		float xOffset = camera.position.x;
+		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+		
 		for(int i = 0; i < places; i++) {
 			int n = (int)floor(num / pow(10, places - i - 1)) % 10;
-			numbers[n].draw(x + i * 8 * SCALE, y, SCALE, SCALE, shader, camera);
+			
+			numbers[n].setPositions(xOffset + x + i * 8 * SCALE, yOffset + y, SCALE, SCALE);
+			SpriteRenderer.add(numbers[n]);
 		}
 	}
 }

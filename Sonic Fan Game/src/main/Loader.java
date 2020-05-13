@@ -15,6 +15,7 @@ import javax.sound.sampled.FloatControl;
 import org.lwjgl.BufferUtils;
 
 import datatypes.Animation;
+import datatypes.Scene;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import misc.Background;

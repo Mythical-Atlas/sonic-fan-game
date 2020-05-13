@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 
 import org.joml.Vector2f;
 
+import datatypes.Scene;
 import datatypes.Shape;
 import datatypes.State;
 import datatypes.TiledJSON;
@@ -22,7 +23,6 @@ import datatypes.Tilemap;
 import datatypes.Vector;
 import main.KeyListener;
 import main.Loader;
-import main.Scene;
 import main.Window;
 import misc.HUD;
 import objects.Player;
@@ -31,6 +31,7 @@ import objects.Spring;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Shader;
+import rendering.SpriteRenderer;
 import shapes.Arc;
 import shapes.Circle;
 import shapes.InverseArc;
@@ -38,6 +39,10 @@ import shapes.Rectangle;
 import shapes.Triangle;
 
 public class MainScene extends Scene {
+	private final int X_MIN_DISTANCE_SCALE = 32;
+	private final int Y_MIN_DISTANCE_SCALE = 32;
+	private final int LEAD_DISTANCE_SCALE  = 8;
+	
 	private final int SCALE = 2;
 	
 	private Player player;
@@ -67,10 +72,18 @@ public class MainScene extends Scene {
 	private Image leafLayer2;
 	
 	private Shader defaultShader;
+	private Shader spriteShader;
+	
+	private Vector camPos;
 	
 	public void init() {
+		SpriteRenderer.reset();
+		
 		defaultShader = new Shader("/shaders/default.glsl");
 		defaultShader.compile();
+		
+		spriteShader = new Shader("/shaders/spriteBatch.glsl");
+		spriteShader.compile();
 		
 		camera = new Camera(new Vector2f());
 		
@@ -83,6 +96,7 @@ public class MainScene extends Scene {
 		leafLayer2.setPositions(0, 0, 2, 2);
 		
 		interpretMap(leafForest1Map.json);
+		camPos = new Vector(player.pos.x, player.pos.y);
 		
 		rings = new Ring[]{
 			new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
@@ -116,6 +130,8 @@ public class MainScene extends Scene {
 	}
 		
 	public void update(float dt) {
+		SpriteRenderer.reset();
+		
 		checkKeysPressed();
 		checkKeysReleased();
 		
@@ -139,7 +155,7 @@ public class MainScene extends Scene {
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 		}*/
 		
-		camera.position = new Vector2f((float)(int)(player.pos.x - Window.getWidth() / 2), (float)(int)(player.pos.y - (-Window.getHeight() / 2 + Window.getInitHeight())));
+		moveCamera(dt);
 		
 		//leafLayer1.draw(defaultShader, camera);
 		//leafLayer2.draw(defaultShader, camera);
@@ -153,7 +169,9 @@ public class MainScene extends Scene {
 		
 		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
 		
-		hud.draw(dt, player, defaultShader);
+		hud.draw(dt, player, defaultShader, camera);
+		
+		SpriteRenderer.draw(spriteShader, camera);
 	}
 	
 	public void checkKeysPressed() {
@@ -170,6 +188,46 @@ public class MainScene extends Scene {
 	public void checkKeysReleased() {
 		if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
 		if(KeyListener.isKeyPressed(GLFW_KEY_F2)) {toggle1 = true;}
+	}
+	
+	private void moveCamera(float dt) {
+		Vector pos = player.pos;
+		double lead = player.vel.x * LEAD_DISTANCE_SCALE;
+		
+		double x = camPos.x;
+		double y = camPos.y;
+		
+		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
+		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
+		
+		x = moveTowards(x, pos.x, xMinDist, 0.25, dt);
+		y = moveTowards(y, pos.y, yMinDist, 0.25, dt);
+		
+		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
+		
+		camPos.x = x;
+		camPos.y = y;
+		
+		x -= Window.getWidth() / 2;
+		y -= (Window.getInitHeight() * 2 - Window.getHeight()) / 2;
+		
+		camera.position = new Vector2f((float)(int)x, (float)(int)y);
+	}
+	
+	private double moveTowards(double value0, double value1, double minDist, double interval, float dt) {
+		double out = value0;
+		double dist = value1 - value0;
+		
+		if(dist > minDist) {
+			out = value0 + abs(dist * interval)/* * (dt / (1.0f / 60.0f))*/;
+			if(value1 - out < minDist) {out = value1 - minDist;}
+		}
+		if(dist < -minDist) {
+			out = value0 - abs(dist * interval)/* * (dt / (1.0f / 60.0f))*/;
+			if(value1 - out > -minDist) {out = value1 + minDist;}
+		}
+		
+		return(out);
 	}
 	
 	private void interpretMap(TiledJSON json) {
