@@ -50,12 +50,6 @@ public class BackgroundLayer {
 		tweenType1 = NONE;
 		
 		tileset = new Tileset(image, tileSize, tileSize);
-		
-		//int w = tileset.image.getWidth() / tileSize;
-		//int h = tileset.image.getHeight() / tileSize;
-		//tiles = new BufferedImage[w][h];
-		
-		//for(int x = 0; x < w; x++) {for(int y = 0; y < h; y++) {tiles[x][y] = scaleImage(image.getSubimage(x * tileSize, y * tileSize, tileSize, tileSize), scale);}}
 	}
 	
 	public void setTween(int tween, float[] color) {
@@ -103,11 +97,8 @@ public class BackgroundLayer {
 			int x = (i + iOffset) % tileset.uvMaps2.length;
 			while(x < 0) {x += tileset.uvMaps2.length;}
 			
-			//if(i == 0) {System.out.println(x);}
-			
-			
-			if(tweenType0 == TILE && yStart > 0)                   {
-				for(int y = 0; y < yStart; y++)                     {
+			if(tweenType0 == TILE && yStart > 0) {
+				for(int y = 0; y < yStart; y++) {
 					Image image = new Image(tileset.image.tex);
 					image.setPositionAndSize(xCam - xOffset + i * tileSize * scale, yCam + y * tileSize * scale, tileSize * scale, tileSize * scale);
 					image.setUVMap(tileset.uvMaps2[tileTween0[0]][tileTween0[1]]);
@@ -124,7 +115,6 @@ public class BackgroundLayer {
 					SpriteRenderer.add(image);
 				}
 			}
-			
 			
 			for(int y = 0; y < size; y++) {
 				Image image = new Image(tileset.image.tex);
