@@ -143,13 +143,15 @@ public class MainScene extends Scene {
 		checkKeysPressed();
 		checkKeysReleased();
 		
-		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
-		if(rings != null) {
-			int[] removals = null;
-			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
-			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
+			if(rings != null) {
+				int[] removals = null;
+				for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
+				if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+			}
+			moveCamera(dt);
 		}
-		moveCamera(dt);
 		
 		SpriteRenderer.reset();
 		leafBG.draw(new int[]{200, 100, 50}, camera);

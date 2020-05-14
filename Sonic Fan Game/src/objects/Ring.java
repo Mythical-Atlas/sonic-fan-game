@@ -26,8 +26,10 @@ public class Ring {
 		}
 		
 		anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
-		anim.update(1/*dt / (1.0f / 60.0f)*/);
+//		anim.update(1/*dt / (1.0f / 60.0f)*/);
 		//anim.update(1/*dt / (1.0f / 60.0f)*/); // 30fps only
+		
+		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {anim.update(1);}
 		
 		if(destroy == 2 && anim.finished) {destroy = 3;}
 	}
