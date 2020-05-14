@@ -26,6 +26,7 @@ public class Tileset {
 	public Image image;
 	
 	public float[][] uvMaps;
+	public float[][][] uvMaps2;
 	
 	public Tileset(ByteBuffer imageBuffer, int tileWidth, int tileHeight) {
 		this.tileWidth = tileWidth;
@@ -36,6 +37,7 @@ public class Tileset {
 		int tilesetWidth = image.getWidth() / tileWidth;
 		int tilesetHeight = image.getHeight() / tileHeight;
 		uvMaps = new float[tilesetWidth * tilesetHeight][8];
+		uvMaps2 = new float[tilesetWidth][tilesetHeight][8];
 		
 		for(int x = 0; x < tilesetWidth; x++) {
 			for(int y = 0; y < tilesetHeight; y++) {
@@ -54,6 +56,7 @@ public class Tileset {
 				};
 				
 				uvMaps[t] = map;
+				uvMaps2[x][y] = map;
 			}
 		}
 	}

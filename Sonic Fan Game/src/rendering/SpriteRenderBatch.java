@@ -18,7 +18,7 @@ public class SpriteRenderBatch {
 	private static final int TEX_ID_SIZE = 1;
 	private static final int VERTEX_SIZE = (POSITIONS_SIZE + COLORS_SIZE + UV_MAPS_SIZE + TEX_ID_SIZE);
 	
-	private static final int MAX_ARRAY_SIZE = 1048576 / Float.BYTES;
+	private static final int MAX_ARRAY_SIZE = 1048576 / Float.BYTES * 10;
 	private static final int MAX_TEXTURES = 32;
 	
 	private Texture[] textures;
@@ -55,7 +55,7 @@ public class SpriteRenderBatch {
 	}
 	
 	public boolean add(Image image) {
-		if(spriteIndex < MAX_ARRAY_SIZE / VERTEX_SIZE && textureIndex < MAX_TEXTURES - 1) {
+		if(spriteIndex < MAX_ARRAY_SIZE / VERTEX_SIZE && textureIndex < MAX_TEXTURES - 1 && index < MAX_ARRAY_SIZE / 10) {
 			spriteIndex++;
 			
 			float texID = 0;
@@ -78,6 +78,24 @@ public class SpriteRenderBatch {
 					loadVertices(image.getColors(), v * COLORS_SIZE, COLORS_SIZE);
 					loadVertices(image.getUVMaps(), v * UV_MAPS_SIZE, UV_MAPS_SIZE);
 					vertices.putFloat(texID);
+					index++;
+				}
+			}
+			return(true);
+		}
+		else {return(false);}
+	}
+	
+	public boolean add(float[] positions, float[] colors, float[] uv) {
+		if(spriteIndex < MAX_ARRAY_SIZE / VERTEX_SIZE && index < MAX_ARRAY_SIZE / 10) {
+			spriteIndex++;
+			
+			for(int i = 0; i < 6; i++) { // WHY?
+				for(int v = 0; v < 4; v++) {
+					loadVertices(positions, v * POSITIONS_SIZE, POSITIONS_SIZE);
+					loadVertices(colors, v * COLORS_SIZE, COLORS_SIZE);
+					loadVertices(uv, v * UV_MAPS_SIZE, UV_MAPS_SIZE);
+					vertices.putFloat(0);
 					index++;
 				}
 			}

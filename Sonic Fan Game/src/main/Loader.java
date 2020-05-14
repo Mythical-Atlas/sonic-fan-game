@@ -157,19 +157,11 @@ public class Loader {
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			
 			leafBG0 = loadImage("/maps/bg0.png");
-			leafBG1 = loadImage("/maps/bg0.png");
-			leafBG2 = loadImage("/maps/bg0.png");
+			leafBG1 = loadImage("/maps/bg1.png");
+			leafBG2 = loadImage("/maps/bg2.png");
 			
 			leafLayer1 = loadImage("/maps/Leaf_Forest_Act_1.png");
 			leafLayer2 = loadImage("/maps/Leaf_Forest_Act_1.png");
-			
-			/*
-			leafBG = new Background(new String[]{"/maps/bg0.png", "/maps/bg1.png", "/maps/bg2.png"}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
-			leafBG.setTween(0, 0, new Color(120, 136, 248));
-			leafBG.setTween(0, 1, new Color(128, 160, 248));
-			leafBG.setTween(1, 1, 14, 14);
-			leafBG.setTween(2, 1, 14, 14);
-			*/
 			
 			hud = loadImage("/hudsprites/rings.png");
 			time = loadImage("/hudsprites/time.png");

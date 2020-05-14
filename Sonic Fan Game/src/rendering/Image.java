@@ -40,6 +40,8 @@ public class Image {
 		//load();
 	}
 	
+	public Image(Texture tex) {this.tex = tex;}
+	
 	public void setPositions(double x, double y, double xScale, double yScale) {
 		vertexArray[0]  = (float)x + (float)(tex.width * xScale);
 		vertexArray[1]  = (float)y;
@@ -69,6 +71,40 @@ public class Image {
 			vertexArray[10] -= (float)(tex.height * yScale);
 			vertexArray[19] -= (float)(tex.height * yScale);
 			vertexArray[28] -= (float)(tex.height * yScale);
+		}
+		
+		//load();
+	}
+	
+	public void setPositionAndSize(double x, double y, double width, double height) {
+		vertexArray[0]  = (float)x + (float)(width);
+		vertexArray[1]  = (float)y;
+		
+		vertexArray[9]  = (float)x;
+		vertexArray[10] = (float)y + (float)(-height);
+		
+		vertexArray[18] = (float)x + (float)(width);
+		vertexArray[19] = (float)y + (float)(-height);
+		
+		vertexArray[27] = (float)x;
+		vertexArray[28] = (float)y;
+		
+		vertexArray[1]  += (float)(height);
+		vertexArray[10] += (float)(height);
+		vertexArray[19] += (float)(height);
+		vertexArray[28] += (float)(height);
+		
+		if(width < 0) {
+			vertexArray[0]  -= (float)(width);
+			vertexArray[9]  -= (float)(width);
+			vertexArray[18] -= (float)(width);
+			vertexArray[27] -= (float)(width);
+		}
+		if(height < 0) {
+			vertexArray[1]  -= (float)(height);
+			vertexArray[10] -= (float)(height);
+			vertexArray[19] -= (float)(height);
+			vertexArray[28] -= (float)(height);
 		}
 		
 		//load();

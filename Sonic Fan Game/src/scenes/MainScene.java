@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.nio.ByteBuffer;
 
 import org.joml.Vector2f;
 
@@ -24,6 +25,7 @@ import datatypes.Vector;
 import main.KeyListener;
 import main.Loader;
 import main.Window;
+import misc.Background;
 import misc.HUD;
 import objects.Player;
 import objects.Ring;
@@ -76,6 +78,8 @@ public class MainScene extends Scene {
 	
 	private Vector camPos;
 	
+	private Background leafBG;
+	
 	public void init() {
 		SpriteRenderer.reset();
 		
@@ -127,11 +131,15 @@ public class MainScene extends Scene {
 		};
 		
 		hud = new HUD();
+		
+		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
+		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
+		leafBG.setTween(0, 1, new float[]{128.0f / 255.0f, 160.0f / 255.0f, 248.0f / 255.0f, 1});
+		leafBG.setTween(1, 1, 14, 14);
+		leafBG.setTween(2, 1, 14, 14);
 	}
 		
 	public void update(float dt) {
-		SpriteRenderer.reset();
-		
 		checkKeysPressed();
 		checkKeysReleased();
 		
@@ -143,17 +151,9 @@ public class MainScene extends Scene {
 		}
 		moveCamera(dt);
 		
-		// 30fps only
-		/*player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
-		if(rings != null) {
-			int[] removals = null;
-			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
-			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
-		}
-		moveCamera(dt);*/
-		// 30fps only
-		
-		/*Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
+		SpriteRenderer.reset();
+		leafBG.draw(new int[]{200, 100, 50}, camera);
+		SpriteRenderer.draw(spriteShader, camera);
 		
 		/*if(showTileMasks) {
 			if(layer0 != null) {for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
@@ -164,6 +164,8 @@ public class MainScene extends Scene {
 		
 		//leafLayer1.draw(defaultShader, camera);
 		//leafLayer2.draw(defaultShader, camera);
+		
+		SpriteRenderer.reset();
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		

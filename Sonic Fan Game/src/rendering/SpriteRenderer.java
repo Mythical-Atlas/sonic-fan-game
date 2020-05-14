@@ -2,6 +2,7 @@ package rendering;
 
 import static functionholders.ListFunctions.*;
 
+import datatypes.Shape;
 import main.Window;
 
 public class SpriteRenderer {
@@ -27,10 +28,6 @@ public class SpriteRenderer {
 	}
 	
 	public static void add(Image image) {
-		/*if(get().batches == null) {System.out.println("batches = 0");}
-		else {System.out.println("batches = " + get().batches.length);}
-		System.out.println("batch index = " + get().batchIndex);*/
-		
 		if(get().batches == null) {
 			get().batches = append(get().batches, new SpriteRenderBatch());
 			get().batches[get().batchIndex].load();
@@ -42,17 +39,28 @@ public class SpriteRenderer {
 					get().batches = append(get().batches, new SpriteRenderBatch());
 					get().batches[get().batchIndex].load();
 				}
-				//else {get().batches[get().batchIndex].reset();}
 			}
 		}
 		
-		/*if(get().batches == null) {System.out.println("batches = 0");}
-		else {System.out.println("batches = " + get().batches.length);}
-		System.out.println("batch index = " + get().batchIndex);*/
-		
 		get().batches[get().batchIndex].add(image);
+	}
+	
+	public static void add(float[] positions, float[] colors, float[] uv) {
+		if(get().batches == null) {
+			get().batches = append(get().batches, new SpriteRenderBatch());
+			get().batches[get().batchIndex].load();
+		}
+		else {
+			boolean success = get().batches[get().batchIndex].add(positions, colors, uv);
+			if(!success) {
+				if(++get().batchIndex == get().batches.length) {
+					get().batches = append(get().batches, new SpriteRenderBatch());
+					get().batches[get().batchIndex].load();
+				}
+			}
+		}
 		
-		System.out.println();
+		get().batches[get().batchIndex].add(positions, colors, uv);
 	}
 	
 	public static void draw(Shader shader, Camera camera) {if(get().batches != null) {for(int i = 0; i < get().batches.length; i++) {get().batches[i].draw(shader, camera);}}}

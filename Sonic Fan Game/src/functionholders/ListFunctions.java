@@ -4,6 +4,7 @@ import datatypes.Shape;
 import datatypes.Vector;
 import objects.Ring;
 import rendering.Image;
+//import rendering.ShapeRendererBatch;
 import rendering.SpriteRenderBatch;
 import rendering.Texture;
 import rendering.TileRenderBatch;
@@ -85,6 +86,16 @@ public class ListFunctions {
 		
 		return(newList);
 	}
+	/*public static ShapeRendererBatch[] append(ShapeRendererBatch[] existingPoints, ShapeRendererBatch pointToCheck) {
+		if(existingPoints == null) {return(new ShapeRendererBatch[]{pointToCheck});}
+		
+		ShapeRendererBatch[] newList = new ShapeRendererBatch[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}*/
 	public static float[] append(float[] existingPoints, float pointToCheck) {
 		if(existingPoints == null) {return(new float[]{pointToCheck});}
 		
