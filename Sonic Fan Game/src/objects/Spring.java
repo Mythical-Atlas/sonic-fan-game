@@ -31,7 +31,9 @@ public class Spring {
 		if(!bouncing) {anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);}
 		else {
 			anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
-			anim.update(dt / (1.0f / 60.0f));
+			anim.update(1/*dt / (1.0f / 60.0f)*/);
+			anim.update(1/*dt / (1.0f / 60.0f)*/); // 30fps only
+			
 			if(anim.finished) {
 				anim.reset();
 				bouncing = false;

@@ -76,7 +76,8 @@ public class HUD {
 		SpriteRenderer.add(hud);
 		
 		ring.draw(xOffset + 7 * SCALE, yOffset + 8 * SCALE, SCALE, SCALE, shader, camera);
-		ring.update((p.vel.getLength() / 10 + 1) * (dt / (1.0f / 60.0f)));
+		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/);
+		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/); // 30fps only
 		
 		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);
 

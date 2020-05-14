@@ -102,23 +102,27 @@ public class Window {
 		float beginTime = Time.getTime();
 		float endTime = Time.getTime();
 		float dt = -1.0f;
+		boolean first = true;
+		
+		// if the time since the start if the last frame is 1/60 of a second, update
 		
 		while(!glfwWindowShouldClose(glfwWindow)) {
-			glfwPollEvents();
-			
-			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			
-			if(dt >= 0) {currentScene.update(dt);}
-			
-			glFlush();
-			//glfwSwapBuffers(glfwWindow);
-			
-			endTime = Time.getTime();
-			dt = endTime - beginTime;
-			beginTime = endTime;
-			
-			//System.out.println("" + (1.0f / dt) + " FPS");
+			if(Time.getTime() - beginTime >= 1.0f / 30.0f || first) {
+				dt = Time.getTime() - beginTime;
+				beginTime = Time.getTime();
+				
+				glfwPollEvents();
+				
+				glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+				
+				if(!first) {currentScene.update(dt);}
+				
+				glFlush();
+				//glfwSwapBuffers(glfwWindow);
+				
+				first = false;
+			}
 		}
 	}
 	

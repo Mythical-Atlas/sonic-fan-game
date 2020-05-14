@@ -136,17 +136,24 @@ public class MainScene extends Scene {
 		checkKeysReleased();
 		
 		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
-		
 		if(rings != null) {
 			int[] removals = null;
 			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
 			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
 		}
+		moveCamera(dt);
+		
+		// 30fps only
+		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
+		if(rings != null) {
+			int[] removals = null;
+			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+		}
+		moveCamera(dt);
+		// 30fps only
 		
 		/*Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
-		
-		//leafForest1Map.draw(0, SCALE, SCALE, defaultShader, camera);
-		//leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
 		/*if(showTileMasks) {
 			if(layer0 != null) {for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
@@ -155,8 +162,6 @@ public class MainScene extends Scene {
 			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
 		}*/
 		
-		moveCamera(dt);
-		
 		//leafLayer1.draw(defaultShader, camera);
 		//leafLayer2.draw(defaultShader, camera);
 		
@@ -164,14 +169,12 @@ public class MainScene extends Scene {
 		
 		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		
 		player.draw(dt, defaultShader, camera);
-		
-		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
-		
 		hud.draw(dt, player, defaultShader, camera);
 		
 		SpriteRenderer.draw(spriteShader, camera);
+		
+		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
 	}
 	
 	public void checkKeysPressed() {

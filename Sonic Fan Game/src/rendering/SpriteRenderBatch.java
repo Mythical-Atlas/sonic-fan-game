@@ -113,8 +113,6 @@ public class SpriteRenderBatch {
 	public void draw(Shader shader, Camera camera) {
 		if(spriteIndex == 0) {return;}
 		
-		System.out.println("num sprites = " + spriteIndex);
-		
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		

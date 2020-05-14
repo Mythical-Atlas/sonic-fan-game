@@ -917,6 +917,7 @@ public class Player {
 	
 	public void draw(float dt, Shader shader, Camera camera) {
 		manageAnimations(dt);
+		manageAnimations(dt); // 30fps only
 		
 		/*if(DRAW_MASKS) {
 			Shape temp;
