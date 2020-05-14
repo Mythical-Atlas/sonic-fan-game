@@ -144,13 +144,13 @@ public class MainScene extends Scene {
 		moveCamera(dt);
 		
 		// 30fps only
-		player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
+		/*player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
 		if(rings != null) {
 			int[] removals = null;
 			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
 			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
 		}
-		moveCamera(dt);
+		moveCamera(dt);*/
 		// 30fps only
 		
 		/*Loader.leafBG.draw(new int[]{200, 100, 50}, player, graphics);*/
@@ -170,11 +170,14 @@ public class MainScene extends Scene {
 		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		player.draw(dt, defaultShader, camera);
-		hud.draw(dt, player, defaultShader, camera);
 		
-		SpriteRenderer.draw(spriteShader, camera);
+		//SpriteRenderer.draw(spriteShader, camera);
 		
 		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
+		
+		//SpriteRenderer.reset();
+		hud.draw(dt, player, defaultShader, camera);
+		SpriteRenderer.draw(spriteShader, camera);
 	}
 	
 	public void checkKeysPressed() {

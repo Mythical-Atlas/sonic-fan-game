@@ -4,10 +4,12 @@ import static functionholders.ListFunctions.*;
 
 import static org.lwjgl.opengl.GL33.*;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 public class SpriteRenderBatch { 
 	private static final int POSITIONS_SIZE = 3;
@@ -20,7 +22,7 @@ public class SpriteRenderBatch {
 	private static final int MAX_TEXTURES = 32;
 	
 	private Texture[] textures;
-	private float[] vertices;
+	private ByteBuffer vertices;
 	private int[] elements;
 	private int[] texSlots;
 	
@@ -34,8 +36,8 @@ public class SpriteRenderBatch {
 	
 	public SpriteRenderBatch() {
 		textures = null;
-		vertices = new float[MAX_ARRAY_SIZE];
-		elements = new int[vertices.length / 4 * 6];
+		vertices = MemoryUtil.memAlloc(MAX_ARRAY_SIZE * Float.BYTES);
+		elements = new int[MAX_ARRAY_SIZE / 4 * 6];
 		
 		for(int i = 0; i < elements.length; i += 6) {
 			elements[i + 0] = i * 4 + 2;
@@ -75,7 +77,8 @@ public class SpriteRenderBatch {
 					loadVertices(image.getPositions2(), v * POSITIONS_SIZE, POSITIONS_SIZE);
 					loadVertices(image.getColors(), v * COLORS_SIZE, COLORS_SIZE);
 					loadVertices(image.getUVMaps(), v * UV_MAPS_SIZE, UV_MAPS_SIZE);
-					vertices[index++] = texID;
+					vertices.putFloat(texID);
+					index++;
 				}
 			}
 			return(true);
@@ -83,7 +86,7 @@ public class SpriteRenderBatch {
 		else {return(false);}
 	}
 	
-	private void loadVertices(float[] items, int start, int length) {for(int i = start; i < start + length; i++) {vertices[index++] = items[i];}}
+	private void loadVertices(float[] items, int start, int length) {for(int i = start; i < start + length; i++, index++) {vertices.putFloat(items[i]);}}
 	
 	public void load() {
 		vaoID = glGenVertexArrays();
@@ -108,11 +111,24 @@ public class SpriteRenderBatch {
 		
 		glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE * Float.BYTES, (POSITIONS_SIZE + COLORS_SIZE + UV_MAPS_SIZE) * Float.BYTES);
 		glEnableVertexAttribArray(3);
+		
+		//vertices = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, vertices.capacity(), vertices);
+	}
+	
+	public void reset() {
+		textures = null;
+		vertices.clear();
+		textureIndex = 0;
+		spriteIndex = 0;
+		index = 0;
 	}
 	
 	public void draw(Shader shader, Camera camera) {
 		if(spriteIndex == 0) {return;}
 		
+		//glUnmapBuffer(GL_ARRAY_BUFFER);
+		
+		vertices.flip();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		
@@ -134,7 +150,7 @@ public class SpriteRenderBatch {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		glDrawElements(GL_TRIANGLES, spriteIndex * 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, index / 10);
 		
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -143,5 +159,7 @@ public class SpriteRenderBatch {
 		for(int i = 0; i < textures.length; i++) {textures[i].unbind();}
 		
 		shader.detach();
+		
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 }

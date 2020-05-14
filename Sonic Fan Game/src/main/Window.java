@@ -107,7 +107,7 @@ public class Window {
 		// if the time since the start if the last frame is 1/60 of a second, update
 		
 		while(!glfwWindowShouldClose(glfwWindow)) {
-			if(Time.getTime() - beginTime >= 1.0f / 30.0f || first) {
+			if(Time.getTime() - beginTime >= 1.0f / 60.0f || first) {
 				dt = Time.getTime() - beginTime;
 				beginTime = Time.getTime();
 				
