@@ -171,11 +171,11 @@ public class MainScene extends Scene {
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		player.draw(dt, defaultShader, camera);
 		
-		//SpriteRenderer.draw(spriteShader, camera);
+		SpriteRenderer.draw(spriteShader, camera);
 		
 		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
 		
-		//SpriteRenderer.reset();
+		SpriteRenderer.reset();
 		hud.draw(dt, player, defaultShader, camera);
 		SpriteRenderer.draw(spriteShader, camera);
 	}
