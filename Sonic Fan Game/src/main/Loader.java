@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -151,7 +152,7 @@ public class Loader {
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
 			
-			ringSound = loadSound("/objectSounds/ring.wav", -20.0f);
+			ringSound = loadSound("/objectsounds/ring.wav", -20.0f);
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			
@@ -226,10 +227,17 @@ public class Loader {
 	private Clip loadSound(String path, float amp) {
 		Clip sound = null;
 		try {
+			InputStream is = getClass().getResourceAsStream(path);
+			BufferedInputStream bis = new BufferedInputStream(is);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
+			
 			sound = AudioSystem.getClip();
-			sound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(getClass().getResourceAsStream(path))));
+			sound.open(ais);
 		}
-		catch (Exception e) {e.printStackTrace();}
+		catch (Exception e) {
+			System.err.println("Faied to load sound '" + path + "'");
+			e.printStackTrace();
+		}
 		FloatControl gainControl = (FloatControl)sound.getControl(FloatControl.Type.MASTER_GAIN);
 		gainControl.setValue(amp);
 		
