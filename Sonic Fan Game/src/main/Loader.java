@@ -51,6 +51,8 @@ public class Loader {
 	public static ByteBuffer[] runNormalAnim;
 	public static ByteBuffer[] runFastAnim;
 	public static ByteBuffer[] runFastestAnim;
+	public static ByteBuffer[] bounceUpAnim;
+	public static ByteBuffer[] bounceDownAnim;
 	public static ByteBuffer[] fallAnim;
 	public static ByteBuffer[] jumpAnim;
 	public static ByteBuffer[] skidAnim;
@@ -96,6 +98,7 @@ public class Loader {
 	public static Clip stepSound4;
 	
 	public static Clip ringSound;
+	public static Clip springSound;
 	
 	public static void main(String[] args) {
 		get().init();
@@ -122,6 +125,8 @@ public class Loader {
 			runNormalAnim  = loadImages("/sonicsprites", "run");
 			runFastAnim    = loadImages("/sonicsprites", "fast");
 			runFastestAnim = loadImages("/sonicsprites", "fastest");
+			bounceUpAnim = loadImages("/sonicsprites", "bounceUp");
+			bounceDownAnim = loadImages("/sonicsprites", "bounceDown");
 			fallAnim = loadImages("/sonicsprites", "fall");
 			jumpAnim = loadImages("/sonicsprites", "jump");
 			skidAnim = loadImages("/sonicsprites", "skid");
@@ -153,6 +158,7 @@ public class Loader {
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
 			
 			ringSound = loadSound("/objectsounds/ring.wav", -20.0f);
+			springSound = loadSound("/objectsounds/spring.wav", -20.0f);
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			

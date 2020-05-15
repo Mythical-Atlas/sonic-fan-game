@@ -127,7 +127,9 @@ public class MainScene extends Scene {
 		};
 		
 		springs = new Spring[]{
-			new Spring(21 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 14 * SCALE, 3 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 15, 0),
+			new Spring(35 * SCALE * 96 + 8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring(56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
+			new Spring(88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
 		};
 		
 		hud = new HUD();
@@ -1005,6 +1007,69 @@ public class MainScene extends Scene {
 						PI + PI / 2,
 					Color.WHITE);
 					shapes = append(shapes, b);
+				}
+				
+				if(tile == 80) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s12, y + s04),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
+				if(tile == 81) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s04),
+						new Vector(x + s12, y + s00),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
+				
+				if(tile == 74) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s10, y + s00),
+						new Vector(x + s12, y + s00),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s10, y + s12)
+					}, Color.WHITE));
+				}
+				if(tile == 114) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s06),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s10, y + s00),
+						new Vector(x + s12, y + s00),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s10, y + s06)
+					}, Color.WHITE));
+				}
+				
+				if(tile == 146) {
+					InverseArc a = new InverseArc(
+						new Vector(x + s06, y + s06),
+						PI + PI / 2,
+						2 * PI,
+						s07,
+					Color.WHITE);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s06),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+							new Vector(x + s06, y + s00),
+							new Vector(x + s12, y + s00),
+							new Vector(x + s12, y + s06),
+							new Vector(x + s06, y + s06)
+						}, Color.WHITE));
+					shapes = append(shapes, a);
 				}
 			}
 		}

@@ -98,6 +98,8 @@ public class Player {
 	private final int SPINDASH_CHARGE_ANIM 	= 9;
 	private final int SKIRT_ANIM		 	= 10;
 	private final int TURN_ANIM			 	= 11;
+	private final int BOUNCING_UP_ANIM		= 12;
+	private final int BOUNCING_DOWN_ANIM	= 13;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -125,6 +127,7 @@ public class Player {
 	private boolean spindashing;
 	private boolean spindashCharge;
 	private boolean chargeReady;
+	private boolean bouncing;
 	
 	private double jumpSlowed;
 	private double groundSpeed;
@@ -147,6 +150,8 @@ public class Player {
 	private Animation runNormalAnim;
 	private Animation runFastAnim;
 	private Animation runFastestAnim;
+	private Animation bounceUpAnim;
+	private Animation bounceDownAnim;
 	private Animation fallAnim;
 	private Animation jumpAnim;
 	private Animation skidAnim;
@@ -178,6 +183,7 @@ public class Player {
 	private Clip stepSound4;
 	
 	private Clip ringSound;
+	private Clip springSound;
 	
 	public int rings;
 	
@@ -195,6 +201,8 @@ public class Player {
 		runNormalAnim  = new Animation(Loader.runNormalAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
 		runFastAnim    = new Animation(Loader.runFastAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
 		runFastestAnim = new Animation(Loader.runFastestAnim, new int[]{6, 6, 6, 6, 6, 6, 6, 6}, 0);
+		bounceUpAnim = new Animation(Loader.bounceUpAnim, new int[]{3, 3, 3, 3}, 1);
+		bounceDownAnim = new Animation(Loader.bounceDownAnim, new int[]{2, 2, 2, 3, 3, 4}, 0);
 		fallAnim = new Animation(Loader.fallAnim, new int[]{3, 3, 3}, 0);
 		jumpAnim = new Animation(Loader.jumpAnim, new int[]{3, 3, 2, 2, 2, 2, 2, 2, 2, 2}, 2);
 		skidAnim = new Animation(Loader.skidAnim, new int[]{2, 4, 4}, 1);
@@ -222,6 +230,7 @@ public class Player {
 		stepSound4 = Loader.stepSound4;
 		
 		ringSound = Loader.ringSound;
+		springSound = Loader.springSound;
 	}
 	
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
@@ -287,6 +296,18 @@ public class Player {
 						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
 						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
 						springs[i].bouncing = true;
+						
+						jumpReady = false;
+						ground = false;
+						jumping = false;
+						jumpSlowing = false;
+						spinning = false;
+						bouncing = true;
+						
+						springSound.stop();
+						springSound.flush();
+						springSound.setFramePosition(0);
+						springSound.start();
 					}
 				}
 			}
@@ -644,6 +665,8 @@ public class Player {
 			else {groundAxis = new Vector(0, 1);}
 		}
 		else {groundAxis = new Vector(0, 1);}
+		
+		if(ground) {bouncing = false;}
 	}
 	
 	private void manageAnimations(float dt) {
@@ -899,10 +922,31 @@ public class Player {
 								jumpSound1.start();
 							}
 						}
+						else {
+							if(bouncing) {
+								if(vel.y < 0) {
+									if(anim != BOUNCING_UP_ANIM) {
+										anim = BOUNCING_UP_ANIM;
+										bounceUpAnim.reset();
+									}
+									else {bounceUpAnim.update(1);}
+								}
+								else {
+									if(anim != BOUNCING_DOWN_ANIM) {
+										anim = BOUNCING_DOWN_ANIM;
+										bounceDownAnim.reset();
+									}
+									else {
+										bounceDownAnim.update(1);
+										if(bounceDownAnim.finished) {bouncing = false;}
+									}
+								}
+							}
+						}
 						
 						if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 						else {
-							if(anim != JUMP_ANIM) {
+							if(anim != JUMP_ANIM && !bouncing) {
 								anim = FALL_ANIM;
 								fallAnim.reset();
 							}
@@ -958,6 +1002,8 @@ public class Player {
 				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			}
 			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == BOUNCING_UP_ANIM)     {bounceUpAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == BOUNCING_DOWN_ANIM)   {bounceDownAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == FALL_ANIM)            {fallAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SKID_ANIM)            {skidAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SKIRT_ANIM)           {skirtAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
@@ -986,8 +1032,15 @@ public class Player {
 	private Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
 		Shape groundMask = new Circle(radius);
 		groundMask.relocate(pos);
-		groundMask.translate(groundAxis.normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
-		groundMask.translate(groundAxis.getPerpendicular().normalize().scale(-offsetX));
+		
+		if(bouncing && vel.y < 0) {
+			groundMask.translate(groundAxis.scale(-1).normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
+			groundMask.translate(groundAxis.scale(-1).getPerpendicular().normalize().scale(-offsetX));
+		}
+		else {
+			groundMask.translate(groundAxis.normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
+			groundMask.translate(groundAxis.getPerpendicular().normalize().scale(-offsetX));
+		}
 		
 		return(groundMask);
 	}
