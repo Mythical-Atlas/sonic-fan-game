@@ -155,9 +155,9 @@ public class MainScene extends Scene {
 			moveCamera(dt);
 		}
 		
-		/*SpriteRenderer.reset();
+		SpriteRenderer.reset();
 		leafBG.draw(new int[]{200, 100, 50}, camera);
-		SpriteRenderer.draw(spriteShader, camera);*/
+		SpriteRenderer.draw(spriteShader, camera);
 		
 		/*if(showTileMasks) {
 			if(layer0 != null) {for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
@@ -1070,6 +1070,23 @@ public class MainScene extends Scene {
 							new Vector(x + s06, y + s06)
 						}, Color.WHITE));
 					shapes = append(shapes, a);
+				}
+				
+				if(tile == 140) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s00),
+						new Vector(x + s09, y + s00),
+						new Vector(x + s12, y + s03),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
+				if(tile == 141) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s03),
+						new Vector(x + s09, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
 				}
 			}
 		}
