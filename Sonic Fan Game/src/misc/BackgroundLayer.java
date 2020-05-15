@@ -74,7 +74,7 @@ public class BackgroundLayer {
 	}
 	
 	public void draw(int yStart2, int scrollSpeed, Camera camera) {
-		int yStart = yStart2;
+		/*int yStart = yStart2;
 		if(yStart < 0) {yStart = index;}
 		
 		int screenWidth = Window.getWidth() / (tileSize * scale) + 1;
@@ -123,6 +123,28 @@ public class BackgroundLayer {
 				
 				SpriteRenderer.add(image);
 			}
+		}*/ //672
+		
+		int width = tileset.image.getWidth();
+		
+		int yStart = yStart2;
+		
+		int screenWidth = Window.getWidth() / (width * scale) + 1;
+		
+		float xCam = camera.position.x;
+		float yCam = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+		
+		double xOffset = (xCam / scrollSpeed) % (width * scale);
+		int iOffset = (int)(xCam / scrollSpeed / (width * scale));
+		
+		for(int i = -1; i < screenWidth + 1; i++) {
+			int x = (i + iOffset) % tileset.uvMaps2.length;
+			while(x < 0) {x += tileset.uvMaps2.length;}
+			
+			Image image = new Image(tileset.image.tex);
+			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart, scale, scale);
+			
+			SpriteRenderer.add(image);
 		}
 	}
 	

@@ -162,9 +162,9 @@ public class Loader {
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			
-			leafBG0 = loadImage("/maps/bg0.png");
-			leafBG1 = loadImage("/maps/bg1.png");
-			leafBG2 = loadImage("/maps/bg2.png");
+			leafBG0 = loadImage("/maps/bg20.png");
+			leafBG1 = loadImage("/maps/bg21.png");
+			leafBG2 = loadImage("/maps/bg22.png");
 			
 			leafLayer1 = loadImage("/maps/Leaf_Forest_Act_1.png");
 			leafLayer2 = loadImage("/maps/Leaf_Forest_Act_1.png");
