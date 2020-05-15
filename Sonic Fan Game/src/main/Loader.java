@@ -65,6 +65,7 @@ public class Loader {
 	public static ByteBuffer[] spindashChargeDustAnim;
 	public static ByteBuffer[] skirtAnim;
 	public static ByteBuffer[] turnAnim;
+	public static ByteBuffer[] landAnim;
 	
 	public static ByteBuffer[] springAnim;
 	public static ByteBuffer[] ringAnim;
@@ -139,6 +140,7 @@ public class Loader {
 			spindashChargeDustAnim = loadImages("/sonicsprites", "chargeDust");
 			skirtAnim = loadImages("/sonicsprites", "skirt");
 			turnAnim = loadImages("/sonicsprites", "turn");
+			landAnim = loadImages("/sonicsprites", "land");
 			
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");

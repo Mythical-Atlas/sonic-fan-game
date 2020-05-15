@@ -72,6 +72,10 @@ public class Player {
 	private final double LEDGE_MASK_R_WIDTH     = 50;
 	private final double LEDGE_MASK_R_HEIGHT    = 50;
 	
+	private final double LAND_MASK_OFFSET_Y  = 100;
+	private final double LAND_MASK_WIDTH     = 100;
+	private final double LAND_MASK_HEIGHT    = 100;
+	
 	private final double MASK_RADIUS = 50;
 	
 	private final double SCALE 					= 0.5;
@@ -100,6 +104,7 @@ public class Player {
 	private final int TURN_ANIM			 	= 11;
 	private final int BOUNCING_UP_ANIM		= 12;
 	private final int BOUNCING_DOWN_ANIM	= 13;
+	private final int LAND_ANIM				= 14;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -128,6 +133,7 @@ public class Player {
 	private boolean spindashCharge;
 	private boolean chargeReady;
 	private boolean bouncing;
+	private boolean landing;
 	
 	private double jumpSlowed;
 	private double groundSpeed;
@@ -164,6 +170,7 @@ public class Player {
 	private Animation spindashChargeDustAnim;
 	private Animation skirtAnim;
 	private Animation turnAnim;
+	private Animation landAnim;
 	
 	private int facing;
 	private int anim;
@@ -215,6 +222,7 @@ public class Player {
 		spindashChargeDustAnim = new Animation(Loader.spindashChargeDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
 		skirtAnim = new Animation(Loader.skirtAnim, new int[]{2, 2, 2, 4}, 0);
 		turnAnim = new Animation(Loader.turnAnim, new int[]{1, 3}, 0);
+		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
 		
 		jumpSound0 = Loader.jumpSound0;
 		jumpSound1 = Loader.jumpSound1;
@@ -312,6 +320,10 @@ public class Player {
 				}
 			}
 		}
+		
+		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
+		landing = false;
+		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i])) {landing = true;}}
 	}
 	
 	private void movement() {
@@ -466,7 +478,7 @@ public class Player {
 					jumpSlowing = true;
 				}
 				
-				if(jumpSlowed >= 0) {jumping = false;}
+				if(jumpSlowed >= 0 && anim == JUMP_ANIM) {jumping = false;}
 			}
 		}
 	}
@@ -550,10 +562,16 @@ public class Player {
 			vel.translate(0, GRAVITY * SCALE);
 			
 			if(jumping) {jumpSlowed += GRAVITY * SCALE;}
+			
+			if(vel.x < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {vel.x = -GROUND_ACCEL_LIMIT * SCALE;}
+			if(vel.x > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {vel.x = GROUND_ACCEL_LIMIT * SCALE;}
 		}
 		else {
 			Vector tempGrav = new Vector(0, GRAVITY * SCALE).project(groundAxis.getPerpendicular().normalize());
 			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {groundSpeed += getRotatedVectorComponents(tempGrav, groundAxis).x;}
+			
+			if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
 		}
 	}
 
@@ -946,13 +964,22 @@ public class Player {
 						
 						if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 						else {
-							if(anim != JUMP_ANIM && !bouncing) {
+							if(anim != JUMP_ANIM && anim != LAND_ANIM && !bouncing && !landing) {
 								anim = FALL_ANIM;
 								fallAnim.reset();
 							}
 						}
 						
-						if(anim == JUMP_ANIM) {jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						if(anim == LAND_ANIM) {landAnim.update(1);}
+						
+						if(anim == JUMP_ANIM) {
+							jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+							
+							if(landing && vel.y > 0 && !jumping) {
+								anim = LAND_ANIM;
+								landAnim.reset();
+							}
+						}
 					}
 				}
 			}
@@ -1013,6 +1040,7 @@ public class Player {
 			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
 			if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}

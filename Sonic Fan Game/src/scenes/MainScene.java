@@ -102,8 +102,12 @@ public class MainScene extends Scene {
 		interpretMap(leafForest1Map.json);
 		camPos = new Vector(player.pos.x, player.pos.y);
 		
-		rings = new Ring[]{
-			new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
+		/*rings = new Ring[]{
+			new Ring( 2 * 96 * SCALE + 20 *  0 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
+			new Ring( 2 * 96 * SCALE + 20 *  1 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
+			new Ring( 2 * 96 * SCALE + 20 *  2 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
+				
+			/*new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 *  1 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 *  2 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 *  3 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
@@ -123,8 +127,36 @@ public class MainScene extends Scene {
 			new Ring(16 * SCALE * 96 + 20 * 17 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 * 18 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
 			new Ring(16 * SCALE * 96 + 20 * 19 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-		};
+			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),*/
+		//};
+		
+		rings = null;
+		
+		placeRing( 2,  0,  3 + 4 * 0,  9 + 1 * 0, 0, 0);
+		placeRing( 2,  0,  3 + 4 * 1,  9 + 1 * 1, 0, 0);
+		placeRing( 2,  0,  3 + 4 * 2,  9 + 1 * 2, 0, 0);
+		
+		placeRing(11,  2,  8 + 3 * 0,  7 + 3 * 0, 0, 0);
+		placeRing(11,  2,  8 + 3 * 1,  7 + 3 * 1, 0, 0);
+		placeRing(11,  2,  8 + 3 * 2,  7 + 3 * 2, 0, 0);
+		
+		placeRing(28,  4,  2 + 3 * 0,  0 + 3 * 0, 0, 0);
+		placeRing(28,  4,  2 + 3 * 1,  0 + 3 * 1, 0, 0);
+		placeRing(28,  4,  2 + 3 * 2,  0 + 3 * 2, 0, 0);
+		
+		placeRing(29,  4, 12 +  7,   7, 0, 0);
+		placeRing(29,  4,       3,   7, 0, 0);
+		placeRing(29,  4, 12 +  5,   1, 0, 0);
+		placeRing(29,  4,       5,   1, 0, 0);
+		placeRing(29,  4, 12 + -1,  -1, 0, 0);
+		
+		placeRing(24,  6,  9 + 4 * 0,  6 + 4 * 0, 0, 0);
+		placeRing(24,  6,  9 + 4 * 1,  6 + 4 * 1, 0, 0);
+		placeRing(24,  6,  9 + 4 * 2,  6 + 4 * 2, 0, 0);
+		
+		placeRing(28,  9,  9 + 4 * 0,  0 + 4 * 0, 0, 0);
+		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
+		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
 		springs = new Spring[]{
 			new Spring(35 * SCALE * 96 + 8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
@@ -240,6 +272,10 @@ public class MainScene extends Scene {
 		}
 		
 		return(out);
+	}
+	
+	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {
+		rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));
 	}
 	
 	private void interpretMap(TiledJSON json) {

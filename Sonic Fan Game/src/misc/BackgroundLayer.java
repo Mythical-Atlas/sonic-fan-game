@@ -142,7 +142,7 @@ public class BackgroundLayer {
 			while(x < 0) {x += tileset.uvMaps2.length;}
 			
 			Image image = new Image(tileset.image.tex);
-			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart, scale, scale);
+			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
 			
 			SpriteRenderer.add(image);
 		}

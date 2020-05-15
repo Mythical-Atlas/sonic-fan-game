@@ -39,9 +39,9 @@ public class Background {
 		//int screenHeight = Loader.graphicsHeight / tileSize + 1;
 		
 		int[] actualIndices = new int[3];
-		actualIndices[0] = -672 - 600;
-		actualIndices[1] = 300;
-		actualIndices[2] = 600;
+		actualIndices[0] = (-672 - 600) / 2;
+		actualIndices[1] = 150;
+		actualIndices[2] = 200;
 		
 		for(int l = 0; l < layers.length; l++) {
 			layers[l].draw(actualIndices[l], scrollSpeeds[l], cam);
