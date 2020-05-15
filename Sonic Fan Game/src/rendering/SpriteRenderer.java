@@ -15,6 +15,11 @@ public class SpriteRenderer {
 	private SpriteRenderer() {
 		batches = null;
 		batchIndex = 0;
+		
+		for(int i = 0; i < 10; i++) {
+			batches = append(batches, new SpriteRenderBatch());
+			batches[batches.length - 1].load();
+		}
 	}
 	
 	public static SpriteRenderer get() {

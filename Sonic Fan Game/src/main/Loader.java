@@ -66,6 +66,7 @@ public class Loader {
 	public static ByteBuffer[] skirtAnim;
 	public static ByteBuffer[] turnAnim;
 	public static ByteBuffer[] landAnim;
+	public static ByteBuffer[] startAnim;
 	
 	public static ByteBuffer[] springAnim;
 	public static ByteBuffer[] ringAnim;
@@ -100,6 +101,8 @@ public class Loader {
 	
 	public static Clip ringSound;
 	public static Clip springSound;
+	
+	public static Clip leaf1Music;
 	
 	public static void main(String[] args) {
 		get().init();
@@ -141,6 +144,7 @@ public class Loader {
 			skirtAnim = loadImages("/sonicsprites", "skirt");
 			turnAnim = loadImages("/sonicsprites", "turn");
 			landAnim = loadImages("/sonicsprites", "land");
+			startAnim = loadImages("/sonicsprites", "start");
 			
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");
@@ -158,6 +162,8 @@ public class Loader {
 			stepSound2 = loadSound("/sonicsounds/step2.wav", -10.0f);
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
+			
+			leaf1Music = loadSound("/maps/leaf1.wav", -10.0f);
 			
 			ringSound = loadSound("/objectsounds/ring.wav", -20.0f);
 			springSound = loadSound("/objectsounds/spring.wav", -20.0f);

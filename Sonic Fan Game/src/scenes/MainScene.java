@@ -14,6 +14,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.nio.ByteBuffer;
 
+import javax.sound.sampled.Clip;
+
 import org.joml.Vector2f;
 
 import datatypes.Scene;
@@ -80,6 +82,8 @@ public class MainScene extends Scene {
 	
 	private Background leafBG;
 	
+	private Clip leaf1Music;
+	
 	public void init() {
 		SpriteRenderer.reset();
 		
@@ -101,34 +105,6 @@ public class MainScene extends Scene {
 		
 		interpretMap(leafForest1Map.json);
 		camPos = new Vector(player.pos.x, player.pos.y);
-		
-		/*rings = new Ring[]{
-			new Ring( 2 * 96 * SCALE + 20 *  0 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
-			new Ring( 2 * 96 * SCALE + 20 *  1 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
-			new Ring( 2 * 96 * SCALE + 20 *  2 * SCALE + 16 * SCALE * 96,  0 * 96 * SCALE +  2 * SCALE + 16 * SCALE * 96),
-				
-			/*new Ring(16 * SCALE * 96 + 20 *  0 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  1 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  2 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  3 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  4 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  5 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  6 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  7 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  8 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 *  9 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 10 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 11 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 12 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 13 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 14 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 15 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 16 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 17 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 18 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 19 * SCALE, 16 * SCALE * 96 + 70 * SCALE),
-			new Ring(16 * SCALE * 96 + 20 * 20 * SCALE, 16 * SCALE * 96 + 70 * SCALE),*/
-		//};
 		
 		rings = null;
 		
@@ -171,6 +147,11 @@ public class MainScene extends Scene {
 		leafBG.setTween(0, 1, new float[]{128.0f / 255.0f, 160.0f / 255.0f, 248.0f / 255.0f, 1});
 		leafBG.setTween(1, 1, 14, 14);
 		leafBG.setTween(2, 1, 14, 14);
+		
+		leaf1Music = Loader.leaf1Music;
+		
+		leaf1Music.setFramePosition(0);
+		leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 		
 	public void update(float dt) {
@@ -284,12 +265,24 @@ public class MainScene extends Scene {
 				int tile = json.map[2][tx][ty] - json.offsets[0];
 				int w = json.tileWidth * SCALE;
 				int h = json.tileHeight * SCALE;
-				int w2 = w / 2;
-				int h2 = h / 2;
 				int x = tx * w;
 				int y = ty * h;
+				int s1 = w / 12;
+				int s00 = 0;
+				int s01 = w / 12;
+				int s02 = s1 * 2;
+				int s03 = s1 * 3;
+				int s04 = s1 * 4;
+				int s05 = s1 * 5;
+				int s06 = s1 * 6;
+				int s07 = s1 * 7;
+				int s08 = s1 * 8;
+				int s09 = s1 * 9;
+				int s10 = s1 * 10;
+				int s11 = s1 * 11;
+				int s12 = s1 * 12;
 				
-				if(tile == 8) {player = new Player(x + w2, y + h2);}
+				if(tile == 8) {player = new Player(x, y + s10 + w / 24);}
 			}
 		}
 		
