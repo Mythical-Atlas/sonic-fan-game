@@ -31,9 +31,8 @@ public class Loader {
 	
 	public static final String TITLE = "Sonic Fan Game";
 	public static final int TARGET_FPS = 60;
-	public static final int SCALE = 1;
-	public static final int DEFAULT_FRAME_WIDTH = 1280;
-	public static final int DEFAULT_FRAME_HEIGHT = 720;
+	public static final int DEFAULT_FRAME_WIDTH = 240 * 4;
+	public static final int DEFAULT_FRAME_HEIGHT = 160 * 4;
 	public static boolean loadedAssets;
 	
 	public static Scene currentScene;
@@ -163,10 +162,10 @@ public class Loader {
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
 			
-			leaf1Music = loadSound("/maps/leaf1.wav", -10.0f);
+			leaf1Music = loadSound("/maps/leaf1.wav", -20.0f);
 			
-			ringSound = loadSound("/objectsounds/ring.wav", -20.0f);
-			springSound = loadSound("/objectsounds/spring.wav", -20.0f);
+			ringSound = loadSound("/objectsounds/ring.wav", -10.0f);
+			springSound = loadSound("/objectsounds/spring.wav", -10.0f);
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			

@@ -18,7 +18,7 @@ import rendering.SpriteRenderer;
 
 public class HUD {
 	public static final int FPS_SAMPLE_SIZE = 10;
-	public static final int SCALE = 3;
+	public static final int SCALE = 2;
 	
 	private Image hud;
 	private Image time;

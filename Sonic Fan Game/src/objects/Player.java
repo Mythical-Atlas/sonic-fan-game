@@ -29,16 +29,18 @@ import shapes.Circle;
 import shapes.Rectangle;
 
 public class Player {
-	private final double SPRINT_ACCEL 		= 2;
-	private final double MOVE_ACCEL  		= 0.15;
-	private final double GROUND_ACCEL_LIMIT = 30;
-	private final double SKID_ACCEL  		= 1;
-	private final double DRAG_DECEL   		= 0.25;
-	private final double DEBUG_JUMP_IMPULSE = 42;
-	private final double JUMP_IMPULSE 		= 21;
-	private final double JUMP_SWITCH  		= 2;
-	private final double GRAVITY      		= 0.75;
-	private final double SPIN_DECEL			= 0.025;
+	private final double SPRINT_ACCEL 		  = 2;
+	private final double MOVE_ACCEL  		  = 0.12;
+	private final double GROUND_ACCEL_LIMIT   = 35;
+	private final double SKID_ACCEL  		  = 1;
+	private final double DRAG_DECEL   		  = 0.108;
+	private final double DEBUG_JUMP_IMPULSE   = 50;
+	private final double JUMP_IMPULSE 		  = 22;
+	private final double JUMP_SWITCH  		  = 2;
+	private final double GRAVITY      		  = 0.75;
+	private final double GROUND_GRAVITY_ACCEL = 0.75;
+	private final double GROUND_GRAVITY_DECEL = 0.75;
+	private final double SPIN_DECEL			  = 0.025;
 	
 	private final double SLOW_MIN_SPEED 	= 10;
 	private final double NORMAL_MIN_SPEED 	= 20;
@@ -55,7 +57,7 @@ public class Player {
 	private final double GROUND_ANGLE_MASK_RADIUS    = 50;
 	
 	private final double STICK_OFFSET_SCALE = 0.5;
-	private final double STICK_MIN_SPEED    = 10;
+	private final double STICK_MIN_SPEED    = 5;
 	
 	private final double GROUND_MASK_OFFSET_X  = 0;
 	private final double GROUND_MASK_OFFSET_Y  = 1;
@@ -138,7 +140,7 @@ public class Player {
 	public boolean starting;
 	
 	private double jumpSlowed;
-	private double groundSpeed;
+	public double groundSpeed;
 	private double spindashStrength;
 	
 	private double stepTimer;
@@ -260,6 +262,8 @@ public class Player {
 					starting = false;
 					facing = 1;
 					ground = true;
+					jumping = false;
+					ledge = false;
 					vel = new Vector(10, 0);
 				}
 			}
@@ -546,7 +550,7 @@ public class Player {
 		if(!ground) {jumpReady = false;}
 		else {jumping = false;}
 		
-		if(jumpReady && spaceBar && !crouching0) {
+		if(jumpReady && spaceBar && !crouching0 && ground) {
 			jumpReady = false;
 			ground = false;
 			jumping = true;
@@ -659,7 +663,13 @@ public class Player {
 			if(vel.x > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {vel.x = GROUND_ACCEL_LIMIT * SCALE;}
 		}
 		else {
-			Vector tempGrav = new Vector(0, GRAVITY * SCALE).project(groundAxis.getPerpendicular().normalize());
+			Vector tempGrav = new Vector(0, SCALE).project(groundAxis.getPerpendicular().normalize());
+			Vector accelGrav = new Vector(0, GROUND_GRAVITY_ACCEL * SCALE).project(groundAxis.getPerpendicular().normalize());
+			Vector decelGrav = new Vector(0, GROUND_GRAVITY_DECEL * SCALE).project(groundAxis.getPerpendicular().normalize());
+			
+			if(abs(groundSpeed + getRotatedVectorComponents(tempGrav, groundAxis).x) >= abs(groundSpeed)) {tempGrav = accelGrav;}
+			else {tempGrav = decelGrav;}
+			
 			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {groundSpeed += getRotatedVectorComponents(tempGrav, groundAxis).x;}
 			
 			if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
@@ -739,11 +749,12 @@ public class Player {
 		
 		if(ground && !oldGround) {
 			ledge = false;
+			jumping = false;
 			
-			landSound.stop();
+			/*landSound.stop();
 			landSound.flush();
 			landSound.setFramePosition(0);
-			landSound.start();
+			landSound.start();*/
 			
 			if(downArrow) {
 				if(!spinning && vel.x != 0) {
@@ -963,7 +974,7 @@ public class Player {
 											if(stepTimer >= STEP_SOUND_SPEED) {
 												stepTimer = 0;
 												
-												switch(stepIndex) {
+												/*switch(stepIndex) {
 													case(0): {
 														stepSound0.stop();
 														stepSound0.flush();
@@ -999,7 +1010,7 @@ public class Player {
 														stepSound4.start();
 														break;
 													}
-												}
+												}*/
 												
 												stepIndex++;
 												if(stepIndex == 5) {stepIndex = 0;}
@@ -1024,13 +1035,9 @@ public class Player {
 									jumpAnim.reset();
 									
 									jumpSound0.stop();
-									jumpSound1.stop();
 									jumpSound0.flush();
-									jumpSound1.flush();
 									jumpSound0.setFramePosition(0);
-									jumpSound1.setFramePosition(0);
 									jumpSound0.start();
-									jumpSound1.start();
 								}
 							}
 							else {

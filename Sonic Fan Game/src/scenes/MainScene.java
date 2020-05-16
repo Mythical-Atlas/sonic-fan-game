@@ -43,6 +43,8 @@ import shapes.Rectangle;
 import shapes.Triangle;
 
 public class MainScene extends Scene {
+	private final int LEFT_CAMERA_LIMIT = 2880;
+	
 	private final int X_MIN_DISTANCE_SCALE = 32;
 	private final int Y_MIN_DISTANCE_SCALE = 32;
 	private final int LEAD_DISTANCE_SCALE  = 8;
@@ -217,7 +219,7 @@ public class MainScene extends Scene {
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
-		double lead = player.vel.x * LEAD_DISTANCE_SCALE;
+		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE;
 		
 		double x = camPos.x;
 		double y = camPos.y;
@@ -225,7 +227,7 @@ public class MainScene extends Scene {
 		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
 		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
 		
-		x = moveTowards(x, pos.x, xMinDist, 0.25, dt);
+		x = moveTowards(x, pos.x + lead, xMinDist, 0.25, dt);
 		y = moveTowards(y, pos.y, yMinDist, 0.25, dt);
 		
 		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
@@ -237,6 +239,8 @@ public class MainScene extends Scene {
 		y -= (Window.getInitHeight() * 2 - Window.getHeight()) / 2;
 		
 		camera.position = new Vector2f((float)(int)x, (float)(int)y);
+		
+		if(camera.position.x < LEFT_CAMERA_LIMIT) {camera.position.x = LEFT_CAMERA_LIMIT;}
 	}
 	
 	private double moveTowards(double value0, double value1, double minDist, double interval, float dt) {

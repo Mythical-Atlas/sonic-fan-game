@@ -96,6 +96,8 @@ public class Window {
 		
 		initWidth = getWidth();
 		initHeight = getHeight();
+		
+		glfwRestoreWindow(glfwWindow);
 	}
 	
 	public void loop() {
