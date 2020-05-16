@@ -64,7 +64,7 @@ public class Player {
 	private final double GROUND_MASK_WIDTH     = 100;
 	private final double GROUND_MASK_HEIGHT    = 50;
 	
-	private final double LEDGE_MASK_L_OFFSET_X  = -25;
+	private final double LEDGE_MASK_L_OFFSET_X  = -255;
 	private final double LEDGE_MASK_L_OFFSET_Y  = 50;
 	private final double LEDGE_MASK_L_WIDTH     = 50;
 	private final double LEDGE_MASK_L_HEIGHT    = 50;
@@ -1160,8 +1160,8 @@ public class Player {
 			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
-			if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(dustAnim == CHARGE_DUST_ANIM)  {spindashChargeDustAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 		}
 	}
 
