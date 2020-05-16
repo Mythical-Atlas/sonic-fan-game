@@ -1,4 +1,4 @@
-package datatypes;
+package scenes;
 
 import rendering.Camera;
 

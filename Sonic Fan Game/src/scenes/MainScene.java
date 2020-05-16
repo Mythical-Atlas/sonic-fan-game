@@ -18,7 +18,8 @@ import javax.sound.sampled.Clip;
 
 import org.joml.Vector2f;
 
-import datatypes.Scene;
+import badniks.Badnik;
+import badniks.Spinner;
 import datatypes.Shape;
 import datatypes.State;
 import datatypes.TiledJSON;
@@ -29,6 +30,7 @@ import main.Loader;
 import main.Window;
 import misc.Background;
 import misc.HUD;
+import objects.Item;
 import objects.Player;
 import objects.Ring;
 import objects.Spring;
@@ -65,6 +67,9 @@ public class MainScene extends Scene {
 	
 	private Ring[] rings;
 	private Spring[] springs;
+	
+	private Badnik[] badniks;
+	private Item[] items;
 	
 	private HUD hud;
 	
@@ -138,6 +143,14 @@ public class MainScene extends Scene {
 			new Spring(88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
 		};
 		
+		badniks = new Badnik[]{
+			new Spinner(17 * SCALE * 96, 16 * SCALE * 96)
+		};
+		
+		items = new Item[]{
+			new Item(19 * 96 * SCALE + 48 * SCALE + 13 * SCALE + 16 * 96 * SCALE, 5 * 96 * SCALE + 96 * SCALE - 29 * SCALE + 16 * 96 * SCALE)
+		};
+		
 		hud = new HUD();
 		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
@@ -157,12 +170,7 @@ public class MainScene extends Scene {
 		checkKeysReleased();
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
-			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs);
-			if(rings != null) {
-				int[] removals = null;
-				for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
-				if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
-			}
+			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items);
 			moveCamera(dt);
 		}
 		
@@ -185,8 +193,26 @@ public class MainScene extends Scene {
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
 		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		player.draw(dt, defaultShader, camera);
+		
+		if(rings != null) {
+			int[] removals = null;
+			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+		}
+		if(badniks != null) {
+			int[] removals = null;
+			for(int i = 0; i < badniks.length; i++) {if(badniks[i].destroy == 2) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {badniks = removeIndex(badniks, removals[i]);}}
+		}
+		if(items != null) {
+			int[] removals = null;
+			for(int i = 0; i < items.length; i++) {if(items[i].destroy == 2) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {items = removeIndex(items, removals[i]);}}
+		}
 		
 		SpriteRenderer.draw(spriteShader, camera);
 		

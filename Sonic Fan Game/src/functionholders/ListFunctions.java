@@ -1,7 +1,9 @@
 package functionholders;
 
+import badniks.Badnik;
 import datatypes.Shape;
 import datatypes.Vector;
+import objects.Item;
 import objects.Ring;
 import rendering.Image;
 //import rendering.ShapeRendererBatch;
@@ -120,6 +122,26 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new double[]{pointToCheck});}
 		
 		double[] newList = new double[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static Badnik[] append(Badnik[] existingPoints, Badnik pointToCheck) {
+		if(existingPoints == null) {return(new Badnik[]{pointToCheck});}
+		
+		Badnik[] newList = new Badnik[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static Item[] append(Item[] existingPoints, Item pointToCheck) {
+		if(existingPoints == null) {return(new Item[]{pointToCheck});}
+		
+		Item[] newList = new Item[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;
@@ -268,6 +290,20 @@ public class ListFunctions {
 	}
 	public static Ring[] removeIndex(Ring[] list, int index) {
 		Ring[] output = null;
+		
+		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
+		
+		return(output);
+	}
+	public static Badnik[] removeIndex(Badnik[] list, int index) {
+		Badnik[] output = null;
+		
+		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
+		
+		return(output);
+	}
+	public static Item[] removeIndex(Item[] list, int index) {
+		Item[] output = null;
 		
 		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
 		

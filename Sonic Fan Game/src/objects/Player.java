@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static functionholders.CollisionFunctions.*;
 import static functionholders.GeometryFunctions.*;
 import static functionholders.ListFunctions.*;
+import static functionholders.DebugFunctions.*;
 import static functionholders.MathFunctions.*;
 import static java.awt.event.KeyEvent.*;
 
@@ -18,6 +19,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
+import badniks.Badnik;
 import datatypes.Animation;
 import datatypes.Shape;
 import datatypes.Vector;
@@ -198,6 +200,7 @@ public class Player {
 	private Clip stepSound3;
 	private Clip stepSound4;
 	
+	private Clip popSound;
 	private Clip ringSound;
 	private Clip springSound;
 	
@@ -253,6 +256,7 @@ public class Player {
 		stepSound3 = Loader.stepSound3;
 		stepSound4 = Loader.stepSound4;
 		
+		popSound = Loader.popSound;
 		ringSound = Loader.ringSound;
 		springSound = Loader.springSound;
 		
@@ -266,7 +270,7 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items) {
 		if(starting) {
 			if(anim != START_ANIM) {
 				anim = START_ANIM;
@@ -317,73 +321,6 @@ public class Player {
 					voiceGo.start();
 				}
 			}
-			
-			boolean[] platMasks = null;
-			if(platforms != null) {platMasks = checkPlatforms(platforms);}
-			
-			vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
-			pos.translate(vel/*.scale(dt / (1.0f / 60.0f))*/);
-			
-			checkLayer(layer1Triggers, layer2Triggers);
-			
-			Shape[] shapes = null;
-			if(layer == 1) {shapes = combine(layer0, layer1);}
-			if(layer == 2) {shapes = combine(layer0, layer2);}
-			if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
-			
-			if(shapes != null) {
-				collide(shapes);
-				checkLedge(shapes);
-				stick(shapes);
-			
-				checkGround(shapes);
-				getGroundAxis(shapes);
-			}
-			
-			if(rings != null) {
-				for(int i = 0; i < rings.length; i++) {
-					if(rings[i].destroy == 0) {
-						Shape ringMask = new Circle(rings[i].pos, 8 * 2);
-						mask.relocate(pos);
-						
-						if(checkCollision(mask, ringMask)) {
-							this.rings++;
-							rings[i].destroy = 1;
-							ringSound.stop();
-							ringSound.flush();
-							ringSound.setFramePosition(0);
-							ringSound.start();
-						}
-					}
-				}
-			}
-			
-			if(springs != null) {
-				for(int i = 0; i < springs.length; i++) {
-					if(!springs[i].bouncing) {
-						Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
-						mask.relocate(pos);
-						
-						if(checkCollision(mask, springMask)) {
-							vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
-							vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
-							springs[i].bouncing = true;
-							
-							jumpReady = false;
-							ground = false;
-							jumping = false;
-							jumpSlowing = false;
-							spinning = false;
-							bouncing = true;
-							
-							springSound.stop();
-							springSound.flush();
-							springSound.setFramePosition(0);
-							springSound.start();
-						}
-					}
-				}
-			}
 		}
 		
 		if(!starting) {
@@ -398,78 +335,127 @@ public class Player {
 			spindash();
 			crouch();
 			gravity();
+		}
 			
-			boolean[] platMasks = null;
-			if(platforms != null) {platMasks = checkPlatforms(platforms);}
-			
-			vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
-			pos.translate(vel/*.scale(dt / (1.0f / 60.0f))*/);
-			
-			checkLayer(layer1Triggers, layer2Triggers);
-			
-			Shape[] shapes = null;
-			if(layer == 1) {shapes = combine(layer0, layer1);}
-			if(layer == 2) {shapes = combine(layer0, layer2);}
-			if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
-			
-			if(shapes != null) {
-				collide(shapes);
-				checkLedge(shapes);
-				stick(shapes);
-			
-				checkGround(shapes);
-				getGroundAxis(shapes);
+		boolean[] platMasks = null;
+		if(platforms != null) {platMasks = checkPlatforms(platforms);}
+		
+		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
+		pos.translate(vel/*.scale(dt / (1.0f / 60.0f))*/);
+		
+		checkLayer(layer1Triggers, layer2Triggers);
+		
+		Shape[] shapes = null;
+		if(layer == 1) {shapes = combine(layer0, layer1);}
+		if(layer == 2) {shapes = combine(layer0, layer2);}
+		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
+		
+		if(shapes != null) {
+			collide(shapes);
+			checkLedge(shapes);
+			stick(shapes);
+		
+			checkGround(shapes);
+			getGroundAxis(shapes);
+		}
+		
+		if(rings != null) {
+			for(int i = 0; i < rings.length; i++) {
+				if(rings[i].destroy == 0) {
+					Shape ringMask = new Circle(rings[i].pos, 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, ringMask)) {
+						this.rings++;
+						rings[i].destroy = 1;
+						ringSound.stop();
+						ringSound.flush();
+						ringSound.setFramePosition(0);
+						ringSound.start();
+					}
+				}
 			}
-			
-			if(rings != null) {
-				for(int i = 0; i < rings.length; i++) {
-					if(rings[i].destroy == 0) {
-						Shape ringMask = new Circle(rings[i].pos, 8 * 2);
-						mask.relocate(pos);
-						
-						if(checkCollision(mask, ringMask)) {
-							this.rings++;
-							rings[i].destroy = 1;
-							ringSound.stop();
-							ringSound.flush();
-							ringSound.setFramePosition(0);
-							ringSound.start();
+		}
+		
+		if(badniks != null) {
+			for(int i = 0; i < badniks.length; i++) {
+				if(badniks[i].destroy == 0) {
+					Shape badnikMask = new Circle(badniks[i].pos.add(8 * 2, 4 * 2), 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, badnikMask)) {
+						if(spinning || spindashing || anim == JUMP_ANIM) {
+							vel = vel.project(new Vector(1, 0));
+							vel.translate(new Vector(0, -1).scale(10));
+							badniks[i].destroy();
+							popSound.stop();
+							popSound.flush();
+							popSound.setFramePosition(0);
+							popSound.start();
 						}
 					}
 				}
 			}
-			
-			if(springs != null) {
-				for(int i = 0; i < springs.length; i++) {
-					if(!springs[i].bouncing) {
-						Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
-						mask.relocate(pos);
+		}
+		
+		if(items != null) {
+			for(int i = 0; i < items.length; i++) {
+				if(items[i].destroy == 0) {
+					Shape itemMask = new Circle(items[i].pos.add(8 * 2, 4 * 2), 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, itemMask)) {
+						vel = vel.project(new Vector(1, 0));
+						vel.translate(new Vector(0, -1).scale(10));
+						items[i].destroy();
 						
-						if(checkCollision(mask, springMask)) {
-							vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
-							vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
-							springs[i].bouncing = true;
-							
+						if(anim != JUMP_ANIM && !spinning && !spindashing) {
 							jumpReady = false;
 							ground = false;
 							jumping = false;
 							jumpSlowing = false;
-							spinning = false;
 							bouncing = true;
-							
-							springSound.stop();
-							springSound.flush();
-							springSound.setFramePosition(0);
-							springSound.start();
 						}
+						
+						popSound.stop();
+						popSound.flush();
+						popSound.setFramePosition(0);
+						popSound.start();
 					}
 				}
 			}
-			
-			Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
-			landing = false;
-			for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i])) {landing = true;}}
 		}
+		
+		if(springs != null) {
+			for(int i = 0; i < springs.length; i++) {
+				if(!springs[i].bouncing) {
+					Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, springMask)) {
+						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
+						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
+						springs[i].bouncing = true;
+						
+						jumpReady = false;
+						ground = false;
+						jumping = false;
+						jumpSlowing = false;
+						spinning = false;
+						bouncing = true;
+						
+						springSound.stop();
+						springSound.flush();
+						springSound.setFramePosition(0);
+						springSound.start();
+					}
+				}
+			}
+		}
+		
+		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
+		landing = false;
+		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM) {landing = true;}}
 	}
 	
 	private void movement() {

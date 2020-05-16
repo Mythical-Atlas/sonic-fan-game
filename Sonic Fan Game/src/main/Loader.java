@@ -16,13 +16,13 @@ import javax.sound.sampled.FloatControl;
 import org.lwjgl.BufferUtils;
 
 import datatypes.Animation;
-import datatypes.Scene;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import misc.Background;
 import misc.HUD;
 import rendering.Image;
 import rendering.Shader;
+import scenes.Scene;
 
 import static functionholders.GraphicsFunctions.*;
 
@@ -88,6 +88,11 @@ public class Loader {
 	public static ByteBuffer time;
 	public static ByteBuffer[] numbers;
 	
+	public static ByteBuffer itemBox;
+	
+	public static ByteBuffer[] spinnerAnim;
+	public static ByteBuffer[] explosionAnim;
+	
 	public static Image testBuffer;
 	
 	public static Clip jumpSound0;
@@ -110,6 +115,7 @@ public class Loader {
 	
 	public static Clip ringSound;
 	public static Clip springSound;
+	public static Clip popSound;
 	
 	public static Clip leaf1Music;
 	
@@ -155,11 +161,13 @@ public class Loader {
 			landAnim = loadImages("/sonicsprites", "land");
 			startAnim = loadImages("/sonicsprites", "start");
 			
+			itemBox = loadImage("/objectsprites/itemBox.png");
+			
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");
 			sparkleAnim = loadImages("/objectsprites", "effect");
 			
-			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -10.0f);
+			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -15.0f);
 			jumpSound1 = loadSound("/sonicsounds/jump1.wav", -10.0f);
 			landSound = loadSound("/sonicsounds/land.wav", -10.0f);
 			skidSound = loadSound("/sonicsounds/skid.wav", -10.0f);
@@ -181,6 +189,7 @@ public class Loader {
 			
 			ringSound = loadSound("/objectsounds/ring.wav", -10.0f);
 			springSound = loadSound("/objectsounds/spring.wav", -10.0f);
+			popSound = loadSound("/objectsounds/pop.wav", -10.0f);
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			
@@ -200,6 +209,9 @@ public class Loader {
 			time = loadImage("/hudsprites/time.png");
 				
 			numbers = loadImages("/hudsprites", "");
+			
+			spinnerAnim = loadImages("/badniksprites", "spinner");
+			explosionAnim = loadImages("/objectsprites", "explosion");
 		}
 	}
 	

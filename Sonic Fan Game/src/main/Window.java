@@ -14,9 +14,9 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
-import datatypes.Scene;
 import rendering.Camera;
 import scenes.MainScene;
+import scenes.Scene;
 
 public class Window {
 	private long glfwWindow;
@@ -88,8 +88,6 @@ public class Window {
 		glfwMakeContextCurrent(glfwWindow);
 		glfwSwapInterval(1);
 		
-		glfwShowWindow(glfwWindow);
-		
 		GL.createCapabilities();
 		
 		changeScene(0);
@@ -98,6 +96,9 @@ public class Window {
 		initHeight = getHeight();
 		
 		glfwRestoreWindow(glfwWindow);
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowPos(glfwWindow, (vidmode.width() - getWindowWidth()) / 2, (vidmode.height() - getWindowHeight()) / 2);
+		glfwShowWindow(glfwWindow);
 	}
 	
 	public void loop() {
@@ -143,6 +144,23 @@ public class Window {
 		IntBuffer w = BufferUtils.createIntBuffer(1);
 		IntBuffer h = BufferUtils.createIntBuffer(1);
 		glfwGetFramebufferSize(get().glfwWindow, w, h);
+		int height = h.get(0);
+		
+		return(height);
+	}
+	
+	public static int getWindowWidth() {
+		IntBuffer w = BufferUtils.createIntBuffer(1);
+		IntBuffer h = BufferUtils.createIntBuffer(1);
+		glfwGetWindowSize(get().glfwWindow, w, h);
+		int width = w.get(0);
+		
+		return(width);
+	}
+	public static int getWindowHeight() {
+		IntBuffer w = BufferUtils.createIntBuffer(1);
+		IntBuffer h = BufferUtils.createIntBuffer(1);
+		glfwGetWindowSize(get().glfwWindow, w, h);
 		int height = h.get(0);
 		
 		return(height);
