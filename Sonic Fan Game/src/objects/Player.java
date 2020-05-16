@@ -48,9 +48,9 @@ public class Player {
 	private final double FASTEST_MIN_SPEED 	= 40;
 	private final double SKID_MIN_SPEED 	= 5;
 	
-	private final double SPINDASH_MIN_STRENGTH = 50;
-	private final double SPINDASH_CHARGE_SCALE = 10;
-	private final double SPINDASH_MAX_STRENGTH = 100;
+	private final double SPINDASH_MIN_STRENGTH = 35;
+	private final double SPINDASH_CHARGE_SCALE = 5;
+	private final double SPINDASH_MAX_STRENGTH = 50;
 	
 	private final double GROUND_ANGLE_MASK_OFFSET_X  = 0;
 	private final double GROUND_ANGLE_MASK_OFFSET_Y  = 1;
@@ -113,16 +113,19 @@ public class Player {
 	private final int REGULAR_DUST_ANIM = 1;
 	private final int CHARGE_DUST_ANIM 	= 2;
 	
+	// keys
 	private boolean upArrow;
 	private boolean downArrow;
 	private boolean leftArrow;
 	private boolean rightArrow;
 	private boolean spaceBar;
 	private boolean shiftKey;
+	private boolean controlKey;
+	
+	// flags
 	private boolean skidding;
 	private boolean skirting;
 	private boolean turning;
-	
 	private boolean ground;
 	private boolean ledge;
 	private boolean jumping;
@@ -137,6 +140,7 @@ public class Player {
 	private boolean chargeReady;
 	private boolean bouncing;
 	private boolean landing;
+	private boolean controlKeyReady;
 	public boolean starting;
 	
 	private double jumpSlowed;
@@ -433,7 +437,7 @@ public class Player {
 			turning = false;
 		}
 		
-		if(!crouching0) {
+		if(!crouching0 && !spindashing) {
 			if(!spinning) { // regular movement
 				if(leftArrow && !rightArrow) {
 					if(groundSpeed <= 0 || !ground) {
@@ -476,7 +480,7 @@ public class Player {
 				if(ground) {
 					if(leftArrow && !rightArrow) {
 						if(groundSpeed > 0) {
-							groundSpeed -= MOVE_ACCEL * SCALE;
+							groundSpeed -= SKID_ACCEL * SCALE;
 							if(groundSpeed <= 0) {
 								spinning = false;
 								facing = -1;
@@ -486,7 +490,7 @@ public class Player {
 					}
 					if(rightArrow && !leftArrow) {
 						if(groundSpeed < 0) {
-							groundSpeed += MOVE_ACCEL * SCALE;
+							groundSpeed += SKID_ACCEL * SCALE;
 							if(groundSpeed >= 0) {
 								spinning = false;
 								facing = 1;
@@ -510,16 +514,16 @@ public class Player {
 	}
 	
 	private void drag() {
-		if(!leftArrow && !rightArrow && ground || !leftArrow && !rightArrow && ground) {
+		if(!leftArrow && !rightArrow && ground || leftArrow && rightArrow && ground) {
 			skidding = false;
 			
-			if(!spinning) { // regular drag
+			if(!spinning && !spindashing) { // regular drag
 				     if(groundSpeed > 0) {groundSpeed -= DRAG_DECEL * SCALE;}
 				else if(groundSpeed < 0) {groundSpeed += DRAG_DECEL * SCALE;}
 				
 				if(groundSpeed >= -DRAG_DECEL * SCALE && groundSpeed <= DRAG_DECEL * SCALE) {groundSpeed = 0;}
 			}
-			else { // spinning drag
+			else if(spinning) { // spinning drag
 			         if(groundSpeed > 0) {groundSpeed -= SPIN_DECEL * SCALE;}
 				else if(groundSpeed < 0) {groundSpeed += SPIN_DECEL * SCALE;}
 				
@@ -543,6 +547,13 @@ public class Player {
 				}
 			}
 		}
+		
+		if(spindashing) {
+		         if(groundSpeed > 0) {groundSpeed -= SKID_ACCEL * SCALE;}
+			else if(groundSpeed < 0) {groundSpeed += SKID_ACCEL * SCALE;}
+			
+			if(groundSpeed >= -SKID_ACCEL * SCALE && groundSpeed <= SKID_ACCEL * SCALE) {groundSpeed = 0;}
+		}
 	}
 
 	private void jump() {
@@ -550,7 +561,7 @@ public class Player {
 		if(!ground) {jumpReady = false;}
 		else {jumping = false;}
 		
-		if(jumpReady && spaceBar && !crouching0 && ground) {
+		if(jumpReady && spaceBar && !crouching0 && ground && !spindashing) {
 			jumpReady = false;
 			ground = false;
 			jumping = true;
@@ -580,7 +591,7 @@ public class Player {
 	}
 	
 	private void spindash() {
-		if(spindashReady && spaceBar) {
+		if(spindashReady && spaceBar || ground && controlKey && controlKeyReady && !spinning) {
 			if(!spindashing) {
 				spindashing = true;
 				spindashCharge = false;
@@ -595,8 +606,12 @@ public class Player {
 			}
 		}
 		
+		if(!spindashing && spinning && controlKey && controlKeyReady) {spinning = false;}
+		
+		controlKeyReady = !controlKey;
+		
 		if(spindashing) {
-			if(downArrow) {
+			if(downArrow || controlKey) {
 				if(spaceBar && chargeReady) {
 					chargeDustTimer = 45;
 					spindashCharge = true;
@@ -619,7 +634,7 @@ public class Player {
 				spindashing = false;
 				spinning = true;
 				jumpReady = false;
-				groundSpeed += spindashStrength * facing;
+				groundSpeed = spindashStrength * facing;
 				
 				spindashReleaseSound.stop();
 				spindashReleaseSound.flush();
@@ -659,8 +674,8 @@ public class Player {
 			
 			if(jumping) {jumpSlowed += GRAVITY * SCALE;}
 			
-			if(vel.x < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {vel.x = -GROUND_ACCEL_LIMIT * SCALE;}
-			if(vel.x > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {vel.x = GROUND_ACCEL_LIMIT * SCALE;}
+			if(vel.x < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {vel.x = -GROUND_ACCEL_LIMIT * SCALE;}
+			if(vel.x > GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {vel.x = GROUND_ACCEL_LIMIT * SCALE;}
 		}
 		else {
 			Vector tempGrav = new Vector(0, SCALE).project(groundAxis.getPerpendicular().normalize());
@@ -672,8 +687,8 @@ public class Player {
 			
 			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {groundSpeed += getRotatedVectorComponents(tempGrav, groundAxis).x;}
 			
-			if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
-			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+			if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
 		}
 	}
 
@@ -1157,6 +1172,7 @@ public class Player {
 		rightArrow = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
 		spaceBar = KeyListener.isKeyPressed(GLFW_KEY_SPACE);
 		shiftKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT);
+		controlKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL);
 	}
 	
 	private Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
