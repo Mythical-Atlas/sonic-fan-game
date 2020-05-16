@@ -75,6 +75,11 @@ public class Loader {
 	public static ByteBuffer leafBG1;
 	public static ByteBuffer leafBG2;
 	
+	public static ByteBuffer start0;
+	public static ByteBuffer start1;
+	public static ByteBuffer start2;
+	public static ByteBuffer start3;
+	
 	public static ByteBuffer leafLayer1;
 	public static ByteBuffer leafLayer2;
 	
@@ -182,6 +187,11 @@ public class Loader {
 			leafBG0 = loadImage("/maps/bg20.png");
 			leafBG1 = loadImage("/maps/bg21.png");
 			leafBG2 = loadImage("/maps/bg22.png");
+			
+			start0 = loadImage("/hudsprites/start.png");
+			start1 = loadImage("/hudsprites/_1.png");
+			start2 = loadImage("/hudsprites/_2.png");
+			start3 = loadImage("/hudsprites/_3.png");
 			
 			leafLayer1 = loadImage("/maps/Leaf_Forest_Act_1.png");
 			leafLayer2 = loadImage("/maps/Leaf_Forest_Act_1.png");

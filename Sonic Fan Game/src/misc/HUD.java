@@ -24,6 +24,11 @@ public class HUD {
 	private Image time;
 	private Image[] numbers;
 	
+	private Image start0;
+	private Image start1;
+	private Image start2;
+	private Image start3;
+	
 	private Animation ring;
 	
 	public int rings;
@@ -37,11 +42,19 @@ public class HUD {
 	
 	private int fps;
 	
+	private int voice;
+	private int voiceTimer;
+	
 	public HUD() {
 		//camera = new Camera(new Vector2f());
 		
 		hud = new Image(Loader.hud);
 		time = new Image(Loader.time);
+		
+		start0 = new Image(Loader.start0);
+		start1 = new Image(Loader.start1);
+		start2 = new Image(Loader.start2);
+		start3 = new Image(Loader.start3);
 		
 		numbers = new Image[Loader.numbers.length];
 		for(int i = 0; i < numbers.length; i++) {numbers[i] = new Image(Loader.numbers[i]);}
@@ -56,6 +69,7 @@ public class HUD {
 		numFrames = 0;
 		
 		fps = 0;
+		voice = 0;
 	}
 	
 	public void draw(float dt, Player p, Shader shader, Camera camera) {
@@ -71,6 +85,8 @@ public class HUD {
 		
 		float xOffset = camera.position.x;
 		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+		int screenWidth = Window.getWidth();
+		int screenHeight = Window.getHeight();
 		
 		hud.setPositions(xOffset + 1 * SCALE, yOffset + 3 * SCALE, SCALE, SCALE);
 		SpriteRenderer.add(hud);
@@ -97,6 +113,40 @@ public class HUD {
 		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, shader, camera);
 		
 		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, shader, camera);
+		
+		if(p.voice != 0) {
+			voice = p.voice;
+			p.voice = 0;
+		}
+		
+		if(voice == 3) {
+			start3.setPositions(xOffset + screenWidth / 2 - start3.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start3.getHeight() * SCALE / 2, SCALE, SCALE);
+			SpriteRenderer.add(start3);
+		}
+		if(voice == 2) {
+			start2.setPositions(xOffset + screenWidth / 2 - start2.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start2.getHeight() * SCALE / 2, SCALE, SCALE);
+			SpriteRenderer.add(start2);
+		}
+		if(voice == 1) {
+			start1.setPositions(xOffset + screenWidth / 2 - start1.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start1.getHeight() * SCALE / 2, SCALE, SCALE);
+			SpriteRenderer.add(start1);
+		}
+		if(voice == 4) {
+			start0.setPositions(xOffset + screenWidth / 2 - start0.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start0.getHeight() * SCALE / 2, SCALE, SCALE);
+			SpriteRenderer.add(start0);
+			
+			voiceTimer = 60 * 2;
+			voice = 5;
+		}
+		if(voice == 5) {
+			start0.setPositions(xOffset + screenWidth / 2 - start0.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start0.getHeight() * SCALE / 2, SCALE, SCALE);
+			SpriteRenderer.add(start0);
+			
+			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+				voiceTimer--;
+				if(voiceTimer == 0) {voice = 0;}
+			}
+		}
 	}
 	
 	private void drawNumber(int x, int y, int num, int places, Shader shader, Camera camera) {

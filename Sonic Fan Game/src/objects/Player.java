@@ -30,7 +30,7 @@ import shapes.Rectangle;
 
 public class Player {
 	private final double SPRINT_ACCEL 		  = 2;
-	private final double MOVE_ACCEL  		  = 0.12;
+	private final double MOVE_ACCEL  		  = 0.115;
 	private final double GROUND_ACCEL_LIMIT   = 35;
 	private final double SKID_ACCEL  		  = 1;
 	private final double DRAG_DECEL   		  = 0.108;
@@ -64,14 +64,14 @@ public class Player {
 	private final double GROUND_MASK_WIDTH     = 100;
 	private final double GROUND_MASK_HEIGHT    = 50;
 	
-	private final double LEDGE_MASK_L_OFFSET_X  = -25;
+	private final double LEDGE_MASK_L_OFFSET_X  = -37.5;
 	private final double LEDGE_MASK_L_OFFSET_Y  = 50;
-	private final double LEDGE_MASK_L_WIDTH     = 50;
+	private final double LEDGE_MASK_L_WIDTH     = 25;
 	private final double LEDGE_MASK_L_HEIGHT    = 50;
 	
-	private final double LEDGE_MASK_R_OFFSET_X  = 25;
+	private final double LEDGE_MASK_R_OFFSET_X  = 37.5;
 	private final double LEDGE_MASK_R_OFFSET_Y  = 50;
-	private final double LEDGE_MASK_R_WIDTH     = 50;
+	private final double LEDGE_MASK_R_WIDTH     = 25;
 	private final double LEDGE_MASK_R_HEIGHT    = 50;
 	
 	private final double LAND_MASK_OFFSET_Y  = 100;
@@ -205,7 +205,7 @@ public class Player {
 	private Clip voice2;
 	private Clip voice1;
 	private Clip voiceGo;
-	private int voice;
+	public int voice;
 	
 	public int rings;
 	
@@ -278,9 +278,27 @@ public class Player {
 				// 1 = image 40 frame 4
 				// go = finshed
 				
-				if(startAnim.frame == 37 && startAnim.timer == 3) {voice = 3;}
-				if(startAnim.frame == 38 && startAnim.timer == 59) {voice = 2;}
-				if(startAnim.frame == 40 && startAnim.timer == 3) {voice = 1;}
+				if(startAnim.frame == 37 && startAnim.timer == 3) {
+					voice = 3;
+					voice3.stop();
+					voice3.flush();
+					voice3.setFramePosition(0);
+					voice3.start();
+				}
+				if(startAnim.frame == 38 && startAnim.timer == 59) {
+					voice = 2;
+					voice2.stop();
+					voice2.flush();
+					voice2.setFramePosition(0);
+					voice2.start();
+				}
+				if(startAnim.frame == 40 && startAnim.timer == 3) {
+					voice = 1;
+					voice1.stop();
+					voice1.flush();
+					voice1.setFramePosition(0);
+					voice1.start();
+				}
 				
 				startAnim.update(1);
 				if(startAnim.finished) {
@@ -290,36 +308,13 @@ public class Player {
 					ground = true;
 					jumping = false;
 					ledge = false;
+					
 					vel = new Vector(10, 0);
-				}
-				
-				if(voice == 4) {
+					
 					voiceGo.stop();
 					voiceGo.flush();
 					voiceGo.setFramePosition(0);
 					voiceGo.start();
-					voice = 0;
-				}
-				if(voice == 3) {
-					voice3.stop();
-					voice3.flush();
-					voice3.setFramePosition(0);
-					voice3.start();
-					voice = 0;
-				}
-				if(voice == 2) {
-					voice2.stop();
-					voice2.flush();
-					voice2.setFramePosition(0);
-					voice2.start();
-					voice = 0;
-				}
-				if(voice == 1) {
-					voice1.stop();
-					voice1.flush();
-					voice1.setFramePosition(0);
-					voice1.start();
-					voice = 0;
 				}
 			}
 			
