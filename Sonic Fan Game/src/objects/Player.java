@@ -64,7 +64,7 @@ public class Player {
 	private final double GROUND_MASK_WIDTH     = 100;
 	private final double GROUND_MASK_HEIGHT    = 50;
 	
-	private final double LEDGE_MASK_L_OFFSET_X  = -255;
+	private final double LEDGE_MASK_L_OFFSET_X  = -25;
 	private final double LEDGE_MASK_L_OFFSET_Y  = 50;
 	private final double LEDGE_MASK_L_WIDTH     = 50;
 	private final double LEDGE_MASK_L_HEIGHT    = 50;
@@ -201,6 +201,12 @@ public class Player {
 	private Clip ringSound;
 	private Clip springSound;
 	
+	private Clip voice3;
+	private Clip voice2;
+	private Clip voice1;
+	private Clip voiceGo;
+	private int voice;
+	
 	public int rings;
 	
 	public Player(double x, double y) {
@@ -250,8 +256,14 @@ public class Player {
 		ringSound = Loader.ringSound;
 		springSound = Loader.springSound;
 		
+		voice3 = Loader.voice3;
+		voice2 = Loader.voice2;
+		voice1 = Loader.voice1;
+		voiceGo = Loader.voiceGo;
+		
 		starting = true;
 		ground = true;
+		voice = 0;
 	}
 	
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs) {
@@ -261,14 +273,53 @@ public class Player {
 				startAnim.reset();
 			}
 			else {
+				// 3 = image 37 frame 4
+				// 2 = image 38 frame 60
+				// 1 = image 40 frame 4
+				// go = finshed
+				
+				if(startAnim.frame == 37 && startAnim.timer == 3) {voice = 3;}
+				if(startAnim.frame == 38 && startAnim.timer == 59) {voice = 2;}
+				if(startAnim.frame == 40 && startAnim.timer == 3) {voice = 1;}
+				
 				startAnim.update(1);
 				if(startAnim.finished) {
+					voice = 4;
 					starting = false;
 					facing = 1;
 					ground = true;
 					jumping = false;
 					ledge = false;
 					vel = new Vector(10, 0);
+				}
+				
+				if(voice == 4) {
+					voiceGo.stop();
+					voiceGo.flush();
+					voiceGo.setFramePosition(0);
+					voiceGo.start();
+					voice = 0;
+				}
+				if(voice == 3) {
+					voice3.stop();
+					voice3.flush();
+					voice3.setFramePosition(0);
+					voice3.start();
+					voice = 0;
+				}
+				if(voice == 2) {
+					voice2.stop();
+					voice2.flush();
+					voice2.setFramePosition(0);
+					voice2.start();
+					voice = 0;
+				}
+				if(voice == 1) {
+					voice1.stop();
+					voice1.flush();
+					voice1.setFramePosition(0);
+					voice1.start();
+					voice = 0;
 				}
 			}
 			

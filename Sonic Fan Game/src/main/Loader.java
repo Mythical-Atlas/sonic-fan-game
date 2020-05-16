@@ -98,6 +98,11 @@ public class Loader {
 	public static Clip stepSound3;
 	public static Clip stepSound4;
 	
+	public static Clip voice3;
+	public static Clip voice2;
+	public static Clip voice1;
+	public static Clip voiceGo;
+	
 	public static Clip ringSound;
 	public static Clip springSound;
 	
@@ -161,6 +166,11 @@ public class Loader {
 			stepSound2 = loadSound("/sonicsounds/step2.wav", -10.0f);
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
+			
+			voice3 = loadSound("/voiceclips/3.wav", -10.0f);
+			voice2 = loadSound("/voiceclips/2.wav", -10.0f);
+			voice1 = loadSound("/voiceclips/1.wav", -10.0f);
+			voiceGo = loadSound("/voiceclips/go.wav", -10.0f);
 			
 			leaf1Music = loadSound("/maps/leaf1.wav", -20.0f);
 			

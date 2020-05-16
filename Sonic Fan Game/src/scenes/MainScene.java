@@ -48,7 +48,6 @@ public class MainScene extends Scene {
 	private final int X_MIN_DISTANCE_SCALE = 32;
 	private final int Y_MIN_DISTANCE_SCALE = 32;
 	private final int LEAD_DISTANCE_SCALE  = 8;
-	
 	private final int SCALE = 2;
 	
 	private Player player;
@@ -58,9 +57,6 @@ public class MainScene extends Scene {
 	private Shape[] layer1Triggers;
 	private Shape[] layer2Triggers;
 	private Shape[] platforms;
-	
-	private double playerStartX;
-	private double playerStartY;
 	
 	private boolean showTileMasks;
 	
