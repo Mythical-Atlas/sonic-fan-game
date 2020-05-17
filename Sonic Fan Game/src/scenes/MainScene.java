@@ -1208,6 +1208,14 @@ public class MainScene extends Scene {
 						new Vector(x + s04, y + s12)
 					}, Color.WHITE));
 				}
+				
+				if(tile == 60) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s12),
+						new Vector(x + s12, y + s06),
+						new Vector(x + s12, y + s12)
+					}, Color.WHITE));
+				}
 			}
 		}
 		
