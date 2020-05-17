@@ -153,7 +153,8 @@ public class Player {
 	private boolean landing;
 	private boolean controlKeyReady;
 	public boolean starting;
-	public boolean trickReady;
+	private boolean trickReady;
+	private boolean trickReadyReady;
 	public boolean stopCam;
 	private boolean groundFlipped;
 	private boolean boostMode;
@@ -635,6 +636,7 @@ public class Player {
 				groundSpeed = 0;
 			}
 		}
+		if(bouncing && !spaceBar && trickReadyReady) {trickReady = true;}
 	}
 	
 	private void spindash() {
@@ -819,6 +821,7 @@ public class Player {
 			ledge = false;
 			jumping = false;
 			trickReady = false;
+			trickReadyReady = false;
 			trickType = 0;
 			
 			/*landSound.stop();
@@ -957,8 +960,8 @@ public class Player {
 						jumpSlowing = false;
 						spinning = false;
 						bouncing = true;
-						trickReady = true;
 						trickType = 0;
+						trickReadyReady = true;
 						
 						springSound.stop();
 						springSound.flush();
