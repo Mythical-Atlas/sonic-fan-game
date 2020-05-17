@@ -19,7 +19,7 @@ public class Image {
 	
 	public Texture tex;
 	
-	private float[] vertexArray = {
+	public float[] vertexArray = {
 		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1, 1,
 		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0, 0,
 		 0.0f, 0.0f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1, 0,
@@ -39,8 +39,14 @@ public class Image {
 		tex = new Texture(imageBuffer);
 		//load();
 	}
-	
 	public Image(Texture tex) {this.tex = tex;}
+	public Image(Texture tex, float[] vertices) {
+		vertexArray = new float[36];
+		for(int i = 0; i < vertices.length; i++) {vertexArray[i] = vertices[i];}
+		this.tex = tex;
+	}
+	
+	public void setVertices(float[] vertices) {for(int i = 0; i < vertices.length; i++) {vertexArray[i] = vertices[i];}}
 	
 	public void setPositions(double x, double y, double xScale, double yScale) {
 		vertexArray[0]  = (float)x + (float)(tex.width * xScale);
@@ -120,6 +126,25 @@ public class Image {
 		vertexArray[34] = map[6];
 		vertexArray[35] = map[7];
 		//load();
+	}
+	
+	public void setColors(float[] colors) {
+		vertexArray[ 3] = colors[ 0];
+		vertexArray[ 4] = colors[ 1];
+		vertexArray[ 5] = colors[ 2];
+		vertexArray[ 6] = colors[ 3];
+		vertexArray[12] = colors[ 4];
+		vertexArray[13] = colors[ 5];
+		vertexArray[14] = colors[ 6];
+		vertexArray[15] = colors[ 7];
+		vertexArray[21] = colors[ 8];
+		vertexArray[22] = colors[ 9];
+		vertexArray[23] = colors[10];
+		vertexArray[24] = colors[11];
+		vertexArray[30] = colors[12];
+		vertexArray[31] = colors[13];
+		vertexArray[32] = colors[14];
+		vertexArray[33] = colors[15];
 	}
 	
 	public float[] getPositions() {

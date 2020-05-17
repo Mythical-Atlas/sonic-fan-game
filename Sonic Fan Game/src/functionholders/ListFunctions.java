@@ -3,6 +3,7 @@ package functionholders;
 import badniks.Badnik;
 import datatypes.Shape;
 import datatypes.Vector;
+import objects.AfterImage;
 import objects.Item;
 import objects.Ring;
 import rendering.Image;
@@ -132,6 +133,16 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new Badnik[]{pointToCheck});}
 		
 		Badnik[] newList = new Badnik[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static AfterImage[] append(AfterImage[] existingPoints, AfterImage pointToCheck) {
+		if(existingPoints == null) {return(new AfterImage[]{pointToCheck});}
+		
+		AfterImage[] newList = new AfterImage[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;
@@ -304,6 +315,13 @@ public class ListFunctions {
 	}
 	public static Item[] removeIndex(Item[] list, int index) {
 		Item[] output = null;
+		
+		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
+		
+		return(output);
+	}
+	public static AfterImage[] removeIndex(AfterImage[] list, int index) {
+		AfterImage[] output = null;
 		
 		for(int i = 0; i < list.length; i++) {if(i != index) {output = append(output, list[i]);}}
 		

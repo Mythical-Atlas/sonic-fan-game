@@ -112,6 +112,7 @@ public class Loader {
 	public static Clip stepSound3;
 	public static Clip stepSound4;
 	public static Clip trickSound;
+	public static Clip boostSound;
 	
 	public static Clip voice3;
 	public static Clip voice2;
@@ -188,6 +189,7 @@ public class Loader {
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
 			trickSound = loadSound("/sonicsounds/trick.wav", -10.0f);
+			boostSound = loadSound("/sonicsounds/boost.wav", -10.0f);
 			
 			voice3 = loadSound("/voiceclips/3.wav", -10.0f);
 			voice2 = loadSound("/voiceclips/2.wav", -10.0f);

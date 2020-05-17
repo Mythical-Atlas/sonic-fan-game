@@ -34,6 +34,11 @@ public class Player {
 	private final double SPRINT_ACCEL 		  = 2;
 	private final double MOVE_ACCEL  		  = 0.115;
 	private final double GROUND_ACCEL_LIMIT   = 35;
+	private final double BOOST_ACCEL_SCALE	  = 3;
+	private final double BOOST_LIMIT_SCALE	  = 1.5;
+	private final double BOOST_START_SPEED	  = 34;
+	private final double BOOST_STOP_SPEED	  = 10;
+	private final int 	 BOOST_TIME			  = 60;
 	private final double SKID_ACCEL  		  = 1;
 	private final double DRAG_DECEL   		  = 0.108;
 	private final double DEBUG_JUMP_IMPULSE   = 50;
@@ -58,7 +63,7 @@ public class Player {
 	private final double GROUND_ANGLE_MASK_OFFSET_Y  = 1;
 	private final double GROUND_ANGLE_MASK_RADIUS    = 50;
 	
-	private final double STICK_OFFSET_SCALE = 0.5;
+	private final double STICK_OFFSET_SCALE = 1;
 	private final double STICK_MIN_SPEED    = 5;
 	
 	private final double GROUND_MASK_OFFSET_X  = 0;
@@ -91,7 +96,7 @@ public class Player {
 	private final double MAX_STEP_SPEED 		= 25;
 	private final double MIN_POTENTIAL_GRAVITY 	= 0.25;
 	
-	public boolean DRAW_MASKS 	= false;
+	public boolean        DRAW_MASKS 	= false;
 	private final boolean DRAW_SPRITES	= true;
 	
 	private final int IDLE_ANIM 			= 0;
@@ -149,11 +154,16 @@ public class Player {
 	private boolean controlKeyReady;
 	public boolean starting;
 	public boolean trickReady;
+	public boolean stopCam;
+	private boolean groundFlipped;
+	private boolean boostMode;
+	private boolean boostReady;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
 	private double spindashStrength;
 	private int trickType;
+	private int boostTimer;
 	
 	private double stepTimer;
 	private int stepIndex;
@@ -209,6 +219,7 @@ public class Player {
 	private Clip stepSound3;
 	private Clip stepSound4;
 	private Clip trickSound;
+	private Clip boostSound;
 	
 	private Clip popSound;
 	private Clip ringSound;
@@ -222,7 +233,8 @@ public class Player {
 	
 	public int rings;
 	public int score;
-	public boolean stopCam;
+	
+	private AfterImage[] afters;
 	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
@@ -272,6 +284,7 @@ public class Player {
 		stepSound3 = Loader.stepSound3;
 		stepSound4 = Loader.stepSound4;
 		trickSound = Loader.trickSound;
+		boostSound = Loader.boostSound;
 		
 		popSound = Loader.popSound;
 		ringSound = Loader.ringSound;
@@ -290,6 +303,8 @@ public class Player {
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items) {
 		if(starting) {starting();}
 		if(!starting && !stopCam) { // NOT ELSE
+			afterImages(dt);
+			
 			checkKeys();
 			
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
@@ -302,6 +317,31 @@ public class Player {
 			spindash();
 			crouch();
 			gravity();
+			
+			if(ground) {
+				if(!boostMode) {
+					if(groundSpeed >= BOOST_START_SPEED * SCALE) {
+						boostReady = true;
+						boostTimer--;
+						if(boostTimer == 0) {
+							boostMode = true;
+							groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE;
+							
+							boostSound.stop();
+							boostSound.flush();
+							boostSound.setFramePosition(0);
+							boostSound.start();
+						}
+					}
+					else {
+						boostReady = false;
+						boostTimer = BOOST_TIME;
+					}
+				}
+				else {
+					if(groundSpeed < BOOST_STOP_SPEED) {boostMode = false;}
+				}
+			}
 		}
 		if(stopCam) {vel = new Vector();}
 		
@@ -319,7 +359,11 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
-			if(bouncing && vel.y < 0 && !ground) {groundAxis = new Vector(0, -1);}
+			if(bouncing && vel.y < 0 && !ground) {
+				groundAxis = new Vector(0, -1);
+				groundFlipped = true;
+			}
+			else {groundFlipped = false;}
 			
 			collide(shapes);
 			checkLedge(shapes);
@@ -389,10 +433,36 @@ public class Player {
 		}
 	}
 	
+	private void afterImages(float dt) {
+		double w = idleAnim.getCurrentSize()[0] * 2;
+		double h = idleAnim.getCurrentSize()[1] * 2;
+		double t = limitAngle(getAngleOfVector(groundAxis) * -1 - PI / 2);
+		if(anim == SPIN_ANIM) {t = 0;}
+		
+		if(boostMode) {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, 1, 5));}
+		
+		if(afters != null) {
+			int[] removals = null;
+			for(int i = 0; i < afters.length; i++) {
+				afters[i].update(dt);
+				if(afters[i].remove) {removals = append(removals, i);}
+			}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {afters = removeIndex(afters, removals[i]);}}
+		}
+	}
+	
 	private void movement() {
 		double moveSpeed;
 		if(!shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
 		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
+		
+		double accelScale = 1;
+		double capScale = 1;
+		
+		if(boostMode) {
+			accelScale = BOOST_ACCEL_SCALE;
+			capScale = BOOST_LIMIT_SCALE;
+		}
 		
 		if(!ground) {
 			skidding = false;
@@ -410,9 +480,9 @@ public class Player {
 							if(facing == 1) {skirting = true;}
 						}
 						
-						if(groundSpeed > -GROUND_ACCEL_LIMIT * SCALE || shiftKey) {
-							groundSpeed -= moveSpeed;
-							if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
+						if(groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
+							groundSpeed -= moveSpeed * accelScale;
+							if(groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
 						}
 					}
 					else {
@@ -428,9 +498,9 @@ public class Player {
 							if(facing == -1) {skirting = true;}
 						}
 						
-						if(groundSpeed < GROUND_ACCEL_LIMIT * SCALE || shiftKey) {
-							groundSpeed += moveSpeed;
-							if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+						if(groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
+							groundSpeed += moveSpeed * accelScale;
+							if(groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 						}
 					}
 					else {
@@ -646,13 +716,17 @@ public class Player {
 	}
 
 	private void gravity() {
+		double capScale = 1;
+		
+		if(boostMode) {capScale = BOOST_LIMIT_SCALE;}
+		
 		if(!ground) {
 			vel.translate(0, GRAVITY * SCALE);
 			
 			if(jumping) {jumpSlowed += GRAVITY * SCALE;}
 			
-			if(vel.x < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {vel.x = -GROUND_ACCEL_LIMIT * SCALE;}
-			if(vel.x > GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {vel.x = GROUND_ACCEL_LIMIT * SCALE;}
+			if(vel.x < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {vel.x = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(vel.x > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {vel.x = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 		}
 		else {
 			Vector tempGrav = new Vector(0, SCALE).project(groundAxis.getPerpendicular().normalize());
@@ -664,8 +738,8 @@ public class Player {
 			
 			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {groundSpeed += getRotatedVectorComponents(tempGrav, groundAxis).x;}
 			
-			if(groundSpeed < -GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {groundSpeed = -GROUND_ACCEL_LIMIT * SCALE;}
-			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !shiftKey && !spinning) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+			if(groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 		}
 	}
 
@@ -734,7 +808,9 @@ public class Player {
 	private void checkGround(Shape[] shapes) {
 		boolean oldGround = ground;
 		
-		Shape groundMask = getRotatedCircle(pos, GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);
+		Shape groundMask;
+		if(!groundFlipped) {groundMask = getRotatedCircle(pos, GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);}
+		else {groundMask = getRotatedCircle(pos, (GROUND_ANGLE_MASK_RADIUS - 1) * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, (GROUND_ANGLE_MASK_OFFSET_Y + 1) * SCALE);}
 		
 		ground = false;
 		for(int i = 0; i < shapes.length; i++) {if(checkCollision(groundMask, shapes[i])) {ground = true;}}
@@ -766,9 +842,9 @@ public class Player {
 	}
 	
 	private void getGroundAxis(Shape[] shapes) {
-		if(abs(groundSpeed) < STICK_MIN_SPEED * SCALE) {groundAxis = new Vector(0, 1);}
-		
 		if(ground && !ledge) {
+			if(abs(groundSpeed) < STICK_MIN_SPEED * SCALE) {groundAxis = new Vector(0, 1);}
+			
 			Shape groundMask;
 			
 			groundMask = getRotatedCircle(pos, GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);
@@ -842,7 +918,7 @@ public class Player {
 					
 					if(checkCollision(mask, itemMask)) {
 						vel = vel.project(new Vector(1, 0));
-						vel.translate(new Vector(0, -1).scale(10));
+						vel.translate(new Vector(0, -1).scale(5));
 						items[i].destroy();
 						
 						if(anim != JUMP_ANIM && !spinning && !spindashing) {
@@ -1250,11 +1326,45 @@ public class Player {
 		}
 	}
 	
+	private Animation getCurrentAnim() {
+		if(anim == RUN_ANIM) {
+			     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {return(runFastestAnim);}
+			else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {return(runFastAnim   );}
+			else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {return(runNormalAnim );}
+			else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {return(runSlowAnim   );}
+			else                                                   {return(runSlowestAnim);}
+		}
+		
+		if(anim == START_ANIM)           {return(startAnim         );}
+		if(anim == IDLE_ANIM)            {return(idleAnim          );}
+		if(anim == BOUNCING_UP_ANIM)     {return(bounceUpAnim      );}
+		if(anim == BOUNCING_DOWN_ANIM)   {return(bounceDownAnim    );}
+		if(anim == FALL_ANIM)            {return(fallAnim          );}
+		if(anim == SKID_ANIM)            {return(skidAnim          );}
+		if(anim == SKIRT_ANIM)           {return(skirtAnim         );}
+		if(anim == TURN_ANIM)            {return(turnAnim          );}
+		if(anim == CROUCH_ANIM_0)        {return(crouchAnim0       );}
+		if(anim == CROUCH_ANIM_1)        {return(crouchAnim1       );}
+		if(anim == SPINDASH_ANIM)        {return(spindashAnim      );}
+		if(anim == SPINDASH_CHARGE_ANIM) {return(spindashChargeAnim);}
+		if(anim == JUMP_ANIM)            {return(jumpAnim          );}
+		if(anim == LAND_ANIM)            {return(landAnim          );}
+		if(anim == TRICK_RIGHT_ANIM)     {return(trickRightAnim    );}
+		if(anim == TRICK_UP_0_ANIM)      {return(trickUp0Anim      );}
+		if(anim == TRICK_UP_1_ANIM)      {return(trickUp1Anim      );}
+		
+		if(anim == SPIN_ANIM)            {return(spinAnim);}
+		
+		return(null);
+	}
+	
 	public void draw(float dt, Shader shader, Camera camera) {
 //		manageAnimations(dt);
 		//manageAnimations(dt); // 30fps only
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {manageAnimations(dt);}
+		
+		if(afters != null) {for(int i = 0; i < afters.length; i++) {afters[i].draw(dt, shader, camera);}}
 		
 		/*if(DRAW_MASKS) {
 			Shape temp;
@@ -1292,6 +1402,7 @@ public class Player {
 				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			}
+			
 			if(anim == START_ANIM)           {startAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == BOUNCING_UP_ANIM)     {bounceUpAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}

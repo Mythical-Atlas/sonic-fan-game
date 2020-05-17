@@ -58,6 +58,7 @@ public class Animation {
 		System.out.println("length = " + frames.length);*/
 	}
 	
+	public Image getCurrentFrame() {return(frames[frame]);}
 	public int[] getCurrentSize() {return(new int[]{frames[frame].getWidth(), frames[frame].getHeight()});}
 	
 	public void draw(double x, double y, int xScale, int yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, xScale, yScale, shader, camera);}
