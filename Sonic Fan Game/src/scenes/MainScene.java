@@ -45,12 +45,15 @@ import shapes.Rectangle;
 import shapes.Triangle;
 
 public class MainScene extends Scene {
-	private final int LEFT_CAMERA_LIMIT = 2880;
+	private final int LEFT_CAMERA_LIMIT = 1440;
+	private final int LOWER_CAMERA_LIMIT = 4608;
 	
 	private final int X_MIN_DISTANCE_SCALE = 32;
 	private final int Y_MIN_DISTANCE_SCALE = 32;
 	private final int LEAD_DISTANCE_SCALE  = 8;
 	private final int SCALE = 2;
+	
+	private Vector initPlayerPos;
 	
 	private Player player;
 	private Shape[] layer0;
@@ -108,6 +111,7 @@ public class MainScene extends Scene {
 		
 		interpretMap(leafForest1Map.json);
 		camPos = new Vector(player.pos.x, player.pos.y);
+		initPlayerPos = new Vector(player.pos.x, player.pos.y);
 		
 		rings = null;
 		
@@ -169,6 +173,65 @@ public class MainScene extends Scene {
 		leaf1Music.setFramePosition(0);
 		leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
 	}
+	
+	private void reset() {
+		player = new Player(initPlayerPos.x, initPlayerPos.y);
+		camPos = new Vector(player.pos.x, player.pos.y);
+		
+		rings = null;
+		
+		placeRing( 2,  0,  3 + 4 * 0,  9 + 1 * 0, 0, 0);
+		placeRing( 2,  0,  3 + 4 * 1,  9 + 1 * 1, 0, 0);
+		placeRing( 2,  0,  3 + 4 * 2,  9 + 1 * 2, 0, 0);
+		
+		placeRing(11,  2,  8 + 3 * 0,  7 + 3 * 0, 0, 0);
+		placeRing(11,  2,  8 + 3 * 1,  7 + 3 * 1, 0, 0);
+		placeRing(11,  2,  8 + 3 * 2,  7 + 3 * 2, 0, 0);
+		
+		placeRing(28,  4,  2 + 3 * 0,  0 + 3 * 0, 0, 0);
+		placeRing(28,  4,  2 + 3 * 1,  0 + 3 * 1, 0, 0);
+		placeRing(28,  4,  2 + 3 * 2,  0 + 3 * 2, 0, 0);
+		
+		placeRing(29,  4, 12 +  7,   7, 0, 0);
+		placeRing(29,  4,       3,   7, 0, 0);
+		placeRing(29,  4, 12 +  5,   1, 0, 0);
+		placeRing(29,  4,       5,   1, 0, 0);
+		placeRing(29,  4, 12 + -1,  -1, 0, 0);
+		
+		placeRing(24,  6,  9 + 4 * 0,  6 + 4 * 0, 0, 0);
+		placeRing(24,  6,  9 + 4 * 1,  6 + 4 * 1, 0, 0);
+		placeRing(24,  6,  9 + 4 * 2,  6 + 4 * 2, 0, 0);
+		
+		placeRing(28,  9,  9 + 4 * 0,  0 + 4 * 0, 0, 0);
+		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
+		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
+		
+		springs = new Spring[]{
+			new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
+			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
+			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
+		};
+		
+		badniks = new Badnik[]{
+			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(24 * 96 * SCALE + 16.5 * SCALE * 96,  2 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(34 * 96 * SCALE + 16.5 * SCALE * 96,  7 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(42 * 96 * SCALE + 16.5 * SCALE * 96, 11 * 96 * SCALE + 16.5 * SCALE * 96)
+		};
+		
+		items = new Item[]{
+			new Item(19 * 96 * SCALE + 48 * SCALE + 13 * SCALE + 16 * 96 * SCALE, 5 * 96 * SCALE + 96 * SCALE - 29 * SCALE + 16 * 96 * SCALE)
+		};
+		
+		hud = new HUD();
+		
+		leaf1Music.stop();
+		leaf1Music.flush();
+		leaf1Music.setFramePosition(0);
+		leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+	}
 		
 	public void update(float dt) {
 		checkKeysPressed();
@@ -226,6 +289,7 @@ public class MainScene extends Scene {
 			showTileMasks = !showTileMasks;
 		}
 		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {glfwSetWindowShouldClose(Window.getWindow(), true);}
+		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}
 	}
 	public void checkKeysReleased() {
 		if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
@@ -234,7 +298,7 @@ public class MainScene extends Scene {
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
-		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE;
+		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE * (Window.getWidth() / 960);
 		
 		double x = camPos.x;
 		double y = camPos.y;
@@ -242,8 +306,8 @@ public class MainScene extends Scene {
 		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
 		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
 		
-		x = moveTowards(x, pos.x + lead, xMinDist, 0.25, dt);
-		y = moveTowards(y, pos.y, yMinDist, 0.25, dt);
+		x = moveTowards(x, pos.x + lead, xMinDist, 0.1, dt);
+		y = moveTowards(y, pos.y, yMinDist, 0.1, dt);
 		
 		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
 		
@@ -255,7 +319,8 @@ public class MainScene extends Scene {
 		
 		camera.position = new Vector2f((float)(int)x, (float)(int)y);
 		
-		if(camera.position.x < LEFT_CAMERA_LIMIT) {camera.position.x = LEFT_CAMERA_LIMIT;}
+		if(camera.position.x < LEFT_CAMERA_LIMIT * SCALE) {camera.position.x = LEFT_CAMERA_LIMIT * SCALE;}
+		if(camera.position.y > LOWER_CAMERA_LIMIT * SCALE) {reset();}
 	}
 	
 	private double moveTowards(double value0, double value1, double minDist, double interval, float dt) {

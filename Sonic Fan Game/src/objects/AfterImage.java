@@ -52,6 +52,8 @@ public class AfterImage {
 			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
 				if(lifeCounter >= lifeTime) {remove = true;}
 				lifeCounter++;
+				born = false;
+				birthCounter = 1;
 			}
 		}
 	}

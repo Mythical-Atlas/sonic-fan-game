@@ -440,7 +440,8 @@ public class Player {
 		double t = limitAngle(getAngleOfVector(groundAxis) * -1 - PI / 2);
 		if(anim == SPIN_ANIM) {t = 0;}
 		
-		if(boostMode) {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, 1, 5));}
+		if(boostMode) {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+		else {afters = null;}
 		
 		if(afters != null) {
 			int[] removals = null;
