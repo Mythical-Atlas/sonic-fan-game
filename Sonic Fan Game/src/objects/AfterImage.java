@@ -45,7 +45,7 @@ public class AfterImage {
 		if(!born) {
 			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
 				if(birthCounter >= birthDelay) {born = true;}
-				birthCounter++;
+				birthCounter++
 			}
 		}
 		else {
