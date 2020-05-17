@@ -1157,6 +1157,57 @@ public class MainScene extends Scene {
 						new Vector(x + s00, y + s12)
 					}, Color.WHITE));
 				}
+				
+				if(tile == 121) {
+					InverseArc a = new InverseArc(
+							new Vector(x + s07, y + s12 + s01),
+							PI + PI / 4,
+							PI + PI / 2,
+							s05,
+							PI + PI / 4,
+							PI + PI / 4 + PI / 8,
+						Color.WHITE);
+					shapes = append(shapes, a);
+						
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s06),
+						a.points[0],
+						new Vector(a.points[0].x, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
+				if(tile == 193) {
+					InverseArc a = new InverseArc(
+							new Vector(x + s07, y + s01),
+							PI + PI / 4,
+							PI + PI / 2,
+							s05,
+							PI + PI / 4 + PI / 8,
+							PI + PI / 2,
+						Color.WHITE);
+					shapes = append(shapes, a);
+					
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s01),
+						new Vector(x + s12, y + s01),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+				}
+				
+				if(tile == 230) {
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s00, y + s04),
+						new Vector(x + s04, y + s08),
+						new Vector(x + s04, y + s12),
+						new Vector(x + s00, y + s12)
+					}, Color.WHITE));
+					shapes = append(shapes, new Shape(new Vector[]{
+						new Vector(x + s04, y + s08),
+						new Vector(x + s12, y + s12),
+						new Vector(x + s04, y + s12)
+					}, Color.WHITE));
+				}
 			}
 		}
 		

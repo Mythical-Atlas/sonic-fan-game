@@ -36,9 +36,9 @@ public class Player {
 	private final double GROUND_ACCEL_LIMIT   = 35;
 	private final double BOOST_ACCEL_SCALE	  = 3;
 	private final double BOOST_LIMIT_SCALE	  = 1.5;
-	private final double BOOST_START_SPEED	  = 34;
+	private final double BOOST_START_SPEED	  = 30;
 	private final double BOOST_STOP_SPEED	  = 10;
-	private final int 	 BOOST_TIME			  = 60;
+	private final int 	 BOOST_TIME			  = 60 * 5;
 	private final double SKID_ACCEL  		  = 1;
 	private final double DRAG_DECEL   		  = 0.108;
 	private final double DEBUG_JUMP_IMPULSE   = 50;
