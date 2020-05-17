@@ -110,6 +110,9 @@ public class Player {
 	private final int BOUNCING_DOWN_ANIM	= 13;
 	private final int LAND_ANIM				= 14;
 	private final int START_ANIM			= 15;
+	private final int TRICK_RIGHT_ANIM		= 16;
+	private final int TRICK_UP_0_ANIM		= 17;
+	private final int TRICK_UP_1_ANIM		= 18;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -123,6 +126,7 @@ public class Player {
 	private boolean spaceBar;
 	private boolean shiftKey;
 	private boolean controlKey;
+	//private boolean trickKey;
 	
 	// flags
 	private boolean skidding;
@@ -144,10 +148,12 @@ public class Player {
 	private boolean landing;
 	private boolean controlKeyReady;
 	public boolean starting;
+	public boolean trickReady;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
 	private double spindashStrength;
+	private int trickType;
 	
 	private double stepTimer;
 	private int stepIndex;
@@ -182,6 +188,9 @@ public class Player {
 	private Animation turnAnim;
 	private Animation landAnim;
 	private Animation startAnim;
+	private Animation trickRightAnim;
+	private Animation trickUp0Anim;
+	private Animation trickUp1Anim;
 	
 	private int facing;
 	private int anim;
@@ -199,6 +208,7 @@ public class Player {
 	private Clip stepSound2;
 	private Clip stepSound3;
 	private Clip stepSound4;
+	private Clip trickSound;
 	
 	private Clip popSound;
 	private Clip ringSound;
@@ -211,6 +221,8 @@ public class Player {
 	public int voice;
 	
 	public int rings;
+	public int score;
+	public boolean stopCam;
 	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
@@ -243,6 +255,10 @@ public class Player {
 		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
 		startAnim = new Animation(Loader.startAnim, new int[]{2, 2, 4, 4, 4, 6, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 6, 4, 110, 6, 60, 3}, 0);
 		
+		trickRightAnim = new Animation(Loader.trickRightAnim, new int[]{2, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1}, 3);
+		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
+		trickUp1Anim = new Animation(Loader.trickUp1Anim, new int[]{3, 3, 3, 2, 2, 2}, 3);
+		
 		jumpSound0 = Loader.jumpSound0;
 		jumpSound1 = Loader.jumpSound1;
 		landSound = Loader.landSound;
@@ -255,6 +271,7 @@ public class Player {
 		stepSound2 = Loader.stepSound2;
 		stepSound3 = Loader.stepSound3;
 		stepSound4 = Loader.stepSound4;
+		trickSound = Loader.trickSound;
 		
 		popSound = Loader.popSound;
 		ringSound = Loader.ringSound;
@@ -271,59 +288,8 @@ public class Player {
 	}
 	
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items) {
-		if(starting) {
-			if(anim != START_ANIM) {
-				anim = START_ANIM;
-				startAnim.reset();
-			}
-			else {
-				// 3 = image 37 frame 4
-				// 2 = image 38 frame 60
-				// 1 = image 40 frame 4
-				// go = finshed
-				
-				if(startAnim.frame == 37 && startAnim.timer == 3) {
-					voice = 3;
-					voice3.stop();
-					voice3.flush();
-					voice3.setFramePosition(0);
-					voice3.start();
-				}
-				if(startAnim.frame == 38 && startAnim.timer == 59) {
-					voice = 2;
-					voice2.stop();
-					voice2.flush();
-					voice2.setFramePosition(0);
-					voice2.start();
-				}
-				if(startAnim.frame == 40 && startAnim.timer == 3) {
-					voice = 1;
-					voice1.stop();
-					voice1.flush();
-					voice1.setFramePosition(0);
-					voice1.start();
-				}
-				
-				startAnim.update(1);
-				if(startAnim.finished) {
-					voice = 4;
-					starting = false;
-					facing = 1;
-					ground = true;
-					jumping = false;
-					ledge = false;
-					
-					vel = new Vector(10, 0);
-					
-					voiceGo.stop();
-					voiceGo.flush();
-					voiceGo.setFramePosition(0);
-					voiceGo.start();
-				}
-			}
-		}
-		
-		if(!starting) {
+		if(starting) {starting();}
+		if(!starting && !stopCam) { // NOT ELSE
 			checkKeys();
 			
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
@@ -332,11 +298,13 @@ public class Player {
 			movement();
 			drag();
 			jump();
+			trick();
 			spindash();
 			crouch();
 			gravity();
 		}
-			
+		if(stopCam) {vel = new Vector();}
+		
 		boolean[] platMasks = null;
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
 		
@@ -351,111 +319,74 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
+			if(bouncing && vel.y < 0 && !ground) {groundAxis = new Vector(0, -1);}
+			
 			collide(shapes);
 			checkLedge(shapes);
 			stick(shapes);
 		
 			checkGround(shapes);
 			getGroundAxis(shapes);
+			
+			checkLanding(shapes);
 		}
 		
-		if(rings != null) {
-			for(int i = 0; i < rings.length; i++) {
-				if(rings[i].destroy == 0) {
-					Shape ringMask = new Circle(rings[i].pos, 8 * 2);
-					mask.relocate(pos);
-					
-					if(checkCollision(mask, ringMask)) {
-						this.rings++;
-						rings[i].destroy = 1;
-						ringSound.stop();
-						ringSound.flush();
-						ringSound.setFramePosition(0);
-						ringSound.start();
-					}
-				}
+		rings(rings);
+		badniks(badniks);
+		items(items);
+		springs(springs);
+	}
+	
+	private void starting() {
+		if(anim != START_ANIM) {
+			anim = START_ANIM;
+			startAnim.reset();
+		}
+		else {
+			// 3 = image 37 frame 4
+			// 2 = image 38 frame 60
+			// 1 = image 40 frame 4
+			// go = finshed
+			
+			if(startAnim.frame == 37 && startAnim.timer == 3) {
+				voice = 3;
+				voice3.stop();
+				voice3.flush();
+				voice3.setFramePosition(0);
+				voice3.start();
+			}
+			if(startAnim.frame == 38 && startAnim.timer == 59) {
+				voice = 2;
+				voice2.stop();
+				voice2.flush();
+				voice2.setFramePosition(0);
+				voice2.start();
+			}
+			if(startAnim.frame == 40 && startAnim.timer == 3) {
+				voice = 1;
+				voice1.stop();
+				voice1.flush();
+				voice1.setFramePosition(0);
+				voice1.start();
+			}
+			
+			startAnim.update(1);
+			if(startAnim.finished) {
+				voice = 4;
+				starting = false;
+				facing = 1;
+				ground = true;
+				jumping = false;
+				ledge = false;
+				
+				vel = new Vector(10, 0);
+				
+				voiceGo.stop();
+				voiceGo.flush();
+				voiceGo.setFramePosition(0);
+				voiceGo.start();
 			}
 		}
-		
-		if(badniks != null) {
-			for(int i = 0; i < badniks.length; i++) {
-				if(badniks[i].destroy == 0) {
-					Shape badnikMask = new Circle(badniks[i].pos.add(8 * 2, 4 * 2), 8 * 2);
-					mask.relocate(pos);
-					
-					if(checkCollision(mask, badnikMask)) {
-						if(spinning || spindashing || anim == JUMP_ANIM) {
-							vel = vel.project(new Vector(1, 0));
-							vel.translate(new Vector(0, -1).scale(10));
-							badniks[i].destroy();
-							popSound.stop();
-							popSound.flush();
-							popSound.setFramePosition(0);
-							popSound.start();
-						}
-					}
-				}
-			}
-		}
-		
-		if(items != null) {
-			for(int i = 0; i < items.length; i++) {
-				if(items[i].destroy == 0) {
-					Shape itemMask = new Circle(items[i].pos.add(8 * 2, 4 * 2), 8 * 2);
-					mask.relocate(pos);
-					
-					if(checkCollision(mask, itemMask)) {
-						vel = vel.project(new Vector(1, 0));
-						vel.translate(new Vector(0, -1).scale(10));
-						items[i].destroy();
-						
-						if(anim != JUMP_ANIM && !spinning && !spindashing) {
-							jumpReady = false;
-							ground = false;
-							jumping = false;
-							jumpSlowing = false;
-							bouncing = true;
-						}
-						
-						popSound.stop();
-						popSound.flush();
-						popSound.setFramePosition(0);
-						popSound.start();
-					}
-				}
-			}
-		}
-		
-		if(springs != null) {
-			for(int i = 0; i < springs.length; i++) {
-				if(!springs[i].bouncing) {
-					Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
-					mask.relocate(pos);
-					
-					if(checkCollision(mask, springMask)) {
-						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
-						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
-						springs[i].bouncing = true;
-						
-						jumpReady = false;
-						ground = false;
-						jumping = false;
-						jumpSlowing = false;
-						spinning = false;
-						bouncing = true;
-						
-						springSound.stop();
-						springSound.flush();
-						springSound.setFramePosition(0);
-						springSound.start();
-					}
-				}
-			}
-		}
-		
-		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
-		landing = false;
-		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM) {landing = true;}}
 	}
 	
 	private void movement() {
@@ -618,6 +549,20 @@ public class Player {
 				}
 				
 				if(jumpSlowed >= 0 && anim == JUMP_ANIM) {jumping = false;}
+			}
+		}
+	}
+	
+	private void trick() {
+		if(spaceBar && trickReady) {
+			if(rightArrow || leftArrow) {trickType = 1;}
+			else if(upArrow) {trickType = 2;}
+			
+			if(trickType != 0) {
+				trickReady = false;
+				stopCam = true;
+				vel = new Vector();
+				groundSpeed = 0;
 			}
 		}
 	}
@@ -797,6 +742,8 @@ public class Player {
 		if(ground && !oldGround) {
 			ledge = false;
 			jumping = false;
+			trickReady = false;
+			trickType = 0;
 			
 			/*landSound.stop();
 			landSound.flush();
@@ -837,110 +784,324 @@ public class Player {
 		if(ground) {bouncing = false;}
 	}
 	
+	private void rings(Ring[] rings) {
+		if(rings != null) {
+			for(int i = 0; i < rings.length; i++) {
+				if(rings[i].destroy == 0) {
+					Shape ringMask = new Circle(rings[i].pos, 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, ringMask)) {
+						this.rings++;
+						rings[i].destroy = 1;
+						ringSound.stop();
+						ringSound.flush();
+						ringSound.setFramePosition(0);
+						ringSound.start();
+					}
+				}
+			}
+		}
+	}
+	
+	private void badniks(Badnik[] badniks) {
+		if(badniks != null) {
+			for(int i = 0; i < badniks.length; i++) {
+				if(badniks[i].destroy == 0) {
+					Shape badnikMask = new Circle(badniks[i].pos.add(8 * 2, 4 * 2), 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, badnikMask)) {
+						if(spinning || spindashing || anim == JUMP_ANIM) {
+							score += 100;
+							
+							if(!ground) {
+								vel = vel.project(new Vector(1, 0));
+								vel.translate(new Vector(0, -1).scale(10));
+							}
+							
+							badniks[i].destroy();
+							
+							popSound.stop();
+							popSound.flush();
+							popSound.setFramePosition(0);
+							popSound.start();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void items(Item[] items) {
+		if(items != null) {
+			for(int i = 0; i < items.length; i++) {
+				if(items[i].destroy == 0) {
+					Shape itemMask = new Circle(items[i].pos.add(8 * 2, 4 * 2), 8 * 2);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, itemMask)) {
+						vel = vel.project(new Vector(1, 0));
+						vel.translate(new Vector(0, -1).scale(10));
+						items[i].destroy();
+						
+						if(anim != JUMP_ANIM && !spinning && !spindashing) {
+							jumpReady = false;
+							ground = false;
+							jumping = false;
+							jumpSlowing = false;
+							bouncing = true;
+						}
+						
+						popSound.stop();
+						popSound.flush();
+						popSound.setFramePosition(0);
+						popSound.start();
+					}
+				}
+			}
+		}
+	}
+	
+	private void springs(Spring[] springs) {
+		if(springs != null) {
+			for(int i = 0; i < springs.length; i++) {
+				if(!springs[i].bouncing) {
+					Shape springMask = new Rectangle(springs[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, springMask)) {
+						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
+						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
+						springs[i].bouncing = true;
+						
+						jumpReady = false;
+						ground = false;
+						jumping = false;
+						jumpSlowing = false;
+						spinning = false;
+						bouncing = true;
+						trickReady = true;
+						trickType = 0;
+						
+						springSound.stop();
+						springSound.flush();
+						springSound.setFramePosition(0);
+						springSound.start();
+					}
+				}
+			}
+		}
+	}
+	
+	private void checkLanding(Shape[] shapes) {
+		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
+		landing = false;
+		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM) {landing = true;}}
+	}
+	
 	private void manageAnimations(float dt) {
 		if(!starting) {
-			if(spindashing) {
-				if(!spindashCharge) {
-					if(anim == SPINDASH_CHARGE_ANIM) {
-						spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
-						if(spindashChargeAnim.finished) {
+			if(trickType != 0) {
+				if(trickType == 1) {
+					if(anim != TRICK_RIGHT_ANIM) {
+						anim = TRICK_RIGHT_ANIM;
+						trickRightAnim.reset();
+						
+						trickSound.stop();
+						trickSound.flush();
+						trickSound.setFramePosition(0);
+						trickSound.start();
+					}
+					else {
+						trickRightAnim.update(1);
+						if(trickRightAnim.frame == trickRightAnim.repeatFrame) {
+							if(stopCam) {
+								stopCam = false;
+								vel = new Vector(15 * facing, 0);
+							}
+						}
+					}
+				}
+				if(trickType == 2) {
+					if(anim != TRICK_UP_0_ANIM && anim != TRICK_UP_1_ANIM) {
+						anim = TRICK_UP_0_ANIM;
+						trickUp0Anim.reset();
+						
+						trickSound.stop();
+						trickSound.flush();
+						trickSound.setFramePosition(0);
+						trickSound.start();
+					}
+					else {
+						if(vel.y < 0 || stopCam) {
+							trickUp0Anim.update(1);
+							if(trickUp0Anim.frame == trickUp0Anim.repeatFrame) {
+								if(stopCam) {
+									stopCam = false;
+									vel = new Vector(0, -15);
+								}
+							}
+						}
+						else {
+							if(anim != TRICK_UP_1_ANIM) {
+								anim = TRICK_UP_1_ANIM;
+								trickUp1Anim.reset();
+							}
+							else {trickUp1Anim.update(1);}
+						}
+					}
+				}
+			}
+			else {
+				if(spindashing) {
+					if(!spindashCharge) {
+						if(anim == SPINDASH_CHARGE_ANIM) {
+							spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+							if(spindashChargeAnim.finished) {
+								anim = SPINDASH_ANIM;
+								spindashAnim.reset();
+							}
+						}
+						else if(anim == SPINDASH_ANIM) {spindashAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						else {
 							anim = SPINDASH_ANIM;
 							spindashAnim.reset();
 						}
 					}
-					else if(anim == SPINDASH_ANIM) {spindashAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
-					else {
-						anim = SPINDASH_ANIM;
-						spindashAnim.reset();
-					}
-				}
-				if(spindashCharge) {
-					anim = SPINDASH_CHARGE_ANIM;
-					spindashChargeAnim.reset();
-					spindashCharge = false;
-				}
-				
-				if(chargeDustTimer == 0) {
-					if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
-					else {
-						dustAnim = REGULAR_DUST_ANIM;
-						spindashDustAnim.reset();
-					}
-				}
-				else {
-					if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
-					else {
-						dustAnim = CHARGE_DUST_ANIM;
-						spindashChargeDustAnim.reset();
+					if(spindashCharge) {
+						anim = SPINDASH_CHARGE_ANIM;
+						spindashChargeAnim.reset();
+						spindashCharge = false;
 					}
 					
-					chargeDustTimer--;
-				}
-			}
-			else {
-				dustAnim = NO_DUST_ANIM;
-				
-				if(crouching1) {
-					if(anim == CROUCH_ANIM_0) {
-						crouchAnim0.update(1 /** (dt / (1.0f / 60.0f))*/);
-						if(crouchAnim0.finished) {spindashReady = true;}
-					}
-					else {
-						anim = CROUCH_ANIM_0;
-						crouchAnim0.reset();
-					}
-				}
-				else if(crouching0) {
-					if(anim == CROUCH_ANIM_1) {
-						crouchAnim1.update(1 /** (dt / (1.0f / 60.0f))*/);
-						if(crouchAnim1.finished) {
-							anim = IDLE_ANIM;
-							idleAnim.reset();
-							crouching0 = false;
+					if(chargeDustTimer == 0) {
+						if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						else {
+							dustAnim = REGULAR_DUST_ANIM;
+							spindashDustAnim.reset();
 						}
 					}
 					else {
-						anim = CROUCH_ANIM_1;
-						crouchAnim1.reset();
+						if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						else {
+							dustAnim = CHARGE_DUST_ANIM;
+							spindashChargeDustAnim.reset();
+						}
+						
+						chargeDustTimer--;
 					}
 				}
 				else {
-					if(spinning) {
-						if(anim == SPIN_ANIM) {spinAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+					dustAnim = NO_DUST_ANIM;
+					
+					if(crouching1) {
+						if(anim == CROUCH_ANIM_0) {
+							crouchAnim0.update(1 /** (dt / (1.0f / 60.0f))*/);
+							if(crouchAnim0.finished) {spindashReady = true;}
+						}
 						else {
-							anim = SPIN_ANIM;
-							spinAnim.reset();
+							anim = CROUCH_ANIM_0;
+							crouchAnim0.reset();
+						}
+					}
+					else if(crouching0) {
+						if(anim == CROUCH_ANIM_1) {
+							crouchAnim1.update(1 /** (dt / (1.0f / 60.0f))*/);
+							if(crouchAnim1.finished) {
+								anim = IDLE_ANIM;
+								idleAnim.reset();
+								crouching0 = false;
+							}
+						}
+						else {
+							anim = CROUCH_ANIM_1;
+							crouchAnim1.reset();
 						}
 					}
 					else {
-						if(ground) {
-							if(groundSpeed == 0 && !turning && !skidding && !skirting) {
-								if(anim == IDLE_ANIM) {idleAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
-								else {
-									anim = IDLE_ANIM;
-									idleAnim.reset();
-								}
-							}
+						if(spinning) {
+							if(anim == SPIN_ANIM) {spinAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 							else {
-								if(skidding || skirting) {
-									if(skidding) {
-										if(anim == SKID_ANIM) {skidAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+								anim = SPIN_ANIM;
+								spinAnim.reset();
+							}
+						}
+						else {
+							if(ground) {
+								if(groundSpeed == 0 && !turning && !skidding && !skirting) {
+									if(anim == IDLE_ANIM) {idleAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+									else {
+										anim = IDLE_ANIM;
+										idleAnim.reset();
+									}
+								}
+								else {
+									if(skidding || skirting) {
+										if(skidding) {
+											if(anim == SKID_ANIM) {skidAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+											else {
+												anim = SKID_ANIM;
+												skidAnim.reset();
+												
+												skidSound.stop();
+												skidSound.flush();
+												skidSound.setFramePosition(0);
+												skidSound.start();
+											}
+										}
 										else {
-											anim = SKID_ANIM;
-											skidAnim.reset();
-											
-											skidSound.stop();
-											skidSound.flush();
-											skidSound.setFramePosition(0);
-											skidSound.start();
+											if(skirting) {
+												if(anim == SKIRT_ANIM) {
+													skirtAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+													if(skirtAnim.finished) {
+														skirting = false;
+														
+														if(groundSpeed == 0) {
+															anim = IDLE_ANIM;
+															idleAnim.reset();
+														}
+														else {
+															anim = RUN_ANIM;
+															runSlowestAnim.reset();
+															runSlowAnim.reset();
+															runNormalAnim.reset();
+															runFastAnim.reset();
+															runFastestAnim.reset();
+														}
+														
+														facing *= -1;
+													}
+												}
+												else {
+													anim = SKIRT_ANIM;
+													skirtAnim.reset();
+												}
+											}
+											else {
+												if(groundSpeed == 0) {
+													anim = IDLE_ANIM;
+													idleAnim.reset();
+												}
+												else {
+													anim = RUN_ANIM;
+													runSlowestAnim.reset();
+													runSlowAnim.reset();
+													runNormalAnim.reset();
+													runFastAnim.reset();
+													runFastestAnim.reset();
+												}
+											}
 										}
 									}
 									else {
-										if(skirting) {
-											if(anim == SKIRT_ANIM) {
-												skirtAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
-												if(skirtAnim.finished) {
-													skirting = false;
+										if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || turning) {
+											turning = true;
+											
+											if(anim == TURN_ANIM) {
+												turnAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+												if(turnAnim.finished) {
+													turning = false;
 													
 													if(groundSpeed == 0) {
 														anim = IDLE_ANIM;
@@ -959,14 +1120,63 @@ public class Player {
 												}
 											}
 											else {
-												anim = SKIRT_ANIM;
-												skirtAnim.reset();
+												anim = TURN_ANIM;
+												turnAnim.reset();
 											}
 										}
 										else {
-											if(groundSpeed == 0) {
-												anim = IDLE_ANIM;
-												idleAnim.reset();
+											if(anim == RUN_ANIM) {
+												runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												
+												stepTimer += min(abs(groundSpeed) * SCALE * STEP_SPEED_SCALE + STEP_SPEED_OFFSET, MAX_STEP_SPEED);
+												if(stepTimer >= STEP_SOUND_SPEED) {
+													stepTimer = 0;
+													
+													/*switch(stepIndex) {
+														case(0): {
+															stepSound0.stop();
+															stepSound0.flush();
+															stepSound0.setFramePosition(0);
+															stepSound0.start();
+															break;
+														}
+														case(1): {
+															stepSound1.stop();
+															stepSound1.flush();
+															stepSound1.setFramePosition(0);
+															stepSound1.start();
+															break;
+														}
+														case(2): {
+															stepSound2.stop();
+															stepSound2.flush();
+															stepSound2.setFramePosition(0);
+															stepSound2.start();
+															break;
+														}
+														case(3): {
+															stepSound3.stop();
+															stepSound3.flush();
+															stepSound3.setFramePosition(0);
+															stepSound3.start();
+															break;
+														}
+														case(4): {
+															stepSound4.stop();
+															stepSound4.flush();
+															stepSound4.setFramePosition(0);
+															stepSound4.start();
+															break;
+														}
+													}*/
+													
+													stepIndex++;
+													if(stepIndex == 5) {stepIndex = 0;}
+												}
 											}
 											else {
 												anim = RUN_ANIM;
@@ -979,152 +1189,58 @@ public class Player {
 										}
 									}
 								}
-								else {
-									if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || turning) {
-										turning = true;
+							}
+							else {
+								if(jumping) {
+									if(anim != JUMP_ANIM) {
+										anim = JUMP_ANIM;
+										jumpAnim.reset();
 										
-										if(anim == TURN_ANIM) {
-											turnAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
-											if(turnAnim.finished) {
-												turning = false;
-												
-												if(groundSpeed == 0) {
-													anim = IDLE_ANIM;
-													idleAnim.reset();
-												}
-												else {
-													anim = RUN_ANIM;
-													runSlowestAnim.reset();
-													runSlowAnim.reset();
-													runNormalAnim.reset();
-													runFastAnim.reset();
-													runFastestAnim.reset();
-												}
-												
-												facing *= -1;
+										jumpSound0.stop();
+										jumpSound0.flush();
+										jumpSound0.setFramePosition(0);
+										jumpSound0.start();
+									}
+								}
+								else {
+									if(bouncing) {
+										if(vel.y < 0) {
+											if(anim != BOUNCING_UP_ANIM) {
+												anim = BOUNCING_UP_ANIM;
+												bounceUpAnim.reset();
+											}
+											else {bounceUpAnim.update(1);}
+										}
+										else {
+											if(anim != BOUNCING_DOWN_ANIM) {
+												anim = BOUNCING_DOWN_ANIM;
+												bounceDownAnim.reset();
+											}
+											else {
+												bounceDownAnim.update(1);
+												if(bounceDownAnim.finished) {bouncing = false;}
 											}
 										}
-										else {
-											anim = TURN_ANIM;
-											turnAnim.reset();
-										}
-									}
-									else {
-										if(anim == RUN_ANIM) {
-											runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-											runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-											runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-											runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-											runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-											
-											stepTimer += min(abs(groundSpeed) * SCALE * STEP_SPEED_SCALE + STEP_SPEED_OFFSET, MAX_STEP_SPEED);
-											if(stepTimer >= STEP_SOUND_SPEED) {
-												stepTimer = 0;
-												
-												/*switch(stepIndex) {
-													case(0): {
-														stepSound0.stop();
-														stepSound0.flush();
-														stepSound0.setFramePosition(0);
-														stepSound0.start();
-														break;
-													}
-													case(1): {
-														stepSound1.stop();
-														stepSound1.flush();
-														stepSound1.setFramePosition(0);
-														stepSound1.start();
-														break;
-													}
-													case(2): {
-														stepSound2.stop();
-														stepSound2.flush();
-														stepSound2.setFramePosition(0);
-														stepSound2.start();
-														break;
-													}
-													case(3): {
-														stepSound3.stop();
-														stepSound3.flush();
-														stepSound3.setFramePosition(0);
-														stepSound3.start();
-														break;
-													}
-													case(4): {
-														stepSound4.stop();
-														stepSound4.flush();
-														stepSound4.setFramePosition(0);
-														stepSound4.start();
-														break;
-													}
-												}*/
-												
-												stepIndex++;
-												if(stepIndex == 5) {stepIndex = 0;}
-											}
-										}
-										else {
-											anim = RUN_ANIM;
-											runSlowestAnim.reset();
-											runSlowAnim.reset();
-											runNormalAnim.reset();
-											runFastAnim.reset();
-											runFastestAnim.reset();
-										}
 									}
 								}
-							}
-						}
-						else {
-							if(jumping) {
-								if(anim != JUMP_ANIM) {
-									anim = JUMP_ANIM;
-									jumpAnim.reset();
-									
-									jumpSound0.stop();
-									jumpSound0.flush();
-									jumpSound0.setFramePosition(0);
-									jumpSound0.start();
-								}
-							}
-							else {
-								if(bouncing) {
-									if(vel.y < 0) {
-										if(anim != BOUNCING_UP_ANIM) {
-											anim = BOUNCING_UP_ANIM;
-											bounceUpAnim.reset();
-										}
-										else {bounceUpAnim.update(1);}
-									}
-									else {
-										if(anim != BOUNCING_DOWN_ANIM) {
-											anim = BOUNCING_DOWN_ANIM;
-											bounceDownAnim.reset();
-										}
-										else {
-											bounceDownAnim.update(1);
-											if(bounceDownAnim.finished) {bouncing = false;}
-										}
-									}
-								}
-							}
-							
-							if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
-							else {
-								if(anim != JUMP_ANIM && anim != LAND_ANIM && !bouncing && !landing) {
-									anim = FALL_ANIM;
-									fallAnim.reset();
-								}
-							}
-							
-							if(anim == LAND_ANIM) {landAnim.update(1);}
-							
-							if(anim == JUMP_ANIM) {
-								jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 								
-								if(landing && vel.y > 0 && !jumping) {
-									anim = LAND_ANIM;
-									landAnim.reset();
+								if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+								else {
+									if(anim != JUMP_ANIM && anim != LAND_ANIM && !bouncing && !landing) {
+										anim = FALL_ANIM;
+										fallAnim.reset();
+									}
+								}
+								
+								if(anim == LAND_ANIM) {landAnim.update(1);}
+								
+								if(anim == JUMP_ANIM) {
+									jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+									
+									if(landing && vel.y > 0 && !jumping) {
+										anim = LAND_ANIM;
+										landAnim.reset();
+									}
 								}
 							}
 						}
@@ -1176,7 +1292,7 @@ public class Player {
 				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			}
-			if(anim == START_ANIM)           {startAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == START_ANIM)           {startAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == BOUNCING_UP_ANIM)     {bounceUpAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == BOUNCING_DOWN_ANIM)   {bounceDownAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
@@ -1190,6 +1306,10 @@ public class Player {
 			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == TRICK_RIGHT_ANIM)     {trickRightAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			
 			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
 			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
@@ -1202,23 +1322,18 @@ public class Player {
 		downArrow = KeyListener.isKeyPressed(GLFW_KEY_DOWN);
 		leftArrow = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
 		rightArrow = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
-		spaceBar = KeyListener.isKeyPressed(GLFW_KEY_SPACE);
+		spaceBar = KeyListener.isKeyPressed(GLFW_KEY_C);
 		shiftKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT);
-		controlKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL);
+		controlKey = KeyListener.isKeyPressed(GLFW_KEY_X);
+		//trickKey = KeyListener.isKeyPressed(GLFW_KEY_Z);
 	}
 	
 	private Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
 		Shape groundMask = new Circle(radius);
 		groundMask.relocate(pos);
 		
-		if(bouncing && vel.y < 0) {
-			groundMask.translate(groundAxis.scale(-1).normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
-			groundMask.translate(groundAxis.scale(-1).getPerpendicular().normalize().scale(-offsetX));
-		}
-		else {
-			groundMask.translate(groundAxis.normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
-			groundMask.translate(groundAxis.getPerpendicular().normalize().scale(-offsetX));
-		}
+		groundMask.translate(groundAxis.normalize().scale(offsetY - radius + MASK_RADIUS * SCALE));
+		groundMask.translate(groundAxis.getPerpendicular().normalize().scale(-offsetX));
 		
 		return(groundMask);
 	}

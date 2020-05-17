@@ -23,6 +23,7 @@ public class HUD {
 	private Image hud;
 	private Image time;
 	private Image[] numbers;
+	private Image[] redNumbers;
 	
 	private Image start0;
 	private Image start1;
@@ -45,6 +46,8 @@ public class HUD {
 	private int voice;
 	private int voiceTimer;
 	
+	private int ringTimer;
+	
 	public HUD() {
 		//camera = new Camera(new Vector2f());
 		
@@ -58,6 +61,9 @@ public class HUD {
 		
 		numbers = new Image[Loader.numbers.length];
 		for(int i = 0; i < numbers.length; i++) {numbers[i] = new Image(Loader.numbers[i]);}
+		
+		redNumbers = new Image[Loader.redNumbers.length];
+		for(int i = 0; i < redNumbers.length; i++) {redNumbers[i] = new Image(Loader.redNumbers[i]);}
 		
 		ring = new Animation(Loader.hudRingAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0);
 		
@@ -97,8 +103,20 @@ public class HUD {
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {ring.update((p.vel.getLength() / 10 + 1));}
 		
-		drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);
+		if(p.rings > 0) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
+		else {
+			if(ringTimer < 30) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
+			else {drawRedNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
+			
+			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+				ringTimer++;
+				if(ringTimer == 60) {ringTimer = 0;}
+			}
+		}
 
+		drawNumber((1 + 27) * SCALE, (3 + 14) * SCALE, p.score, 6, shader, camera);
+		
+		if(p.starting) {start = System.nanoTime();}
 		long change = System.nanoTime() - start;
 		
 		int ms = (int)(change / 10000000);
@@ -158,6 +176,18 @@ public class HUD {
 			
 			numbers[n].setPositions(xOffset + x + i * 8 * SCALE, yOffset + y, SCALE, SCALE);
 			SpriteRenderer.add(numbers[n]);
+		}
+	}
+	
+	private void drawRedNumber(int x, int y, int num, int places, Shader shader, Camera camera) {
+		float xOffset = camera.position.x;
+		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+		
+		for(int i = 0; i < places; i++) {
+			int n = (int)floor(num / pow(10, places - i - 1)) % 10;
+			
+			redNumbers[n].setPositions(xOffset + x + i * 8 * SCALE, yOffset + y, SCALE, SCALE);
+			SpriteRenderer.add(redNumbers[n]);
 		}
 	}
 }

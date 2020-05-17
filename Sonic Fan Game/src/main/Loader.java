@@ -66,6 +66,9 @@ public class Loader {
 	public static ByteBuffer[] turnAnim;
 	public static ByteBuffer[] landAnim;
 	public static ByteBuffer[] startAnim;
+	public static ByteBuffer[] trickRightAnim;
+	public static ByteBuffer[] trickUp0Anim;
+	public static ByteBuffer[] trickUp1Anim;
 	
 	public static ByteBuffer[] springAnim;
 	public static ByteBuffer[] ringAnim;
@@ -87,6 +90,7 @@ public class Loader {
 	public static ByteBuffer hud;
 	public static ByteBuffer time;
 	public static ByteBuffer[] numbers;
+	public static ByteBuffer[] redNumbers;
 	
 	public static ByteBuffer itemBox;
 	
@@ -107,6 +111,7 @@ public class Loader {
 	public static Clip stepSound2;
 	public static Clip stepSound3;
 	public static Clip stepSound4;
+	public static Clip trickSound;
 	
 	public static Clip voice3;
 	public static Clip voice2;
@@ -160,6 +165,9 @@ public class Loader {
 			turnAnim = loadImages("/sonicsprites", "turn");
 			landAnim = loadImages("/sonicsprites", "land");
 			startAnim = loadImages("/sonicsprites", "start");
+			trickRightAnim = loadImages("/sonicsprites", "whirl");
+			trickUp0Anim = loadImages("/sonicsprites", "trickUp0");
+			trickUp1Anim = loadImages("/sonicsprites", "trickUp1");
 			
 			itemBox = loadImage("/objectsprites/itemBox.png");
 			
@@ -179,6 +187,7 @@ public class Loader {
 			stepSound2 = loadSound("/sonicsounds/step2.wav", -10.0f);
 			stepSound3 = loadSound("/sonicsounds/step3.wav", -10.0f);
 			stepSound4 = loadSound("/sonicsounds/step4.wav", -10.0f);
+			trickSound = loadSound("/sonicsounds/trick.wav", -10.0f);
 			
 			voice3 = loadSound("/voiceclips/3.wav", -10.0f);
 			voice2 = loadSound("/voiceclips/2.wav", -10.0f);
@@ -209,6 +218,7 @@ public class Loader {
 			time = loadImage("/hudsprites/time.png");
 				
 			numbers = loadImages("/hudsprites", "");
+			redNumbers = loadImages("/hudsprites", "red");
 			
 			spinnerAnim = loadImages("/badniksprites", "spinner");
 			explosionAnim = loadImages("/objectsprites", "explosion");

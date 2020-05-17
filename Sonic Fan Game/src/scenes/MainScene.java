@@ -144,7 +144,11 @@ public class MainScene extends Scene {
 		};
 		
 		badniks = new Badnik[]{
-			new Spinner(17 * SCALE * 96, 16 * SCALE * 96)
+			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(24 * 96 * SCALE + 16.5 * SCALE * 96,  2 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(34 * 96 * SCALE + 16.5 * SCALE * 96,  7 * 96 * SCALE + 16.5 * SCALE * 96),
+			new Spinner(42 * 96 * SCALE + 16.5 * SCALE * 96, 11 * 96 * SCALE + 16.5 * SCALE * 96)
 		};
 		
 		items = new Item[]{
@@ -171,7 +175,7 @@ public class MainScene extends Scene {
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
 			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items);
-			moveCamera(dt);
+			if(!player.stopCam) {moveCamera(dt);}
 		}
 		
 		SpriteRenderer.reset();
@@ -198,21 +202,9 @@ public class MainScene extends Scene {
 		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		player.draw(dt, defaultShader, camera);
 		
-		if(rings != null) {
-			int[] removals = null;
-			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
-			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
-		}
-		if(badniks != null) {
-			int[] removals = null;
-			for(int i = 0; i < badniks.length; i++) {if(badniks[i].destroy == 2) {removals = append(removals, i);}}
-			if(removals != null) {for(int i = 0; i < removals.length; i++) {badniks = removeIndex(badniks, removals[i]);}}
-		}
-		if(items != null) {
-			int[] removals = null;
-			for(int i = 0; i < items.length; i++) {if(items[i].destroy == 2) {removals = append(removals, i);}}
-			if(removals != null) {for(int i = 0; i < removals.length; i++) {items = removeIndex(items, removals[i]);}}
-		}
+		removeRings();
+		removeBadniks();
+		removeItems();
 		
 		SpriteRenderer.draw(spriteShader, camera);
 		
@@ -281,8 +273,29 @@ public class MainScene extends Scene {
 		return(out);
 	}
 	
-	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {
-		rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));
+	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
+	
+	private void removeRings() {
+		if(rings != null) {
+			int[] removals = null;
+			for(int i = 0; i < rings.length; i++) {if(rings[i].destroy == 3) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {rings = removeIndex(rings, removals[i]);}}
+		}
+	}
+	
+	private void removeBadniks() {
+		if(badniks != null) {
+			int[] removals = null;
+			for(int i = 0; i < badniks.length; i++) {if(badniks[i].destroy == 2) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {badniks = removeIndex(badniks, removals[i]);}}
+		}
+	}
+	private void removeItems() {
+		if(items != null) {
+			int[] removals = null;
+			for(int i = 0; i < items.length; i++) {if(items[i].destroy == 2) {removals = append(removals, i);}}
+			if(removals != null) {for(int i = 0; i < removals.length; i++) {items = removeIndex(items, removals[i]);}}
+		}
 	}
 	
 	private void interpretMap(TiledJSON json) {
