@@ -5,6 +5,7 @@ import datatypes.Shape;
 import datatypes.Vector;
 import objects.AfterImage;
 import objects.Item;
+import objects.Ramp;
 import objects.Ring;
 import rendering.Image;
 //import rendering.ShapeRendererBatch;
@@ -63,6 +64,16 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new boolean[]{pointToCheck});}
 		
 		boolean[] newList = new boolean[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static Ramp[] append(Ramp[] existingPoints, Ramp pointToCheck) {
+		if(existingPoints == null) {return(new Ramp[]{pointToCheck});}
+		
+		Ramp[] newList = new Ramp[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

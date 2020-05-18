@@ -69,6 +69,7 @@ public class Loader {
 	public static ByteBuffer[] trickRightAnim;
 	public static ByteBuffer[] trickUp0Anim;
 	public static ByteBuffer[] trickUp1Anim;
+	public static ByteBuffer[] rampAnim;
 	
 	public static ByteBuffer[] springAnim;
 	public static ByteBuffer[] ringAnim;
@@ -93,6 +94,7 @@ public class Loader {
 	public static ByteBuffer[] redNumbers;
 	
 	public static ByteBuffer itemBox;
+	public static ByteBuffer ramp;
 	
 	public static ByteBuffer[] spinnerAnim;
 	public static ByteBuffer[] explosionAnim;
@@ -169,8 +171,10 @@ public class Loader {
 			trickRightAnim = loadImages("/sonicsprites", "whirl");
 			trickUp0Anim = loadImages("/sonicsprites", "trickUp0");
 			trickUp1Anim = loadImages("/sonicsprites", "trickUp1");
+			rampAnim = loadImages("/sonicsprites", "ramp");
 			
 			itemBox = loadImage("/objectsprites/itemBox.png");
+			ramp = loadImage("/objectsprites/ramp.png");
 			
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");

@@ -32,6 +32,7 @@ import misc.Background;
 import misc.HUD;
 import objects.Item;
 import objects.Player;
+import objects.Ramp;
 import objects.Ring;
 import objects.Spring;
 import rendering.Camera;
@@ -70,9 +71,9 @@ public class MainScene extends Scene {
 	
 	private Ring[] rings;
 	private Spring[] springs;
-	
 	private Badnik[] badniks;
 	private Item[] items;
+	private Ramp[] ramps;
 	
 	private HUD hud;
 	
@@ -150,17 +151,31 @@ public class MainScene extends Scene {
 			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
 		};
 		
-		badniks = new Badnik[]{
+		badniks = null;
+		/*badniks = new Badnik[]{
 			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(24 * 96 * SCALE + 16.5 * SCALE * 96,  2 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(34 * 96 * SCALE + 16.5 * SCALE * 96,  7 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(42 * 96 * SCALE + 16.5 * SCALE * 96, 11 * 96 * SCALE + 16.5 * SCALE * 96)
-		};
+		};*/
 		
 		items = new Item[]{
 			new Item(19 * 96 * SCALE + 48 * SCALE + 13 * SCALE + 16 * 96 * SCALE, 5 * 96 * SCALE + 96 * SCALE - 29 * SCALE + 16 * 96 * SCALE)
 		};
+		
+		ramps = null;
+		
+		placeRamp(15, 4, 0, 2, 4, 4, PI / 4, 15);
+		placeRamp(31, 6, 2, 8, 4, 4, PI / 4, 15);
+		
+		if(ramps != null) {
+			for(int i = 0; i < ramps.length; i++) {
+				Shape[] rampShapes = ramps[i].getShapes(96, 96, SCALE);
+				
+				for(int s = 0; s < rampShapes.length; s++) {layer0 = append(layer0, rampShapes[s]);}
+			}
+		}
 		
 		hud = new HUD();
 		
@@ -208,20 +223,14 @@ public class MainScene extends Scene {
 		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
 		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
-		springs = new Spring[]{
-			new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-		};
-		
-		badniks = new Badnik[]{
+		badniks = null;
+		/*badniks = new Badnik[]{
 			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(24 * 96 * SCALE + 16.5 * SCALE * 96,  2 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(34 * 96 * SCALE + 16.5 * SCALE * 96,  7 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(42 * 96 * SCALE + 16.5 * SCALE * 96, 11 * 96 * SCALE + 16.5 * SCALE * 96)
-		};
+		};*/
 		
 		items = new Item[]{
 			new Item(19 * 96 * SCALE + 48 * SCALE + 13 * SCALE + 16 * 96 * SCALE, 5 * 96 * SCALE + 96 * SCALE - 29 * SCALE + 16 * 96 * SCALE)
@@ -240,7 +249,7 @@ public class MainScene extends Scene {
 		checkKeysReleased();
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
-			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items);
+			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps);
 			
 			removeRings();
 			removeBadniks();
@@ -271,6 +280,7 @@ public class MainScene extends Scene {
 		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		
 		SpriteRenderer.draw(spriteShader, camera);
 		SpriteRenderer.reset();
@@ -347,6 +357,7 @@ public class MainScene extends Scene {
 	}
 	
 	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
+	private void placeRamp(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength) {ramps = append(ramps, new Ramp(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength));}
 	
 	private void removeRings() {
 		if(rings != null) {

@@ -118,6 +118,7 @@ public class Player {
 	private final int TRICK_RIGHT_ANIM		= 16;
 	private final int TRICK_UP_0_ANIM		= 17;
 	private final int TRICK_UP_1_ANIM		= 18;
+	private final int RAMP_ANIM				= 19;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -159,6 +160,7 @@ public class Player {
 	private boolean groundFlipped;
 	private boolean boostMode;
 	private boolean boostReady;
+	private boolean rampDashing;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
@@ -202,6 +204,7 @@ public class Player {
 	private Animation trickRightAnim;
 	private Animation trickUp0Anim;
 	private Animation trickUp1Anim;
+	private Animation rampAnim;
 	
 	private int facing;
 	private int anim;
@@ -267,6 +270,7 @@ public class Player {
 		turnAnim = new Animation(Loader.turnAnim, new int[]{1, 3}, 0);
 		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
 		startAnim = new Animation(Loader.startAnim, new int[]{2, 2, 4, 4, 4, 6, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 6, 4, 110, 6, 60, 3}, 0);
+		rampAnim = new Animation(Loader.rampAnim, new int[]{1, 2, 2, 2}, 1);
 		
 		trickRightAnim = new Animation(Loader.trickRightAnim, new int[]{2, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1}, 3);
 		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
@@ -301,7 +305,7 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps) {
 		if(starting) {starting();}
 		if(!starting && !stopCam) { // NOT ELSE
 			checkKeys();
@@ -379,6 +383,7 @@ public class Player {
 		badniks(badniks);
 		items(items);
 		springs(springs);
+		ramps(ramps);
 
 		afterImages(dt);
 	}
@@ -970,6 +975,35 @@ public class Player {
 						springSound.flush();
 						springSound.setFramePosition(0);
 						springSound.start();
+					}
+				}
+			}
+		}
+	}
+	
+	private void ramps(Ramp[] ramps) {
+		if(ramps != null) {
+			for(int i = 0; i < ramps.length; i++) {
+				if(groundSpeed >= 10 * ramps[i].direction) {
+					Shape rampMask = new Rectangle(ramps[i].pos.add(5 * 8 * 2, -8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, rampMask) && !ground) {
+						vel = new Vector(cos(ramps[i].angle) * ramps[i].strength, -sin(ramps[i].angle) * ramps[i].strength);
+						
+						jumpReady = false;
+						ground = false;
+						jumping = false;
+						jumpSlowing = false;
+						spinning = false;
+						bouncing = true;
+						trickType = 0;
+						trickReadyReady = true;
+						
+						boostSound.stop();
+						boostSound.flush();
+						boostSound.setFramePosition(0);
+						boostSound.start();
 					}
 				}
 			}
