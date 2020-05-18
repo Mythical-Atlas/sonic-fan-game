@@ -343,7 +343,7 @@ public class Player {
 					}
 				}
 				else {
-					if(groundSpeed < BOOST_STOP_SPEED) {boostMode = false;}
+					if(abs(groundSpeed) < BOOST_STOP_SPEED) {boostMode = false;}
 				}
 			}
 		}

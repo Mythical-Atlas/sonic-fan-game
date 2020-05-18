@@ -47,7 +47,7 @@ import shapes.Triangle;
 
 public class MainScene extends Scene {
 	private final int LEFT_CAMERA_LIMIT = 1440;
-	private final int LOWER_CAMERA_LIMIT = 4608;
+	private final int LOWER_CAMERA_LIMIT = 4128;
 	
 	private final int X_MIN_DISTANCE_SCALE = 32;
 	private final int Y_MIN_DISTANCE_SCALE = 32;
@@ -337,7 +337,7 @@ public class MainScene extends Scene {
 		camera.position = new Vector2f((float)(int)x, (float)(int)y);
 		
 		if(camera.position.x < LEFT_CAMERA_LIMIT * SCALE) {camera.position.x = LEFT_CAMERA_LIMIT * SCALE;}
-		if(camera.position.y > LOWER_CAMERA_LIMIT * SCALE) {reset();}
+		if(camera.position.y + (Window.getHeight() + (Window.getInitHeight() - Window.getHeight())) > LOWER_CAMERA_LIMIT * SCALE) {camera.position.y = LOWER_CAMERA_LIMIT * SCALE - (Window.getHeight() + (Window.getInitHeight() - Window.getHeight()));}
 	}
 	
 	private double moveTowards(double value0, double value1, double minDist, double interval, float dt) {
