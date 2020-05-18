@@ -107,6 +107,9 @@ public class SpriteRenderBatch {
 	private void loadVertices(float[] items, int start, int length) {for(int i = start; i < start + length; i++, index++) {vertices.putFloat(items[i]);}}
 	
 	public void load() {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
 		vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
 		
@@ -164,9 +167,6 @@ public class SpriteRenderBatch {
 		glBindVertexArray(vaoID);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glDrawArrays(GL_TRIANGLES, 0, index / 10);
 		

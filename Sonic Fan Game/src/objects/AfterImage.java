@@ -37,23 +37,23 @@ public class AfterImage {
 		this.lifeTime = lifeTime;
 		this.birthDelay = birthDelay;
 		
-		this.image.setColors(getColors(new float[]{0.5f, 1.0f, 2.0f, 1.0f}));
+		this.image.setColors(getColors(new float[]{0.25f, 2.0f, 2.0f, 0.1f}));
 		if(birthDelay == 0) {born = true;}
 	}
 	
 	public void update(float dt) {
-		if(!born) {
-			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
-				if(birthCounter >= birthDelay) {born = true;}
-				birthCounter++;
-			}
-		}
-		else {
+		if(born) {
 			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
 				if(lifeCounter >= lifeTime) {remove = true;}
 				lifeCounter++;
 				born = false;
-				birthCounter = 1;
+				birthCounter = 2;
+			}
+		}
+		if(!born) {
+			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+				if(birthCounter >= birthDelay) {born = true;}
+				birthCounter++;
 			}
 		}
 	}

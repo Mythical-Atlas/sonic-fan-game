@@ -31,23 +31,24 @@ import shapes.Circle;
 import shapes.Rectangle;
 
 public class Player {
-	private final double SPRINT_ACCEL 		  = 2;
-	private final double MOVE_ACCEL  		  = 0.115;
-	private final double GROUND_ACCEL_LIMIT   = 35;
-	private final double BOOST_ACCEL_SCALE	  = 3;
-	private final double BOOST_LIMIT_SCALE	  = 1.5;
-	private final double BOOST_START_SPEED	  = 30;
-	private final double BOOST_STOP_SPEED	  = 10;
-	private final int 	 BOOST_TIME			  = 60 * 5;
-	private final double SKID_ACCEL  		  = 1;
-	private final double DRAG_DECEL   		  = 0.108;
-	private final double DEBUG_JUMP_IMPULSE   = 50;
-	private final double JUMP_IMPULSE 		  = 22;
-	private final double JUMP_SWITCH  		  = 2;
-	private final double GRAVITY      		  = 0.75;
-	private final double GROUND_GRAVITY_ACCEL = 0.75;
-	private final double GROUND_GRAVITY_DECEL = 0.75;
-	private final double SPIN_DECEL			  = 0.025;
+	private final double SPRINT_ACCEL 		 	= 2;
+	private final double MOVE_ACCEL  		  	= 0.115;
+	private final double GROUND_ACCEL_LIMIT  	= 35;
+	private final double BOOST_ACCEL_SCALE	 	= 2;
+	private final double BOOST_LIMIT_SCALE	  	= 1.5;
+	private final double BOOST_START_SPEED	  	= 25;
+	private final double BOOST_STOP_SPEED	  	= 10;
+	private final int 	 BOOST_TIME			 	= 60 * 3;
+	private final double SKID_ACCEL  		  	= 1;
+	private final double DRAG_DECEL   		  	= 0.108;
+	private final double DEBUG_JUMP_IMPULSE  	= 50;
+	private final double JUMP_IMPULSE 		  	= 22;
+	private final double JUMP_SWITCH  		  	= 2;
+	private final double GRAVITY      		  	= 0.75;
+	private final double GROUND_GRAVITY_ACCEL 	= 0.4;
+	private final double GROUND_GRAVITY_DECEL 	= 0.4;
+	private final double SPIN_DECEL			  	= 0.025;
+	private final double MIN_POTENTIAL_GRAVITY 	= 0.1;
 	
 	private final double SLOW_MIN_SPEED 	= 10;
 	private final double NORMAL_MIN_SPEED 	= 20;
@@ -64,7 +65,7 @@ public class Player {
 	private final double GROUND_ANGLE_MASK_RADIUS    = 50;
 	
 	private final double STICK_OFFSET_SCALE = 1;
-	private final double STICK_MIN_SPEED    = 5;
+	private final double STICK_MIN_SPEED    = 10;
 	
 	private final double GROUND_MASK_OFFSET_X  = 0;
 	private final double GROUND_MASK_OFFSET_Y  = 1;
@@ -94,7 +95,6 @@ public class Player {
 	private final double STEP_SPEED_SCALE 		= 1;
 	private final double STEP_SPEED_OFFSET		= 2;
 	private final double MAX_STEP_SPEED 		= 25;
-	private final double MIN_POTENTIAL_GRAVITY 	= 0.25;
 	
 	public boolean        DRAW_MASKS 	= false;
 	private final boolean DRAW_SPRITES	= true;
@@ -304,8 +304,6 @@ public class Player {
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items) {
 		if(starting) {starting();}
 		if(!starting && !stopCam) { // NOT ELSE
-			afterImages(dt);
-			
 			checkKeys();
 			
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
@@ -321,7 +319,7 @@ public class Player {
 			
 			if(ground) {
 				if(!boostMode) {
-					if(groundSpeed >= BOOST_START_SPEED * SCALE) {
+					if(abs(groundSpeed) >= BOOST_START_SPEED * SCALE) {
 						boostReady = true;
 						boostTimer--;
 						if(boostTimer == 0) {
@@ -380,6 +378,8 @@ public class Player {
 		badniks(badniks);
 		items(items);
 		springs(springs);
+
+		afterImages(dt);
 	}
 	
 	private void starting() {
@@ -632,6 +632,7 @@ public class Player {
 			
 			if(trickType != 0) {
 				trickReady = false;
+				trickReadyReady = false;
 				stopCam = true;
 				vel = new Vector();
 				groundSpeed = 0;

@@ -239,6 +239,11 @@ public class MainScene extends Scene {
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
 			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items);
+			
+			removeRings();
+			removeBadniks();
+			removeItems();
+			
 			if(!player.stopCam) {moveCamera(dt);}
 		}
 		
@@ -264,11 +269,11 @@ public class MainScene extends Scene {
 		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		player.draw(dt, defaultShader, camera);
 		
-		removeRings();
-		removeBadniks();
-		removeItems();
+		SpriteRenderer.draw(spriteShader, camera);
+		SpriteRenderer.reset();
+		
+		player.draw(dt, defaultShader, camera);
 		
 		SpriteRenderer.draw(spriteShader, camera);
 		
