@@ -324,7 +324,8 @@ public class Player {
 						boostTimer--;
 						if(boostTimer == 0) {
 							boostMode = true;
-							groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE;
+							if(groundSpeed > 0) {groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE;}
+							if(groundSpeed < 0) {groundSpeed = -GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE;}
 							
 							boostSound.stop();
 							boostSound.flush();
