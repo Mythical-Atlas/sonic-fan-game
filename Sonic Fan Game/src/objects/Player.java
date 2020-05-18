@@ -45,7 +45,7 @@ public class Player {
 	private final double JUMP_IMPULSE 		  	= 22;
 	private final double JUMP_SWITCH  		  	= 2;
 	private final double GRAVITY      		  	= 0.75;
-	private final double GROUND_GRAVITY_ACCEL 	= 0.4;
+	private final double GROUND_GRAVITY_ACCEL 	= 0.6;
 	private final double GROUND_GRAVITY_DECEL 	= 0.4;
 	private final double SPIN_DECEL			  	= 0.025;
 	private final double MIN_POTENTIAL_GRAVITY 	= 0.1;
