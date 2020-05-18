@@ -644,7 +644,7 @@ public class Player {
 				groundSpeed = 0;
 			}
 		}
-		if(bouncing && !spaceBar && trickReadyReady) {trickReady = true;}
+		if((bouncing || rampDashing) && !spaceBar && trickReadyReady) {trickReady = true;}
 	}
 	
 	private void spindash() {
@@ -702,7 +702,7 @@ public class Player {
 	}
 	
 	private void crouch() {
-		if(ground && groundSpeed == 0 && downArrow) {
+		if(ground && groundSpeed == 0 && downArrow && !spindashing) {
 			crouching0 = true;
 			crouching1 = true;
 			spindashReady = false;
@@ -831,6 +831,8 @@ public class Player {
 			trickReady = false;
 			trickReadyReady = false;
 			trickType = 0;
+			bouncing = false;
+			rampDashing = false;
 			
 			/*landSound.stop();
 			landSound.flush();
@@ -867,8 +869,6 @@ public class Player {
 			else {groundAxis = new Vector(0, 1);}
 		}
 		else {groundAxis = new Vector(0, 1);}
-		
-		if(ground) {bouncing = false;}
 	}
 	
 	private void rings(Ring[] rings) {
@@ -938,6 +938,7 @@ public class Player {
 							jumping = false;
 							jumpSlowing = false;
 							bouncing = true;
+							rampDashing = false;
 						}
 						
 						popSound.stop();
@@ -970,6 +971,7 @@ public class Player {
 						bouncing = true;
 						trickType = 0;
 						trickReadyReady = true;
+						rampDashing = false;
 						
 						springSound.stop();
 						springSound.flush();
@@ -996,9 +998,9 @@ public class Player {
 						jumping = false;
 						jumpSlowing = false;
 						spinning = false;
-						bouncing = true;
 						trickType = 0;
 						trickReadyReady = true;
+						rampDashing = true;
 						
 						boostSound.stop();
 						boostSound.flush();
@@ -1070,7 +1072,14 @@ public class Player {
 				}
 			}
 			else {
-				if(spindashing) {
+				if(rampDashing) {
+					if(anim != RAMP_ANIM) {
+						anim = RAMP_ANIM;
+						rampAnim.reset();
+					}
+					else {rampAnim.update(1);}
+				}
+				else if(spindashing) {
 					if(!spindashCharge) {
 						if(anim == SPINDASH_CHARGE_ANIM) {
 							spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
@@ -1392,8 +1401,8 @@ public class Player {
 		if(anim == TRICK_RIGHT_ANIM)     {return(trickRightAnim    );}
 		if(anim == TRICK_UP_0_ANIM)      {return(trickUp0Anim      );}
 		if(anim == TRICK_UP_1_ANIM)      {return(trickUp1Anim      );}
-		
-		if(anim == SPIN_ANIM)            {return(spinAnim);}
+		if(anim == RAMP_ANIM)            {return(rampAnim          );}
+		if(anim == SPIN_ANIM)            {return(spinAnim          ); }
 		
 		return(null);
 	}
@@ -1434,6 +1443,8 @@ public class Player {
 			double w = idleAnim.getCurrentSize()[0] * 2;
 			double h = idleAnim.getCurrentSize()[1] * 2;
 			double t = limitAngle(getAngleOfVector(groundAxis) * -1 - PI / 2);
+			double s = -w / 8;
+			if(facing == -1) {s = 0;}
 			
 			if(anim == RUN_ANIM) {
 				     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {runFastestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
@@ -1453,18 +1464,19 @@ public class Player {
 			if(anim == TURN_ANIM)            {turnAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SPINDASH_ANIM)        {spindashAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SPINDASH_CHARGE_ANIM) {spindashChargeAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == TRICK_RIGHT_ANIM)     {trickRightAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == RAMP_ANIM)            {rampAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			
-			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
+			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
-			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPINDASH_ANIM)                   {spindashAnim.          draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPINDASH_CHARGE_ANIM)            {spindashChargeAnim.    draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 		}
 	}
 
