@@ -70,10 +70,12 @@ public class Loader {
 	public static ByteBuffer[] trickUp0Anim;
 	public static ByteBuffer[] trickUp1Anim;
 	public static ByteBuffer[] rampAnim;
+	public static ByteBuffer[] sonicRotorAnim;
 	
 	public static ByteBuffer[] springAnim;
 	public static ByteBuffer[] ringAnim;
 	public static ByteBuffer[] sparkleAnim;
+	public static ByteBuffer[] rotorAnim;
 	
 	public static ByteBuffer leafBG0;
 	public static ByteBuffer leafBG1;
@@ -172,6 +174,7 @@ public class Loader {
 			trickUp0Anim = loadImages("/sonicsprites", "trickUp0");
 			trickUp1Anim = loadImages("/sonicsprites", "trickUp1");
 			rampAnim = loadImages("/sonicsprites", "ramp");
+			sonicRotorAnim = loadImages("/sonicsprites", "sonicRotor");
 			
 			itemBox = loadImage("/objectsprites/itemBox.png");
 			ramp = loadImage("/objectsprites/ramp.png");
@@ -179,6 +182,7 @@ public class Loader {
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");
 			sparkleAnim = loadImages("/objectsprites", "effect");
+			rotorAnim = loadImages("/objectsprites", "rotor");
 			
 			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -15.0f);
 			jumpSound1 = loadSound("/sonicsounds/jump1.wav", -10.0f);

@@ -42,10 +42,6 @@ public class Window {
 				get().currentScene = new MainScene();
 				get().currentScene.init();
 				break;
-			case(1):
-				get().currentScene = new MenuScene();
-				get().currentScene.init();
-				break;
 			default:
 				assert(false): "Unknown scene " + newScene + ".";
 		}

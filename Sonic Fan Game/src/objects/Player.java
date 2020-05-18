@@ -119,6 +119,7 @@ public class Player {
 	private final int TRICK_UP_0_ANIM		= 17;
 	private final int TRICK_UP_1_ANIM		= 18;
 	private final int RAMP_ANIM				= 19;
+	private final int SWING_ANIM			= 20;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -161,6 +162,8 @@ public class Player {
 	private boolean boostMode;
 	private boolean boostReady;
 	private boolean rampDashing;
+	private boolean swinging;
+	private boolean justSwang;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
@@ -175,8 +178,10 @@ public class Player {
 	
 	private Shape mask;
 	
+	private Rotor rotor;
+	
 	public  Vector pos;
-	public Vector vel;
+	public  Vector vel;
 	private Vector groundAxis;
 	
 	private Animation idleAnim;
@@ -205,6 +210,7 @@ public class Player {
 	private Animation trickUp0Anim;
 	private Animation trickUp1Anim;
 	private Animation rampAnim;
+	private Animation swingAnim;
 	
 	private int facing;
 	private int anim;
@@ -271,6 +277,7 @@ public class Player {
 		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
 		startAnim = new Animation(Loader.startAnim, new int[]{2, 2, 4, 4, 4, 6, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 6, 4, 110, 6, 60, 3}, 0);
 		rampAnim = new Animation(Loader.rampAnim, new int[]{1, 2, 2, 2}, 1);
+		swingAnim = new Animation(Loader.sonicRotorAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 0); // not techincally accurate, it sometimes switches to 3 frames, not sure when
 		
 		trickRightAnim = new Animation(Loader.trickRightAnim, new int[]{2, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1}, 3);
 		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
@@ -305,11 +312,11 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors) {
+		checkKeys();
+		
 		if(starting) {starting();}
 		if(!starting && !stopCam) { // NOT ELSE
-			checkKeys();
-			
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 			
@@ -384,6 +391,7 @@ public class Player {
 		items(items);
 		springs(springs);
 		ramps(ramps);
+		rotors(rotors);
 
 		afterImages(dt);
 	}
@@ -1012,6 +1020,59 @@ public class Player {
 		}
 	}
 	
+	private void rotors(Rotor[] rotors) {
+		if(!swinging) {
+			if(rotors != null) {
+				boolean didSwing = false;
+				
+				for(int i = 0; i < rotors.length; i++) {
+					Shape rampMask = new Circle(rotors[i].pos, 4 * 2, Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, rampMask) && !ground) {
+						didSwing = true;
+						if(!justSwang) {
+							vel = new Vector();
+							groundSpeed = 0;
+							pos = new Vector(rotors[i].pos.x, rotors[i].pos.y);
+							
+							swinging = true;
+							stopCam = true;
+							jumpReady = false;
+							ground = false;
+							jumping = false;
+							jumpSlowing = false;
+							spinning = false;
+							trickType = 0;
+							trickReadyReady = false;
+							rampDashing = false;
+							rotor = rotors[i];
+							
+							boostSound.stop();
+							boostSound.flush();
+							boostSound.setFramePosition(0);
+							boostSound.start();
+						}
+					}
+				}
+				
+				if(!didSwing) {justSwang = false;}
+			}
+		}
+		else {
+			if(spaceBar && jumpReady) {
+				rotor.anim.reset();
+				swinging = false;
+				stopCam = false;
+				vel = new Vector(0, -10);
+				jumping = true;
+				jumpReady = false;
+				justSwang = true;
+			}
+			if(!spaceBar) {jumpReady = true;}
+		}
+	}
+	
 	private void checkLanding(Shape[] shapes) {
 		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
 		landing = false;
@@ -1020,7 +1081,19 @@ public class Player {
 	
 	private void manageAnimations(float dt) {
 		if(!starting) {
-			if(trickType != 0) {
+			if(swinging) {
+				if(anim != SWING_ANIM) {
+					anim = SWING_ANIM;
+					swingAnim.reset();
+					rotor.anim.reset();
+					rotor.anim.update(1);
+				}
+				else {
+					swingAnim.update(1);
+					rotor.anim.update(1);
+				}
+			}
+			else if(trickType != 0) {
 				if(trickType == 1) {
 					if(anim != TRICK_RIGHT_ANIM) {
 						anim = TRICK_RIGHT_ANIM;
@@ -1402,7 +1475,8 @@ public class Player {
 		if(anim == TRICK_UP_0_ANIM)      {return(trickUp0Anim      );}
 		if(anim == TRICK_UP_1_ANIM)      {return(trickUp1Anim      );}
 		if(anim == RAMP_ANIM)            {return(rampAnim          );}
-		if(anim == SPIN_ANIM)            {return(spinAnim          ); }
+		if(anim == SPIN_ANIM)            {return(spinAnim          );}
+		if(anim == SWING_ANIM)           {return(swingAnim         );}
 		
 		return(null);
 	}
@@ -1470,6 +1544,8 @@ public class Player {
 			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == RAMP_ANIM)            {rampAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			
+			if(anim == SWING_ANIM) {swingAnim.draw(pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			
 			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		

@@ -60,6 +60,8 @@ public class Animation {
 	
 	public Image getCurrentFrame() {return(frames[frame]);}
 	public int[] getCurrentSize() {return(new int[]{frames[frame].getWidth(), frames[frame].getHeight()});}
+	public int getCurrentWidth() {return(getCurrentSize()[0]);}
+	public int getCurrentHeight() {return(getCurrentSize()[1]);}
 	
 	public void draw(double x, double y, int xScale, int yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, xScale, yScale, shader, camera);}
 	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, ox, oy, angle, xScale, yScale, shader, camera);}

@@ -34,6 +34,7 @@ import objects.Item;
 import objects.Player;
 import objects.Ramp;
 import objects.Ring;
+import objects.Rotor;
 import objects.Spring;
 import rendering.Camera;
 import rendering.Image;
@@ -74,6 +75,7 @@ public class MainScene extends Scene {
 	private Badnik[] badniks;
 	private Item[] items;
 	private Ramp[] ramps;
+	private Rotor[] rotors;
 	
 	private HUD hud;
 	
@@ -179,6 +181,10 @@ public class MainScene extends Scene {
 			}
 		}
 		
+		rotors = null;
+		
+		placeRotor(33, 8, 0, 0, 0, 0);
+		
 		hud = new HUD();
 		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
@@ -251,7 +257,7 @@ public class MainScene extends Scene {
 		checkKeysReleased();
 		
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
-			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps);
+			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors);
 			
 			removeRings();
 			removeBadniks();
@@ -283,6 +289,7 @@ public class MainScene extends Scene {
 		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(rotors != null) {for(int i = 0; i < rotors.length; i++) {rotors[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		
 		SpriteRenderer.draw(spriteShader, camera);
 		SpriteRenderer.reset();
@@ -360,6 +367,7 @@ public class MainScene extends Scene {
 	
 	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	private void placeRamp(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength) {ramps = append(ramps, new Ramp(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength));}
+	private void placeRotor(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {rotors = append(rotors, new Rotor(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	
 	private void removeRings() {
 		if(rings != null) {
