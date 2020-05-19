@@ -759,7 +759,8 @@ public class Player {
 			dashing = true;
 			jumping = false;
 			
-			vel.translate(10 * facing, 0);
+			groundSpeed += 10 * SCALE * facing;
+			vel.y = 0;
 			
 			dashSound.stop();
 			dashSound.flush();
@@ -1018,6 +1019,7 @@ public class Player {
 						trickType = 0;
 						trickReadyReady = true;
 						rampDashing = false;
+						dashing = false;
 						
 						springSound.stop();
 						springSound.flush();
