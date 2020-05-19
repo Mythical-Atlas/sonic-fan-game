@@ -52,10 +52,12 @@ public class Animation {
 				finished = true;
 			}
 		}
-		
-		/*System.out.println("timer = " + timer);
-		System.out.println("frame = " + frame);
-		System.out.println("length = " + frames.length);*/
+		if(timer < 0) {
+			frame--;
+			if(frame < repeatFrame) {frame = frames.length - 1;}
+			
+			while(timer < 0) {timer += durations[frame];}
+		}
 	}
 	
 	public Image getCurrentFrame() {return(frames[frame]);}

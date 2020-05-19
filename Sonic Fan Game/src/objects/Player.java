@@ -170,6 +170,8 @@ public class Player {
 	private double spindashStrength;
 	private int trickType;
 	private int boostTimer;
+	private int swingStartFrame;
+	private int swingDirection;
 	
 	private double stepTimer;
 	private int stepIndex;
@@ -212,8 +214,8 @@ public class Player {
 	private Animation rampAnim;
 	private Animation swingAnim;
 	
-	private int facing;
-	private int anim;
+	public  int facing;
+	public  int anim;
 	private int dustAnim;
 	
 	private Clip jumpSound0;
@@ -452,9 +454,16 @@ public class Player {
 		double w = idleAnim.getCurrentSize()[0] * 2;
 		double h = idleAnim.getCurrentSize()[1] * 2;
 		double t = limitAngle(getAngleOfVector(groundAxis) * -1 - PI / 2);
-		if(anim == SPIN_ANIM) {t = 0;}
+		double s = -w / 8;
+		if(facing == -1) {s = 0;}
 		
-		if(boostMode) {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+		if(boostMode) {
+			if(anim == SWING_ANIM)                {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+			else if(anim == SPIN_ANIM)            {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2,          pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, 2, 5));}
+			else if(anim == SPINDASH_ANIM)        {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2 + s,      pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+			else if(anim == SPINDASH_CHARGE_ANIM) {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2 + s,      pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+			else                                  {afters = append(afters, new AfterImage(getCurrentAnim().getCurrentFrame(), pos.x - w / 2,          pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, 2, 5));}
+		}
 		else {afters = null;}
 		
 		if(afters != null) {
@@ -1032,6 +1041,19 @@ public class Player {
 					if(checkCollision(mask, rampMask) && !ground) {
 						didSwing = true;
 						if(!justSwang) {
+							if(pos.y <= rotors[i].pos.y) {
+								swingStartFrame = 0;
+								
+								if(vel.x <= 0) {swingDirection = facing;}
+								else {swingDirection = -facing;}
+							}
+							else {
+								swingStartFrame = 6;
+								
+								if(vel.x >= 0) {swingDirection = facing;}
+								else {swingDirection = -facing;}
+							}
+							
 							vel = new Vector();
 							groundSpeed = 0;
 							pos = new Vector(rotors[i].pos.x, rotors[i].pos.y);
@@ -1044,9 +1066,11 @@ public class Player {
 							jumpSlowing = false;
 							spinning = false;
 							trickType = 0;
+							trickReady = false;
 							trickReadyReady = false;
 							rampDashing = false;
 							rotor = rotors[i];
+							rotor.facing = -facing;
 							
 							boostSound.stop();
 							boostSound.flush();
@@ -1061,10 +1085,30 @@ public class Player {
 		}
 		else {
 			if(spaceBar && jumpReady) {
+				double swingAngle = 0;
+				if(swingAnim.frame ==  9) {swingAngle = 0;}
+				if(swingAnim.frame == 10) {swingAngle = PI / 6;}
+				if(swingAnim.frame == 11) {swingAngle = PI / 3;}
+				if(swingAnim.frame ==  0) {swingAngle = PI / 2;}
+				if(swingAnim.frame ==  1) {swingAngle = PI / 2 + PI / 6;}
+				if(swingAnim.frame ==  2) {swingAngle = PI / 2 + PI / 3;}
+				if(swingAnim.frame ==  3) {swingAngle = PI;}
+				if(swingAnim.frame ==  4) {swingAngle = PI + PI / 6;}
+				if(swingAnim.frame ==  5) {swingAngle = PI + PI / 3;}
+				if(swingAnim.frame ==  6) {swingAngle = PI + PI / 2;}
+				if(swingAnim.frame ==  7) {swingAngle = PI + PI / 2 + PI / 6;}
+				if(swingAnim.frame ==  8) {swingAngle = PI + PI / 2 + PI / 3;}
+				
+				double posDistance = MASK_RADIUS * SCALE * 2;
+				pos.translate(cos(swingAngle) * posDistance * facing, -sin(swingAngle) * posDistance);
+				
+				double swingPower = 20 * swingDirection;
+				vel = new Vector(-sin(swingAngle) * swingPower * facing, -cos(swingAngle) * swingPower);
+				
 				rotor.anim.reset();
+				rotor.facing = 1;
 				swinging = false;
 				stopCam = false;
-				vel = new Vector(0, -10);
 				jumping = true;
 				jumpReady = false;
 				justSwang = true;
@@ -1086,11 +1130,13 @@ public class Player {
 					anim = SWING_ANIM;
 					swingAnim.reset();
 					rotor.anim.reset();
-					rotor.anim.update(1);
+					rotor.anim.update(swingDirection);
+					
+					swingAnim.frame = swingStartFrame;
 				}
 				else {
-					swingAnim.update(1);
-					rotor.anim.update(1);
+					swingAnim.update(swingDirection);
+					rotor.anim.update(swingDirection);
 				}
 			}
 			else if(trickType != 0) {
@@ -1547,7 +1593,7 @@ public class Player {
 			
 			if(anim == SWING_ANIM) {swingAnim.draw(pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			
-			if(anim == SPIN_ANIM)            {spinAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
+			if(anim == SPIN_ANIM) {spinAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
 		
 			if(anim == SPINDASH_ANIM)                   {spindashAnim.          draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == SPINDASH_CHARGE_ANIM)            {spindashChargeAnim.    draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
