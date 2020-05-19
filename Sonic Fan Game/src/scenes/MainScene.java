@@ -256,7 +256,7 @@ public class MainScene extends Scene {
 		checkKeysPressed();
 		checkKeysReleased();
 		
-		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors);
 			
 			removeRings();

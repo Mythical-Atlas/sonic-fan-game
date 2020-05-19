@@ -120,6 +120,7 @@ public class Player {
 	private final int TRICK_UP_1_ANIM		= 18;
 	private final int RAMP_ANIM				= 19;
 	private final int SWING_ANIM			= 20;
+	private final int DASH_ANIM				= 21;
 	
 	private final int NO_DUST_ANIM 		= 0;
 	private final int REGULAR_DUST_ANIM = 1;
@@ -164,6 +165,8 @@ public class Player {
 	private boolean rampDashing;
 	private boolean swinging;
 	private boolean justSwang;
+	private boolean dashing;
+	private boolean dashReady;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
@@ -213,6 +216,7 @@ public class Player {
 	private Animation trickUp1Anim;
 	private Animation rampAnim;
 	private Animation swingAnim;
+	private Animation dashAnim;
 	
 	public  int facing;
 	public  int anim;
@@ -232,6 +236,7 @@ public class Player {
 	private Clip stepSound4;
 	private Clip trickSound;
 	private Clip boostSound;
+	private Clip dashSound;
 	
 	private Clip popSound;
 	private Clip ringSound;
@@ -280,6 +285,7 @@ public class Player {
 		startAnim = new Animation(Loader.startAnim, new int[]{2, 2, 4, 4, 4, 6, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 6, 4, 110, 6, 60, 3}, 0);
 		rampAnim = new Animation(Loader.rampAnim, new int[]{1, 2, 2, 2}, 1);
 		swingAnim = new Animation(Loader.sonicRotorAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 0); // not techincally accurate, it sometimes switches to 3 frames, not sure when
+		dashAnim = new Animation(Loader.dashAnim, new int[]{2, 2, 2, 2, 2, 2, 2}, 4);
 		
 		trickRightAnim = new Animation(Loader.trickRightAnim, new int[]{2, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1}, 3);
 		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
@@ -299,6 +305,7 @@ public class Player {
 		stepSound4 = Loader.stepSound4;
 		trickSound = Loader.trickSound;
 		boostSound = Loader.boostSound;
+		dashSound = Loader.dashSound;
 		
 		popSound = Loader.popSound;
 		ringSound = Loader.ringSound;
@@ -328,6 +335,7 @@ public class Player {
 			trick();
 			spindash();
 			crouch();
+			dash();
 			gravity();
 			
 			if(ground) {
@@ -643,7 +651,7 @@ public class Player {
 					jumpSlowing = true;
 				}
 				
-				if(jumpSlowed >= 0 && anim == JUMP_ANIM) {jumping = false;}
+				if(jumpSlowed >= 0 && (anim == JUMP_ANIM || anim == LAND_ANIM)) {jumping = false;}
 			}
 		}
 	}
@@ -742,6 +750,25 @@ public class Player {
 		}
 	}
 
+	private void dash() {
+		if(controlKey && dashReady && !dashing && !bouncing && !rampDashing && !spinning && !spindashing && (anim == JUMP_ANIM || anim == LAND_ANIM)) {
+			jumping = false;
+			jumpSlowing = false;
+			trickReady = false;
+			trickReadyReady = false;
+			dashing = true;
+			jumping = false;
+			
+			vel.translate(10 * facing, 0);
+			
+			dashSound.stop();
+			dashSound.flush();
+			dashSound.setFramePosition(0);
+			dashSound.start();
+		}
+		dashReady = !ground && !controlKey;
+	}
+	
 	private void gravity() {
 		double capScale = 1;
 		
@@ -850,6 +877,7 @@ public class Player {
 			trickType = 0;
 			bouncing = false;
 			rampDashing = false;
+			dashing = false;
 			
 			/*landSound.stop();
 			landSound.flush();
@@ -916,7 +944,7 @@ public class Player {
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, badnikMask)) {
-						if(spinning || spindashing || anim == JUMP_ANIM) {
+						if(spinning || spindashing || (anim == JUMP_ANIM || anim == LAND_ANIM)) {
 							score += 100;
 							
 							if(!ground) {
@@ -956,6 +984,7 @@ public class Player {
 							jumpSlowing = false;
 							bouncing = true;
 							rampDashing = false;
+							dashing = false;
 						}
 						
 						popSound.stop();
@@ -1018,6 +1047,7 @@ public class Player {
 						trickType = 0;
 						trickReadyReady = true;
 						rampDashing = true;
+						dashing = false;
 						
 						boostSound.stop();
 						boostSound.flush();
@@ -1069,6 +1099,8 @@ public class Player {
 							trickReady = false;
 							trickReadyReady = false;
 							rampDashing = false;
+							dashing = false;
+							
 							rotor = rotors[i];
 							rotor.facing = -facing;
 							
@@ -1197,6 +1229,13 @@ public class Player {
 						rampAnim.reset();
 					}
 					else {rampAnim.update(1);}
+				}
+				else if(dashing) {
+					if(anim != DASH_ANIM) {
+						anim = DASH_ANIM;
+						dashAnim.reset();
+					}
+					else {dashAnim.update(1);}
 				}
 				else if(spindashing) {
 					if(!spindashCharge) {
@@ -1523,6 +1562,7 @@ public class Player {
 		if(anim == RAMP_ANIM)            {return(rampAnim          );}
 		if(anim == SPIN_ANIM)            {return(spinAnim          );}
 		if(anim == SWING_ANIM)           {return(swingAnim         );}
+		if(anim == DASH_ANIM)            {return(dashAnim          );}
 		
 		return(null);
 	}
@@ -1531,7 +1571,7 @@ public class Player {
 //		manageAnimations(dt);
 		//manageAnimations(dt); // 30fps only
 		
-		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {manageAnimations(dt);}
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {manageAnimations(dt);}
 		
 		if(afters != null) {for(int i = 0; i < afters.length; i++) {afters[i].draw(dt, shader, camera);}}
 		
@@ -1590,6 +1630,7 @@ public class Player {
 			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			if(anim == RAMP_ANIM)            {rampAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == DASH_ANIM)            {dashAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw(pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
 			

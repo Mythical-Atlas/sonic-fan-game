@@ -8,6 +8,8 @@ import main.Loader;
 import rendering.Camera;
 import rendering.Shader;
 
+import static java.lang.Math.*;
+
 public class Ring {
 	public Vector pos;
 	private Animation anim;
@@ -29,7 +31,7 @@ public class Ring {
 //		anim.update(1/*dt / (1.0f / 60.0f)*/);
 		//anim.update(1/*dt / (1.0f / 60.0f)*/); // 30fps only
 		
-		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {anim.update(1);}
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {anim.update(1);}
 		
 		if(destroy == 2 && anim.finished) {destroy = 3;}
 	}

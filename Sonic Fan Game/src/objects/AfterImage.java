@@ -5,6 +5,8 @@ import rendering.Camera;
 import rendering.Image;
 import rendering.Shader;
 
+import static java.lang.Math.*;
+
 public class AfterImage {
 	public boolean remove;
 	
@@ -43,7 +45,7 @@ public class AfterImage {
 	
 	public void update(float dt) {
 		if(born) {
-			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				if(lifeCounter >= lifeTime) {remove = true;}
 				lifeCounter++;
 				born = false;
@@ -51,7 +53,7 @@ public class AfterImage {
 			}
 		}
 		if(!born) {
-			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				if(birthCounter >= birthDelay) {born = true;}
 				birthCounter++;
 			}

@@ -101,14 +101,14 @@ public class HUD {
 //		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/);
 //		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/); // 30fps only
 		
-		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {ring.update((p.vel.getLength() / 10 + 1));}
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}
 		
 		if(p.rings > 0) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
 		else {
 			if(ringTimer < 30) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
 			else {drawRedNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
 			
-			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				ringTimer++;
 				if(ringTimer == 60) {ringTimer = 0;}
 			}
@@ -160,7 +160,7 @@ public class HUD {
 			start0.setPositions(xOffset + screenWidth / 2 - start0.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start0.getHeight() * SCALE / 2, SCALE, SCALE);
 			SpriteRenderer.add(start0);
 			
-			for(int f = 1; f < 60.0f / (1.0f / dt); f++) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				voiceTimer--;
 				if(voiceTimer == 0) {voice = 0;}
 			}
