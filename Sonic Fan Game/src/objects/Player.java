@@ -759,7 +759,7 @@ public class Player {
 			dashing = true;
 			jumping = false;
 			
-			groundSpeed += 10 * SCALE * facing;
+			groundSpeed += 15 * SCALE * facing;
 			vel.y = 0;
 			
 			dashSound.stop();
