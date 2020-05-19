@@ -42,9 +42,9 @@ public class Player {
 	private final double SKID_ACCEL  		  	= 1;
 	private final double DRAG_DECEL   		  	= 0.108;
 	private final double DEBUG_JUMP_IMPULSE  	= 50;
-	private final double JUMP_IMPULSE 		  	= 22;
+	private final double JUMP_IMPULSE 		  	= 25;
 	private final double JUMP_SWITCH  		  	= 2;
-	private final double GRAVITY      		  	= 0.75;
+	private final double GRAVITY      		  	= 1;
 	private final double GROUND_GRAVITY_ACCEL 	= 0.6;
 	private final double GROUND_GRAVITY_DECEL 	= 0.4;
 	private final double SPIN_DECEL			  	= 0.025;
@@ -496,7 +496,7 @@ public class Player {
 		}
 		
 		if(!crouching0 && !spindashing) {
-			if(!spinning) { // regular movement
+			if(!spinning && !rampDashing) { // regular movement
 				if(leftArrow && !rightArrow) {
 					if(groundSpeed <= 0 || !ground) {
 						if(!ground) {facing = -1;}
@@ -1035,7 +1035,7 @@ public class Player {
 				boolean didSwing = false;
 				
 				for(int i = 0; i < rotors.length; i++) {
-					Shape rampMask = new Circle(rotors[i].pos, 4 * 2, Color.WHITE);
+					Shape rampMask = new Circle(rotors[i].pos.add(-32 + 2, -32 - 2), 8 * 2, Color.WHITE);
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, rampMask) && !ground) {

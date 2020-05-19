@@ -148,11 +148,11 @@ public class MainScene extends Scene {
 		
 		springs = new Spring[]{
 			new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring(137 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
-			new Spring(157 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 24 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 25, 0),
+			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring(137 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			new Spring(157 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 24 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 		};
 		
 		badniks = null;
