@@ -504,7 +504,7 @@ public class Player {
 		}
 		
 		if(!crouching0 && !spindashing) {
-			if(!spinning && !rampDashing) { // regular movement
+			if(!spinning && !rampDashing && !dashing) { // regular movement
 				if(leftArrow && !rightArrow) {
 					if(groundSpeed <= 0 || !ground) {
 						if(!ground) {facing = -1;}
@@ -760,6 +760,8 @@ public class Player {
 			jumping = false;
 			
 			groundSpeed += 15 * SCALE * facing;
+			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !boostMode) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
+			if(groundSpeed > GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE && boostMode) {groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
 			vel.y = 0;
 			
 			dashSound.stop();
