@@ -29,7 +29,7 @@ import static functionholders.GraphicsFunctions.*;
 public class Loader {
 	private static Loader singleton = null;
 	
-	public static final String TITLE = "Sonic Fan Game";
+	public static final String TITLE = "Sonic Advance 2 DX";
 	public static final int TARGET_FPS = 60;
 	public static final int DEFAULT_FRAME_WIDTH = 240 * 4;
 	public static final int DEFAULT_FRAME_HEIGHT = 160 * 4;
@@ -77,6 +77,8 @@ public class Loader {
 	public static ByteBuffer[] ringAnim;
 	public static ByteBuffer[] sparkleAnim;
 	public static ByteBuffer[] rotorAnim;
+	public static ByteBuffer[] springPoleFastAnim;
+	public static ByteBuffer[] springPoleSlowAnim;
 	
 	public static ByteBuffer leafBG0;
 	public static ByteBuffer leafBG1;
@@ -181,11 +183,12 @@ public class Loader {
 			
 			itemBox = loadImage("/objectsprites/itemBox.png");
 			ramp = loadImage("/objectsprites/ramp.png");
-			
 			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");
 			sparkleAnim = loadImages("/objectsprites", "effect");
 			rotorAnim = loadImages("/objectsprites", "rotor");
+			springPoleFastAnim = loadImages("/objectsprites", "springPole");
+			springPoleSlowAnim = loadImages("/objectsprites", "springPoleSlow");
 			
 			jumpSound0 = loadSound("/sonicsounds/jump0.wav", -15.0f);
 			jumpSound1 = loadSound("/sonicsounds/jump1.wav", -10.0f);
