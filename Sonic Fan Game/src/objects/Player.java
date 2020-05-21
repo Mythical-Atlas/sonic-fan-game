@@ -245,6 +245,7 @@ public class Player {
 	private Clip popSound;
 	private Clip ringSound;
 	private Clip springSound;
+	private Clip springPoleSound;
 	
 	private Clip voice3;
 	private Clip voice2;
@@ -314,6 +315,7 @@ public class Player {
 		popSound = Loader.popSound;
 		ringSound = Loader.ringSound;
 		springSound = Loader.springSound;
+		springPoleSound = Loader.springPoleSound;
 		
 		voice3 = Loader.voice3;
 		voice2 = Loader.voice2;
@@ -1190,6 +1192,11 @@ public class Player {
 						trickReady = false;
 						trickReadyReady = false;
 						anim = JUMP_ANIM;
+						
+						springPoleSound.stop();
+						springPoleSound.flush();
+						springPoleSound.setFramePosition(0);
+						springPoleSound.start();
 					}
 				}
 			}

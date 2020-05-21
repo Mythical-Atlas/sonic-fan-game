@@ -130,6 +130,7 @@ public class Loader {
 	public static Clip ringSound;
 	public static Clip springSound;
 	public static Clip popSound;
+	public static Clip springPoleSound;
 	
 	public static Clip leaf1Music;
 	
@@ -216,6 +217,7 @@ public class Loader {
 			ringSound = loadSound("/objectsounds/ring.wav", -10.0f);
 			springSound = loadSound("/objectsounds/spring.wav", -10.0f);
 			popSound = loadSound("/objectsounds/pop.wav", -10.0f);
+			springPoleSound = loadSound("/objectsounds/springPole.wav", -10.0f);
 			
 			hudRingAnim = loadImages("/hudsprites", "ring");
 			

@@ -149,13 +149,17 @@ public class MainScene extends Scene {
 		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
 		springs = new Spring[]{
-			new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
+			//new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 			new Spring(137 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 			new Spring(157 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 24 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
 		};
+		
+		placeSpring(35, 6, 8, 6, -14, -33, PI / 2, 30, 0);
+		
+		placeSpring(40, 6, 9, 12, -14, -33, PI / 2, 30, 0);
 		
 		badniks = null;
 		/*badniks = new Badnik[]{
@@ -382,6 +386,8 @@ public class MainScene extends Scene {
 		
 		springPoles = append(springPoles, new SpringPole(getPos(xTile, yTile, xTwelfth + xExtra, yTwelfth + yExtra, xOffset, yOffset), direction));
 	}
+	
+	private void placeSpring(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength, int type) {springs = append(springs, new Spring(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength, type));}
 	
 	private Vector getPos(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {return(new Vector(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	
