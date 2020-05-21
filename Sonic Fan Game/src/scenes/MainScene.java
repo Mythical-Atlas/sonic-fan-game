@@ -148,18 +148,15 @@ public class MainScene extends Scene {
 		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
 		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
-		springs = new Spring[]{
-			//new Spring( 35 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE,  6 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring( 56 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 10 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring( 88 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 16 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring(125 * SCALE * 96 + 10 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 1   * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring(137 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 18 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-			new Spring(157 * SCALE * 96 +  8 * 8 * SCALE + 16 * SCALE * 96 - 14 * SCALE, 24 * SCALE * 96 + 16 * SCALE * 96 + 0.5 * SCALE * 96 - 33 * SCALE, PI / 2, 30, 0),
-		};
+		springs = null;
 		
-		placeSpring(35, 6, 8, 6, -14, -33, PI / 2, 30, 0);
-		
-		placeSpring(40, 6, 9, 12, -14, -33, PI / 2, 30, 0);
+		placeSpring( 35,  6,  8,  6, -14, -33, PI / 2, 55, 0);
+		placeSpring( 56, 10, 10,  6, -14, -33, PI / 2, 55, 0);
+		placeSpring( 88, 16, 10,  6, -14, -33, PI / 2, 55, 0);
+		placeSpring(125, 18, 10, 12, -14, -33, PI / 2, 55, 0);
+		placeSpring(137, 18,  8,  6, -14, -33, PI / 2, 55, 0);
+		placeSpring(157, 24,  8,  6, -14, -33, PI / 2, 55, 0);
+		placeSpring( 40,  6,  9, 12, -14, -33, PI / 2, 55, 0);
 		
 		badniks = null;
 		/*badniks = new Badnik[]{
@@ -176,13 +173,12 @@ public class MainScene extends Scene {
 		
 		ramps = null;
 		
-		placeRamp(15, 4, 0, 2, 4, 4, PI / 4, 15);
-		placeRamp(31, 6, 2, 8, 4, 4, PI / 4, 15);
+		placeRamp(15, 4, 0, 2, 4, 4, PI / 4, 30);
+		placeRamp(31, 6, 2, 8, 4, 4, PI / 4, 30);
 		
 		if(ramps != null) {
 			for(int i = 0; i < ramps.length; i++) {
 				Shape[] rampShapes = ramps[i].getShapes(96, 96, SCALE);
-				
 				for(int s = 0; s < rampShapes.length; s++) {layer0 = append(layer0, rampShapes[s]);}
 			}
 		}
@@ -190,6 +186,7 @@ public class MainScene extends Scene {
 		rotors = null;
 		
 		placeRotor(33, 8, 0, 0, 0, 0);
+		placeRotor(41, 9, 10, 10, 0, 0);
 		
 		springPoles = null;
 		placeSpringPole(34, 7, 0, 0, 0, 0, 1);
@@ -377,7 +374,10 @@ public class MainScene extends Scene {
 	
 	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	private void placeRamp(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength) {ramps = append(ramps, new Ramp(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength));}
-	private void placeRotor(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {rotors = append(rotors, new Rotor(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
+	private void placeRotor(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {
+		rotors = append(rotors, new Rotor(
+				xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));
+	}
 	
 	private void placeSpringPole(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, int direction) {
 		double xExtra = 0;

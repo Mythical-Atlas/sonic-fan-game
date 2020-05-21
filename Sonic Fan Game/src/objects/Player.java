@@ -178,6 +178,7 @@ public class Player {
 	private int boostTimer;
 	private int swingStartFrame;
 	private int swingDirection;
+	private int bounceType;
 	
 	private double stepTimer;
 	private int stepIndex;
@@ -1016,7 +1017,7 @@ public class Player {
 					
 					if(checkCollision(mask, springMask)) {
 						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
-						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength));
+						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength * SCALE));
 						springs[i].bouncing = true;
 						
 						jumpReady = false;
@@ -1026,6 +1027,7 @@ public class Player {
 						spinning = false;
 						bouncing = true;
 						trickType = 0;
+						bounceType = 0;
 						trickReadyReady = true;
 						rampDashing = false;
 						dashing = false;
@@ -1048,7 +1050,7 @@ public class Player {
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, rampMask) && !ground) {
-						vel = new Vector(cos(ramps[i].angle) * ramps[i].strength, -sin(ramps[i].angle) * ramps[i].strength);
+						vel = new Vector(cos(ramps[i].angle) * ramps[i].strength * SCALE, -sin(ramps[i].angle) * ramps[i].strength * SCALE);
 						
 						jumpReady = false;
 						ground = false;
@@ -1076,7 +1078,7 @@ public class Player {
 				boolean didSwing = false;
 				
 				for(int i = 0; i < rotors.length; i++) {
-					Shape rampMask = new Circle(rotors[i].pos.add(-32 + 2, -32 - 2), 8 * 2, Color.WHITE);
+					Shape rampMask = new Circle(rotors[i].pos, 8 * 2, Color.WHITE);
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, rampMask) && !ground) {
@@ -1164,7 +1166,10 @@ public class Player {
 		if(springPoling) {
 			if(!springPole.bouncing) {
 				springPoling = false;
+				bouncing = true;
 				stopCam = false;
+				bounceType = 1;
+				
 				vel = new Vector(preSpringPoleXSpeed, -32 * SCALE);
 				groundSpeed = preSpringPoleXSpeed;
 			}
@@ -1216,6 +1221,9 @@ public class Player {
 					anim = SWING_ANIM;
 					swingAnim.reset();
 					rotor.anim.reset();
+					rotor.anim.update(swingDirection);
+					rotor.anim.update(swingDirection);
+					rotor.anim.update(swingDirection);
 					rotor.anim.update(swingDirection);
 					
 					swingAnim.frame = swingStartFrame;
@@ -1540,7 +1548,7 @@ public class Player {
 									}
 								}
 								else {
-									if(bouncing) {
+									if(bouncing && bounceType == 0) {
 										if(vel.y < 0) {
 											if(anim != BOUNCING_UP_ANIM) {
 												anim = BOUNCING_UP_ANIM;
