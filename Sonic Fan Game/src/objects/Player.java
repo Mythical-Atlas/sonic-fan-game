@@ -167,10 +167,13 @@ public class Player {
 	private boolean justSwang;
 	private boolean dashing;
 	private boolean dashReady;
+	private boolean springPoling;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
 	private double spindashStrength;
+	private double preSpringPoleXSpeed;
+	
 	private int trickType;
 	private int boostTimer;
 	private int swingStartFrame;
@@ -184,6 +187,7 @@ public class Player {
 	private Shape mask;
 	
 	private Rotor rotor;
+	private SpringPole springPole;
 	
 	public  Vector pos;
 	public  Vector vel;
@@ -321,7 +325,7 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles) {
 		checkKeys();
 		
 		if(starting) {starting();}
@@ -402,6 +406,7 @@ public class Player {
 		springs(springs);
 		ramps(ramps);
 		rotors(rotors);
+		springPoles(springPoles);
 
 		afterImages(dt);
 	}
@@ -1150,6 +1155,44 @@ public class Player {
 				justSwang = true;
 			}
 			if(!spaceBar) {jumpReady = true;}
+		}
+	}
+	
+	private void springPoles(SpringPole[] springPoles) {
+		if(springPoling) {
+			if(!springPole.bouncing) {
+				springPoling = false;
+				stopCam = false;
+				vel = new Vector(preSpringPoleXSpeed, -32 * SCALE);
+				groundSpeed = preSpringPoleXSpeed;
+			}
+		}
+		else {
+			if(springPoles != null) {
+				for(int i = 0; i < springPoles.length; i++) {
+					springPole = springPoles[i];
+					Shape springPoleMask = null;
+					if(springPole.direction ==  1) {springPoleMask = new Rectangle(springPoles[i].pos.add(0.5 * 8 * 2, 2 * 8 * 2), new Vector(5.5 * 8 * 2, 8 * 2), Color.WHITE);}
+					if(springPole.direction == -1) {springPoleMask = new Rectangle(springPoles[i].pos.add(0, 2 * 8 * 2), new Vector(5.5 * 8 * 2, 8 * 2), Color.WHITE);}
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, springPoleMask) && !ground && vel.y >= 0) {
+						preSpringPoleXSpeed = vel.x;
+						vel = new Vector();
+						groundSpeed = 0;
+						springPole.fastBounce();
+						
+						stopCam = true;
+						springPoling = true;
+						dashing = false;
+						rampDashing = false;
+						trickType = 0;
+						trickReady = false;
+						trickReadyReady = false;
+						anim = JUMP_ANIM;
+					}
+				}
+			}
 		}
 	}
 	

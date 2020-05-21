@@ -8,6 +8,7 @@ import objects.Item;
 import objects.Ramp;
 import objects.Ring;
 import objects.Rotor;
+import objects.SpringPole;
 import rendering.Image;
 //import rendering.ShapeRendererBatch;
 import rendering.SpriteRenderBatch;
@@ -85,6 +86,16 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new Rotor[]{pointToCheck});}
 		
 		Rotor[] newList = new Rotor[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static SpringPole[] append(SpringPole[] existingPoints, SpringPole pointToCheck) {
+		if(existingPoints == null) {return(new SpringPole[]{pointToCheck});}
+		
+		SpringPole[] newList = new SpringPole[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;
