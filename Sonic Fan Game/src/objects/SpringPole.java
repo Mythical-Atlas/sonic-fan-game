@@ -37,27 +37,31 @@ public class SpringPole {
 		else if(fastBounce) {
 			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
 			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {fastAnim.update(1);}
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+				fastAnim.update(1);
 			
-			if(fastAnim.frame == 4) {bouncing = false;}
-			if(fastAnim.finished) {
-				fastAnim.reset();
-				slowAnim.reset();
-				fastBounce = false;
-				slowBounce = false;
+				if(fastAnim.frame == 4) {bouncing = false;}
+				if(fastAnim.finished) {
+					fastAnim.reset();
+					slowAnim.reset();
+					fastBounce = false;
+					slowBounce = false;
+				}
 			}
 		}
 		else if(slowBounce) {
 			slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
 			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {slowAnim.update(1);}
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+				slowAnim.update(1);
 			
-			if(slowAnim.frame == 3) {bouncing = false;}
-			if(slowAnim.finished) {
-				fastAnim.reset();
-				slowAnim.reset();
-				fastBounce = false;
-				slowBounce = false;
+				if(slowAnim.frame == 3) {bouncing = false;}
+				if(slowAnim.finished) {
+					fastAnim.reset();
+					slowAnim.reset();
+					fastBounce = false;
+					slowBounce = false;
+				}
 			}
 		}
 	}

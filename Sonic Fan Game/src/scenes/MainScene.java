@@ -189,7 +189,9 @@ public class MainScene extends Scene {
 		placeRotor(41, 9, 10, 10, 0, 0);
 		
 		springPoles = null;
+		
 		placeSpringPole(34, 7, 0, 0, 0, 0, 1);
+		placeSpringPole(40, 12, 0, 3, 0, 0, 1);
 		
 		hud = new HUD();
 		

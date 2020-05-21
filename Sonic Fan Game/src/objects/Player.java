@@ -1170,7 +1170,26 @@ public class Player {
 				stopCam = false;
 				bounceType = 1;
 				
-				vel = new Vector(preSpringPoleXSpeed, -32 * SCALE);
+				double lowPower = -10;
+				double highPower = -40;
+				double springPower = 0;
+				double xDif = 0;
+				double wSpring = 5.5 * 8 * 2;
+				
+				if(springPole.direction ==  1) {
+					double xSpring = springPole.pos.x + 0.5 * 8 * 2;
+					xDif = (xSpring - pos.x) / wSpring;
+				}
+				if(springPole.direction == -1) {
+					double xSpring = springPole.pos.x;
+					xDif = (pos.x - xSpring) / wSpring;
+				}
+				
+				if(xDif <= 0) {springPower = lowPower;}
+				else if(xDif >= 1) {springPower = highPower;}
+				else {springPower = lowPower + xDif * (highPower - lowPower);}
+				
+				vel = new Vector(preSpringPoleXSpeed, springPower * SCALE);
 				groundSpeed = preSpringPoleXSpeed;
 			}
 		}
@@ -1202,6 +1221,8 @@ public class Player {
 						springPoleSound.flush();
 						springPoleSound.setFramePosition(0);
 						springPoleSound.start();
+						
+						break;
 					}
 				}
 			}
