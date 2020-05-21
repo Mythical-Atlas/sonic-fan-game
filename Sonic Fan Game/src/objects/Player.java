@@ -32,7 +32,8 @@ import shapes.Rectangle;
 
 public class Player {
 	private final double SPRINT_ACCEL 		 	= 2;
-	private final double MOVE_ACCEL  		  	= 0.115;
+	private final double MOVE_ACCEL  		  	= 0.15; // 0.115
+	private final double AIR_ACCEL  		  	= 0.15;
 	private final double GROUND_ACCEL_LIMIT  	= 35;
 	private final double BOOST_ACCEL_SCALE	 	= 2;
 	private final double BOOST_LIMIT_SCALE	  	= 1.5;
@@ -522,7 +523,8 @@ public class Player {
 						}
 						
 						if(groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
-							groundSpeed -= moveSpeed * accelScale;
+							if(ground || shiftKey) {groundSpeed -= moveSpeed * accelScale;}
+							if(!ground) {groundSpeed -= AIR_ACCEL * accelScale;}
 							if(groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
 						}
 					}
@@ -540,7 +542,8 @@ public class Player {
 						}
 						
 						if(groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
-							groundSpeed += moveSpeed * accelScale;
+							if(ground || shiftKey) {groundSpeed += moveSpeed * accelScale;}
+							if(!ground) {groundSpeed += AIR_ACCEL * accelScale;}
 							if(groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 						}
 					}
@@ -1078,7 +1081,7 @@ public class Player {
 				boolean didSwing = false;
 				
 				for(int i = 0; i < rotors.length; i++) {
-					Shape rampMask = new Circle(rotors[i].pos, 8 * 2, Color.WHITE);
+					Shape rampMask = new Circle(rotors[i].pos.add(-8 * 2, 0), 8 * 2, Color.WHITE);
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, rampMask) && !ground) {
@@ -1170,24 +1173,23 @@ public class Player {
 				stopCam = false;
 				bounceType = 1;
 				
-				double lowPower = -10;
-				double highPower = -40;
+				double lowPower = -15;
+				double highPower = -50;
 				double springPower = 0;
 				double xDif = 0;
 				double wSpring = 5.5 * 8 * 2;
 				
 				if(springPole.direction ==  1) {
 					double xSpring = springPole.pos.x + 0.5 * 8 * 2;
-					xDif = (xSpring - pos.x) / wSpring;
+					xDif = 1 - (pos.x - xSpring) / wSpring;
 				}
 				if(springPole.direction == -1) {
 					double xSpring = springPole.pos.x;
-					xDif = (pos.x - xSpring) / wSpring;
+					xDif = 1 - (xSpring - pos.x) / wSpring;
 				}
 				
-				if(xDif <= 0) {springPower = lowPower;}
-				else if(xDif >= 1) {springPower = highPower;}
-				else {springPower = lowPower + xDif * (highPower - lowPower);}
+				xDif = min(max(xDif, 0), 1);
+				springPower = lowPower + xDif * (highPower - lowPower);
 				
 				vel = new Vector(preSpringPoleXSpeed, springPower * SCALE);
 				groundSpeed = preSpringPoleXSpeed;
@@ -1203,10 +1205,25 @@ public class Player {
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, springPoleMask) && !ground && vel.y >= 0) {
+						double xDif = 0;
+						double wSpring = 5.5 * 8 * 2;
+						
+						if(springPole.direction ==  1) {
+							double xSpring = springPole.pos.x + 0.5 * 8 * 2;
+							xDif = 1 - (pos.x - xSpring) / wSpring;
+						}
+						if(springPole.direction == -1) {
+							double xSpring = springPole.pos.x;
+							xDif = 1 - (xSpring - pos.x) / wSpring;
+						}
+						
+						xDif = min(max(xDif, 0), 1);
+						
 						preSpringPoleXSpeed = vel.x;
 						vel = new Vector();
 						groundSpeed = 0;
-						springPole.fastBounce();
+						if(xDif >= 0.5) {springPole.fastBounce();}
+						else {springPole.slowBounce();}
 						
 						stopCam = true;
 						springPoling = true;

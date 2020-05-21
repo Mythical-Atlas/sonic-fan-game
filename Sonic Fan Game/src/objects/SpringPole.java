@@ -33,7 +33,11 @@ public class SpringPole {
 	}
 	
 	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
-		if(!slowBounce && !fastBounce) {fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);}
+		if(!slowBounce && !fastBounce) {
+			fastAnim.reset();
+			slowAnim.reset();
+			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
+		}
 		else if(fastBounce) {
 			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
 			
