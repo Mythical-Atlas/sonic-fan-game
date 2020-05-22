@@ -3,6 +3,7 @@ package main;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -83,6 +84,17 @@ public class Window {
 		
 		glfwMakeContextCurrent(glfwWindow);
 		glfwSwapInterval(1);
+		
+		IntBuffer width = BufferUtils.createIntBuffer(1);
+		IntBuffer height = BufferUtils.createIntBuffer(1);
+		IntBuffer channels = BufferUtils.createIntBuffer(1);
+		ByteBuffer imageBuffer = stbi_load_from_memory(Loader.windowIcon2, width, height, channels, 0);
+		
+		GLFWImage image = GLFWImage.create();
+		GLFWImage.Buffer imagebf = GLFWImage.create(1);
+        image.set(width.get(0), height.get(0), imageBuffer);
+        imagebf.put(0, image);
+        glfwSetWindowIcon(glfwWindow, imagebf);
 		
 		GL.createCapabilities();
 		

@@ -129,8 +129,9 @@ public class MainScene extends Scene {
 		
 		ramps = null;
 		
-		placeRamp(15, 4, 0, 2, 4, 4, PI / 4, 30);
-		placeRamp(31, 6, 2, 8, 4, 4, PI / 4, 30);
+		placeRamp(15,  4, 0, 2, 4, 4, PI / 4, 30);
+		placeRamp(31,  6, 2, 8, 4, 4, PI / 4, 30);
+		placeRamp(51, 13, 6, 8, 4, 4, PI / 4, 30);
 		
 		if(ramps != null) {
 			for(int i = 0; i < ramps.length; i++) {
@@ -149,6 +150,7 @@ public class MainScene extends Scene {
 		placeSpringPole(34,  7, 0,  0, 0, 0, 1);
 		placeSpringPole(40, 12, 0,  3, 0, 0, 1);
 		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
+		placeSpringPole(74, 13, 0,  6, 0, 0, 1);
 		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
@@ -295,8 +297,8 @@ public class MainScene extends Scene {
 		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
 		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
 		
-		x = moveTowards(x, pos.x + lead, xMinDist, 0.1, dt);
-		y = moveTowards(y, pos.y, yMinDist, 0.1, dt);
+		x = moveTowards(x, pos.x + lead, xMinDist, 0.2, dt);
+		y = moveTowards(y, pos.y,        yMinDist, 0.2, dt);
 		
 		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
 		
