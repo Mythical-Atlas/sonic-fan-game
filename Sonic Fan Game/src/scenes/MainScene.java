@@ -116,37 +116,6 @@ public class MainScene extends Scene {
 		
 		interpretMap(leafForest1Map.json);
 		initPlayerPos = new Vector(player.pos.x, player.pos.y);
-		//player = new Player((154 + 16) * 96 * SCALE, (24 + 16) * 96 * SCALE);
-		//player.starting = false;
-		camPos = new Vector(player.pos.x, player.pos.y);
-		
-		rings = null;
-		
-		placeRing( 2,  0,  3 + 4 * 0,  9 + 1 * 0, 0, 0);
-		placeRing( 2,  0,  3 + 4 * 1,  9 + 1 * 1, 0, 0);
-		placeRing( 2,  0,  3 + 4 * 2,  9 + 1 * 2, 0, 0);
-		
-		placeRing(11,  2,  8 + 3 * 0,  7 + 3 * 0, 0, 0);
-		placeRing(11,  2,  8 + 3 * 1,  7 + 3 * 1, 0, 0);
-		placeRing(11,  2,  8 + 3 * 2,  7 + 3 * 2, 0, 0);
-		
-		placeRing(28,  4,  2 + 3 * 0,  0 + 3 * 0, 0, 0);
-		placeRing(28,  4,  2 + 3 * 1,  0 + 3 * 1, 0, 0);
-		placeRing(28,  4,  2 + 3 * 2,  0 + 3 * 2, 0, 0);
-		
-		placeRing(29,  4, 12 +  7,   7, 0, 0);
-		placeRing(29,  4,       3,   7, 0, 0);
-		placeRing(29,  4, 12 +  5,   1, 0, 0);
-		placeRing(29,  4,       5,   1, 0, 0);
-		placeRing(29,  4, 12 + -1,  -1, 0, 0);
-		
-		placeRing(24,  6,  9 + 4 * 0,  6 + 4 * 0, 0, 0);
-		placeRing(24,  6,  9 + 4 * 1,  6 + 4 * 1, 0, 0);
-		placeRing(24,  6,  9 + 4 * 2,  6 + 4 * 2, 0, 0);
-		
-		placeRing(28,  9,  9 + 4 * 0,  0 + 4 * 0, 0, 0);
-		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
-		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
 		springs = null;
 		
@@ -157,19 +126,6 @@ public class MainScene extends Scene {
 		placeSpring(137, 18,  8,  6, -14, -33, PI / 2, 55, 0);
 		placeSpring(157, 24,  8,  6, -14, -33, PI / 2, 55, 0);
 		placeSpring( 40,  6,  9, 12, -14, -33, PI / 2, 55, 0);
-		
-		badniks = null;
-		/*badniks = new Badnik[]{
-			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
-			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
-			new Spinner(24 * 96 * SCALE + 16.5 * SCALE * 96,  2 * 96 * SCALE + 16.5 * SCALE * 96),
-			new Spinner(34 * 96 * SCALE + 16.5 * SCALE * 96,  7 * 96 * SCALE + 16.5 * SCALE * 96),
-			new Spinner(42 * 96 * SCALE + 16.5 * SCALE * 96, 11 * 96 * SCALE + 16.5 * SCALE * 96)
-		};*/
-		
-		items = new Item[]{
-			new Item(19 * 96 * SCALE + 48 * SCALE + 13 * SCALE + 16 * 96 * SCALE, 5 * 96 * SCALE + 96 * SCALE - 29 * SCALE + 16 * 96 * SCALE)
-		};
 		
 		ramps = null;
 		
@@ -185,15 +141,14 @@ public class MainScene extends Scene {
 		
 		rotors = null;
 		
-		placeRotor(33, 8, 0, 0, 0, 0);
+		placeRotor(32, 7, 11, 11, 4, 4);
 		placeRotor(41, 9, 10, 10, 0, 0);
 		
 		springPoles = null;
 		
-		placeSpringPole(34, 7, 0, 0, 0, 0, 1);
-		placeSpringPole(40, 12, 0, 3, 0, 0, 1);
-		
-		hud = new HUD();
+		placeSpringPole(34,  7, 0,  0, 0, 0, 1);
+		placeSpringPole(40, 12, 0,  3, 0, 0, 1);
+		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
 		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
@@ -203,8 +158,7 @@ public class MainScene extends Scene {
 		
 		leaf1Music = Loader.leaf1Music;
 		
-		leaf1Music.setFramePosition(0);
-		leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+		reset();
 	}
 	
 	private void reset() {
