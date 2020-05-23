@@ -92,6 +92,17 @@ public class Loader {
 	public static ByteBuffer start2;
 	public static ByteBuffer start3;
 	
+	public static ByteBuffer singleplayerWhiteSprite;
+	public static ByteBuffer singleplayerYellowSprite;
+	public static ByteBuffer multiplayerWhiteSprite;
+	public static ByteBuffer multiplayerYellowSprite;
+	public static ByteBuffer gameStartWhiteSprite;
+	public static ByteBuffer gameStartYellowSprite;
+	public static ByteBuffer timeAttackWhiteSprite;
+	public static ByteBuffer timeAttackYellowSprite;
+	public static ByteBuffer optionsWhiteSprite;
+	public static ByteBuffer optionsYellowSprite;
+	
 	public static ByteBuffer leafLayer1;
 	public static ByteBuffer leafLayer2;
 	
@@ -148,8 +159,17 @@ public class Loader {
 	public static Clip forwardSound;
 	public static Clip backSound;
 	public static Clip moveSound;
+	public static Clip inaccessibleSound;
+	
+	public static int debugMode;
 	
 	public static void main(String[] args) {
+		if(args.length > 0) {
+			if(args[0].equals("debug")) {
+				if(args[1].equals("leaf1")) {debugMode = 1;}
+			}
+		}
+		
 		get().init();
 		Window.get().run();
 	}
@@ -240,6 +260,7 @@ public class Loader {
 			forwardSound = loadSound("/objectsounds/forward.wav", -10.0f);
 			backSound = loadSound("/objectsounds/back.wav", -10.0f);
 			moveSound = loadSound("/objectsounds/move.wav", -10.0f);
+			inaccessibleSound = loadSound("/objectsounds/inaccessible.wav", -10.0f);
 			
 			ringSound = loadSound("/objectsounds/ring.wav", -10.0f);
 			springSound = loadSound("/objectsounds/spring.wav", -10.0f);
@@ -251,6 +272,17 @@ public class Loader {
 			leafBG0 = loadImage("/maps/bg20.png");
 			leafBG1 = loadImage("/maps/bg21.png");
 			leafBG2 = loadImage("/maps/bg22.png");
+			
+			singleplayerWhiteSprite =  loadImage("/menusprites/singleplayerWhite.png");
+			singleplayerYellowSprite = loadImage("/menusprites/singleplayerYellow.png");
+			multiplayerWhiteSprite =   loadImage("/menusprites/multiplayerWhite.png");
+			multiplayerYellowSprite =  loadImage("/menusprites/multiplayerYellow.png");
+			gameStartWhiteSprite =     loadImage("/menusprites/gameStartWhite.png");
+			gameStartYellowSprite =    loadImage("/menusprites/gameStartYellow.png");
+			timeAttackWhiteSprite =    loadImage("/menusprites/timeAttackWhite.png");
+			timeAttackYellowSprite =   loadImage("/menusprites/timeAttackYellow.png");
+			optionsWhiteSprite =       loadImage("/menusprites/optionsWhite.png");
+			optionsYellowSprite =      loadImage("/menusprites/optionsYellow.png");
 			
 			windowIcon2 = loadImage("/objectsprites/windowIcon2.png");
 			windowIcon3 = loadImage("/objectsprites/windowIcon3.png");

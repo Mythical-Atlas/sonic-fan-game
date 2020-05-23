@@ -110,7 +110,8 @@ public class Window {
 		initWidth = getWidth();
 		initHeight = getHeight();
 		
-		changeScene(0);
+		if(Loader.debugMode == 0) {changeScene(0);}
+		if(Loader.debugMode == 1) {changeScene(1);}
 		
 		glfwRestoreWindow(glfwWindow);
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -133,7 +134,7 @@ public class Window {
 				
 				glfwPollEvents();
 				
-				glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+				glClearColor(0, 0, 0, 1);
 				glClear(GL_COLOR_BUFFER_BIT);
 				
 				if(!first) {currentScene.update(dt);}
