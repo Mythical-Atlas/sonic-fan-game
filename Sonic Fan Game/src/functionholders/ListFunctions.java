@@ -11,6 +11,7 @@ import objects.Rotor;
 import objects.Spring;
 import objects.SpringPole;
 import rendering.Image;
+import rendering.RenderBatch;
 //import rendering.ShapeRendererBatch;
 import rendering.SpriteRenderBatch;
 import rendering.Texture;
@@ -133,16 +134,16 @@ public class ListFunctions {
 		
 		return(newList);
 	}
-	/*public static ShapeRendererBatch[] append(ShapeRendererBatch[] existingPoints, ShapeRendererBatch pointToCheck) {
-		if(existingPoints == null) {return(new ShapeRendererBatch[]{pointToCheck});}
+	public static RenderBatch[] append(RenderBatch[] existingPoints, RenderBatch pointToCheck) {
+		if(existingPoints == null) {return(new RenderBatch[]{pointToCheck});}
 		
-		ShapeRendererBatch[] newList = new ShapeRendererBatch[existingPoints.length + 1];
+		RenderBatch[] newList = new RenderBatch[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;
 		
 		return(newList);
-	}*/
+	}
 	public static float[] append(float[] existingPoints, float pointToCheck) {
 		if(existingPoints == null) {return(new float[]{pointToCheck});}
 		
