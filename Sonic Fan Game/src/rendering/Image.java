@@ -147,6 +147,25 @@ public class Image {
 		vertexArray[33] = colors[15];
 	}
 	
+	public void setColor(float r, float g, float b, float a) {
+		vertexArray[ 3] = r;
+		vertexArray[ 4] = g;
+		vertexArray[ 5] = b;
+		vertexArray[ 6] = a;
+		vertexArray[12] = r;
+		vertexArray[13] = g;
+		vertexArray[14] = b;
+		vertexArray[15] = a;
+		vertexArray[21] = r;
+		vertexArray[22] = g;
+		vertexArray[23] = b;
+		vertexArray[24] = a;
+		vertexArray[30] = r;
+		vertexArray[31] = g;
+		vertexArray[32] = b;
+		vertexArray[33] = a;
+	}
+	
 	public float[] getPositions() {
 		return(
 			new float[]{

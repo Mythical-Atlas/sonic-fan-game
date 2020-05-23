@@ -279,7 +279,11 @@ public class MainScene extends Scene {
 			toggle1 = false;
 			showTileMasks = !showTileMasks;
 		}
-		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {glfwSetWindowShouldClose(Window.getWindow(), true);}
+		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
+			leaf1Music.stop();
+			
+			Window.changeScene(0);
+		}
 		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}
 	}
 	public void checkKeysReleased() {

@@ -104,6 +104,12 @@ public class Loader {
 	public static ByteBuffer itemBox;
 	public static ByteBuffer ramp;
 	
+	public static ByteBuffer fade;
+	public static ByteBuffer title;
+	public static ByteBuffer leftCloud;
+	public static ByteBuffer rightCloud;
+	public static ByteBuffer pressStart;
+	
 	public static ByteBuffer[] spinnerAnim;
 	public static ByteBuffer[] explosionAnim;
 	
@@ -136,6 +142,12 @@ public class Loader {
 	public static Clip springPoleSound;
 	
 	public static Clip leaf1Music;
+	public static Clip titleScreenMusic;
+	
+	public static Clip titleSound;
+	public static Clip forwardSound;
+	public static Clip backSound;
+	public static Clip moveSound;
 	
 	public static void main(String[] args) {
 		get().init();
@@ -152,6 +164,12 @@ public class Loader {
 	private void init() {
 		if(!loadedAssets) {
 			loadedAssets = true;
+			
+			fade = loadImage("/objectsprites/fade.png");
+			title = loadImage("/objectsprites/title.png");
+			leftCloud = loadImage("/objectsprites/cloudLeft.png");
+			rightCloud = loadImage("/objectsprites/cloudRight.png");
+			pressStart = loadImage("/objectsprites/start.png");
 			
 			testMap1 = new TiledJSON("/maps/testMap1.json").map[0];
 			testMap2 = new TiledJSON("/maps/testMap2.json").map[0];
@@ -215,7 +233,13 @@ public class Loader {
 			voice1 = loadSound("/voiceclips/1.wav", -10.0f);
 			voiceGo = loadSound("/voiceclips/go.wav", -10.0f);
 			
+			titleScreenMusic = loadSound("/objectsounds/titleScreen.wav", -20.0f);
 			leaf1Music = loadSound("/maps/leaf1.wav", -20.0f);
+			
+			titleSound = loadSound("/objectsounds/title.wav", -10.0f);
+			forwardSound = loadSound("/objectsounds/forward.wav", -10.0f);
+			backSound = loadSound("/objectsounds/back.wav", -10.0f);
+			moveSound = loadSound("/objectsounds/move.wav", -10.0f);
 			
 			ringSound = loadSound("/objectsounds/ring.wav", -10.0f);
 			springSound = loadSound("/objectsounds/spring.wav", -10.0f);

@@ -10,13 +10,18 @@ import static org.lwjgl.system.MemoryUtil.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.joml.Vector2f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import rendering.Camera;
+import rendering.Image;
+import rendering.Shader;
+import rendering.SpriteRenderer;
 import scenes.MainScene;
+import scenes.MenuScene;
 import scenes.Scene;
 
 public class Window {
@@ -40,6 +45,10 @@ public class Window {
 	public static void changeScene(int newScene) {
 		switch(newScene) {
 			case(0):
+				get().currentScene = new MenuScene();
+				get().currentScene.init();
+				break;
+			case(1):
 				get().currentScene = new MainScene();
 				get().currentScene.init();
 				break;
@@ -98,10 +107,10 @@ public class Window {
 		
 		GL.createCapabilities();
 		
-		changeScene(0);
-		
 		initWidth = getWidth();
 		initHeight = getHeight();
+		
+		changeScene(0);
 		
 		glfwRestoreWindow(glfwWindow);
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
