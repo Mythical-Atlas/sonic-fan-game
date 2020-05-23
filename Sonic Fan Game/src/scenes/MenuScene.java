@@ -54,12 +54,13 @@ public class MenuScene extends Scene {
 	private final int SCALE = 2;
 	
 	private final int FADING_IN 		= 0;
-	private final int PRESS_START 		= 1;
-	private final int START_BLINK 		= 2;
-	private final int MENU_1 			= 3;
-	private final int MENU_2 			= 4;
-	private final int FADING_TO_GAME 	= 5;
-	private final int FADING_OUT 		= 6;
+	private final int FADING_TITLE 		= 1;
+	private final int PRESS_START 		= 2;
+	private final int START_BLINK 		= 3;
+	private final int MENU_1 			= 4;
+	private final int MENU_2 			= 5;
+	private final int FADING_TO_GAME 	= 6;
+	private final int FADING_OUT 		= 7;
 	
 	private int state;
 	
@@ -138,7 +139,7 @@ public class MenuScene extends Scene {
 		rightCloud = new Image(Loader.rightCloud);
 		start = new Image(Loader.pressStart);
 		
-		fadeTimer = 60;
+		fadeTimer = 120;
 		startTimer = 0;
 		state = 0;
 	}
@@ -166,23 +167,35 @@ public class MenuScene extends Scene {
 		 leftCloud.draw(0,                                       screenHeight -  leftCloud.getHeight() * 2, 2, 2, shader, camera);
 		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, shader, camera);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
-		
 		if(state == FADING_IN) {
 			float fadeNum = fadeTimer / 60.0f;
 			double alpha = -pow(2, fadeNum) + 2;
 			fade.setColor(1, 1, 1, (float)(1.0f - alpha));
 			fade.draw(0, 0, screenWidth, screenHeight, shader, camera);
 			
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {fadeTimer--;}
+			if(fadeTimer <= 0) {
+				fadeTimer = 120;
+				
+				titleMusic.stop();
+				titleMusic.flush();
+				titleMusic.setFramePosition(0);
+				titleMusic.start();
+				
+				state = FADING_TITLE;
+			}
+		}
+		else if(state == FADING_TITLE) {
+			float fadeNum = fadeTimer / 60.0f;
+			double alpha = -pow(2, fadeNum) + 2;
+			
+			title.setColor(1, 1, 1, (float)alpha);
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				fadeTimer--;
 				if(fadeTimer <= 0) {
 					fadeTimer = 0;
-					
-					titleMusic.stop();
-					titleMusic.flush();
-					titleMusic.setFramePosition(0);
-					titleMusic.start();
 					
 					sonicAdvance2.stop();
 					sonicAdvance2.flush();
@@ -194,6 +207,9 @@ public class MenuScene extends Scene {
 			}
 		}
 		else if(state == PRESS_START) {
+			title.setColor(1, 1, 1, 1);
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			if(startTimer < 30) {start.draw(screenWidth / 2 - start.getWidth(), screenHeight / 3 * 2 - start.getHeight(), 2, 2, shader, camera);}
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				startTimer++;
@@ -216,6 +232,8 @@ public class MenuScene extends Scene {
 			backReady = !backKey;
 		}
 		else if(state == START_BLINK) {
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			if(startTimer % 20 < 10) {start.draw(screenWidth / 2 - start.getWidth(), screenHeight / 3 * 2 - start.getHeight(), 2, 2, shader, camera);}
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				startTimer++;
@@ -223,6 +241,8 @@ public class MenuScene extends Scene {
 			}
 		}
 		else if(state == MENU_1) {
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			if(menuSelection == 0) {
 				singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth(), screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, shader, camera);
 				multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth(), screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, shader, camera);
@@ -285,6 +305,8 @@ public class MenuScene extends Scene {
 			downReady = !downKey;
 		}
 		else if(state == MENU_2) {
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			if(menuSelection == 0) {
 				gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth(), screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, shader, camera);
 				timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth(), screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, shader, camera);
@@ -353,6 +375,8 @@ public class MenuScene extends Scene {
 			downReady = !downKey;
 		}
 		else if(state == FADING_TO_GAME) {
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
 			float fadeNum = fadeTimer / 60.0f;
 			double alpha = -pow(2, fadeNum) + 2;
 			fade.setColor(0, 0, 0, (float)(1.0f - alpha));
@@ -372,15 +396,17 @@ public class MenuScene extends Scene {
 			}
 		}
 		else if(state == FADING_OUT) {
-			float fadeNum = fadeTimer / 60.0f;
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
+			/*float fadeNum = fadeTimer / 60.0f;
 			double alpha = -pow(2, fadeNum) + 2;
 			fade.setColor(1, 1, 1, (float)(1.0f - alpha));
 			fade.draw(0, 0, screenWidth, screenHeight, shader, camera);
 			
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				fadeTimer++;
-				if(fadeTimer >= 60) {glfwSetWindowShouldClose(Window.getWindow(), true);}
-			}
+				if(fadeTimer >= 60) {*/glfwSetWindowShouldClose(Window.getWindow(), true);/*}
+			}*/
 		}
 		
 		SpriteRenderer.draw(shader, camera);
