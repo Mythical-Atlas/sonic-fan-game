@@ -53,6 +53,7 @@ import shapes.Triangle;
 public class MenuScene extends Scene {
 	private final int SCALE = 2;
 	
+	private final int FADING_OUT 			= -1;
 	private final int FADING_IN 			=  0;
 	private final int FADING_TITLE 			=  1;
 	private final int PRESS_START 			=  2;
@@ -64,9 +65,8 @@ public class MenuScene extends Scene {
 	private final int MENU_1_FADE_BACKWARDS	=  8;
 	private final int MENU_2 				=  9;
 	private final int MENU_2_BLINK 			= 10;
-	private final int MENU_2_FADE_BACKWARDS	= 11;
-	private final int FADING_TO_GAME 		= 12;
-	private final int FADING_OUT 			= 13;
+	private final int MENU_2_FADE_FORWARDS	= 11;
+	private final int MENU_2_FADE_BACKWARDS	= 12;
 	
 	private int state;
 	
@@ -534,7 +534,44 @@ public class MenuScene extends Scene {
 				oldMovement = 0;
 				newMovement = singleplayerWhiteSprite.getWidth();
 				fadeTimer = 0;
-				state = FADING_TO_GAME;
+				state = MENU_2_FADE_FORWARDS;
+			}
+		}
+		else if(state == MENU_2_FADE_FORWARDS) {
+			gameStartYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+			timeAttackWhiteSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+			optionsWhiteSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+			
+			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
+			
+			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, shader, camera);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, shader, camera);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, shader, camera);
+			
+			fade.setColor(0, 0, 0, 1.0f - getLinearFade(fadeTimer / 60.0f));
+			fade.draw(0, 0, screenWidth, screenHeight, shader, camera);
+			
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+				oldMovement -= 10;
+				newMovement -= 10;
+			}
+			
+			if(newMovement <= 0) {
+				oldMovement = -singleplayerWhiteSprite.getWidth();
+				newMovement = 0;
+			}
+			
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+				fadeTimer++;
+				if(fadeTimer >= 60) {
+					titleMusic.stop();
+					sonicAdvance2.stop();
+					forward.stop();
+					back.stop();
+					move.stop();
+					
+					Window.changeScene(1);
+				}
 			}
 		}
 		else if(state == MENU_2_FADE_BACKWARDS) {
@@ -589,55 +626,10 @@ public class MenuScene extends Scene {
 				menuSelection = 0;
 			}
 		}
-		else if(state == FADING_TO_GAME) {
-			gameStartYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
-			timeAttackWhiteSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
-			optionsWhiteSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
-			
-			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
-			
-			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, shader, camera);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, shader, camera);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, shader, camera);
-			
-			fade.setColor(0, 0, 0, 1.0f - getLinearFade(fadeTimer / 60.0f));
-			fade.draw(0, 0, screenWidth, screenHeight, shader, camera);
-			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-				oldMovement -= 10;
-				newMovement -= 10;
-			}
-			
-			if(newMovement <= 0) {
-				oldMovement = -singleplayerWhiteSprite.getWidth();
-				newMovement = 0;
-			}
-			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-				fadeTimer++;
-				if(fadeTimer >= 60) {
-					titleMusic.stop();
-					sonicAdvance2.stop();
-					forward.stop();
-					back.stop();
-					move.stop();
-					
-					Window.changeScene(1);
-				}
-			}
-		}
 		else if(state == FADING_OUT) {
 			title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, shader, camera);
 			
-			/*float fadeNum = fadeTimer / 60.0f;
-			double alpha = -pow(2, fadeNum) + 2;
-			fade.setColor(1, 1, 1, (float)(1.0f - alpha));
-			fade.draw(0, 0, screenWidth, screenHeight, shader, camera);
-			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-				fadeTimer++;
-				if(fadeTimer >= 60) {*/glfwSetWindowShouldClose(Window.getWindow(), true);/*}
-			}*/
+			glfwSetWindowShouldClose(Window.getWindow(), true);
 		}
 		
 		SpriteRenderer.draw(shader, camera);
