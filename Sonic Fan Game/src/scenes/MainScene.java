@@ -195,7 +195,7 @@ public class MainScene extends Scene {
 		placeRing(28,  9,  9 + 4 * 1,  0 + 4 * 1, 0, 0);
 		placeRing(28,  9,  9 + 4 * 2,  0 + 4 * 2, 0, 0);
 		
-		badniks = null;// asd
+		badniks = null;
 		/*badniks = new Badnik[]{
 			new Spinner(15 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
 			new Spinner(18 * 96 * SCALE + 16.5 * SCALE * 96,  3 * 96 * SCALE + 16.5 * SCALE * 96),
