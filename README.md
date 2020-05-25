@@ -14,3 +14,6 @@ Another inspiration of mine is <a href="https://www.newgrounds.com/portal/view/1
 
 # How?
 This project is programmed in Java using LWJGL (OpenGL for Java, basically).
+
+# Can I try it?
+Sure! You can download the latest release <a href="https://github.com/Mythical-Atlas/sonic-fan-game/releases">here</a>. Make sure you have the latest version of Java installed for it to run.
