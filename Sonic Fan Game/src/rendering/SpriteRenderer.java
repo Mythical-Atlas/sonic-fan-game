@@ -56,29 +56,5 @@ public class SpriteRenderer {
 		get().batches[get().batchIndex].add(image);
 	}
 	
-	public static void add(float[] positions, float[] colors, float[] uv) {
-		if(get().batches == null) {
-			get().batches = append(get().batches, new SpriteRenderBatch());
-			get().batches[get().batchIndex].load();
-		}
-		else {
-			boolean success = false;
-			
-			for(int i = 0; i <= get().batchIndex; i++) {
-				success = get().batches[i].add(positions, colors, uv);
-				if(success) {break;}
-			}
-			
-			if(!success) {
-				if(++get().batchIndex == get().batches.length) {
-					get().batches = append(get().batches, new SpriteRenderBatch());
-					get().batches[get().batchIndex].load();
-				}
-			}
-		}
-		
-		get().batches[get().batchIndex].add(positions, colors, uv);
-	}
-	
 	public static void draw(Shader shader, Camera camera) {if(get().batches != null) {for(int i = 0; i < get().batches.length; i++) {get().batches[i].draw(shader, camera);}}}
 }
