@@ -143,7 +143,6 @@ public class BackgroundLayer {
 			
 			Image image = new Image(tileset.image.tex);
 			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
-			
 			SpriteRenderer.add(image);
 		}
 	}

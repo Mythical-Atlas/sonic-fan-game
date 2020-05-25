@@ -10,9 +10,11 @@ import org.lwjgl.BufferUtils;
 
 import main.Loader;
 import rendering.Camera;
+import rendering.Image;
 import rendering.TileRenderBatch;
 import rendering.TileRenderer;
 import rendering.Shader;
+import rendering.SpriteRenderer;
 
 import java.nio.ByteBuffer;
 
@@ -31,9 +33,6 @@ public class Tilemap {
 		
 		int scaleX = 2;
 		int scaleY = 2;
-		
-		int tw = json.tileWidth * scaleX;
-		int th = json.tileHeight * scaleY;
 		
 		float[] colors = new float[]{
 			1.0f, 0.0f, 0.0f, 1.0f,
@@ -70,6 +69,39 @@ public class Tilemap {
 	public void draw(int layer, int scaleX, int scaleY, Shader shader, Camera camera) {
 		int l = layer;
 		if(batches[l] != null) {batches[l].draw(shader, camera);}
+		
+		/*float[] colors = new float[]{
+			1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f
+		};
+		
+		for(int x = 0; x < json.map[l].length; x++) {
+			for(int y = 0; y < json.map[l][x].length; y++) {
+				int s = -1;
+				int index = 0;
+				for(int i = 0; i < json.offsets.length; i++) {
+					if(json.map[l][x][y] >= json.offsets[i]) {
+						s = i;
+						index = json.map[l][x][y] - json.offsets[i];
+					}
+				}
+				
+				if(s > -1) {
+					float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
+					
+					Image image = new Image(tilesets[s].image.tex);
+					image.setRawPositions(positions);
+					image.setColors(colors);
+					image.setUVMap(tilesets[s].uvMaps[index]);
+					SpriteRenderer.add(image);
+					
+					//if(batches[l] == null) {batches[l] = new TileRenderer(tilesets[s].image.tex);}
+					//batches[l].add(positions, colors, tilesets[s].uvMaps[index]);
+				}
+			}
+		}*/
 	}
 	
 	public float[] setPositions(double x, double y, double width, double height, double xScale, double yScale) {

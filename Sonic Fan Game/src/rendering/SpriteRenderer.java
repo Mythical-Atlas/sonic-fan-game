@@ -38,7 +38,13 @@ public class SpriteRenderer {
 			get().batches[get().batchIndex].load();
 		}
 		else {
-			boolean success = get().batches[get().batchIndex].add(image);
+			boolean success = false;
+			
+			for(int i = 0; i <= get().batchIndex; i++) {
+				success = get().batches[i].add(image);
+				if(success) {break;}
+			}
+			
 			if(!success) {
 				if(++get().batchIndex == get().batches.length) {
 					get().batches = append(get().batches, new SpriteRenderBatch());
@@ -56,7 +62,13 @@ public class SpriteRenderer {
 			get().batches[get().batchIndex].load();
 		}
 		else {
-			boolean success = get().batches[get().batchIndex].add(positions, colors, uv);
+			boolean success = false;
+			
+			for(int i = 0; i <= get().batchIndex; i++) {
+				success = get().batches[i].add(positions, colors, uv);
+				if(success) {break;}
+			}
+			
 			if(!success) {
 				if(++get().batchIndex == get().batches.length) {
 					get().batches = append(get().batches, new SpriteRenderBatch());

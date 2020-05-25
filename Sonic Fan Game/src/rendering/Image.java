@@ -116,6 +116,24 @@ public class Image {
 		//load();
 	}
 	
+	public void setRawPositions(float[] pos) {
+		vertexArray[0]  = pos[ 0];
+		vertexArray[1]  = pos[ 1];
+		vertexArray[2]  = pos[ 2];
+		
+		vertexArray[9]  = pos[ 3];
+		vertexArray[10] = pos[ 4];
+		vertexArray[11] = pos[ 5];
+		
+		vertexArray[18] = pos[ 6];
+		vertexArray[19] = pos[ 7];
+		vertexArray[20] = pos[ 8];
+		
+		vertexArray[27] = pos[ 9];
+		vertexArray[28] = pos[10];
+		vertexArray[29] = pos[11];
+	}
+	
 	public void setUVMap(float[] map) {
 		vertexArray[7]  = map[0];
 		vertexArray[8]  = map[1];

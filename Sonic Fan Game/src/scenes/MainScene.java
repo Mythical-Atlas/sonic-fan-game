@@ -231,19 +231,10 @@ public class MainScene extends Scene {
 		}
 		
 		SpriteRenderer.reset();
+		
 		leafBG.draw(new int[]{200, 100, 50}, camera);
+		
 		SpriteRenderer.draw(spriteShader, camera);
-		
-		/*if(showTileMasks) {
-			if(layer0 != null) {for(int i = 0; i < layer0.length; i++) {layer0[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-			if(player.layer == 1 && layer1 != null) {for(int i = 0; i < layer1.length; i++) {layer1[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-			if(player.layer == 2 && layer2 != null) {for(int i = 0; i < layer2.length; i++) {layer2[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-			if(platforms != null) {for(int i = 0; i < platforms.length; i++) {platforms[i].draw(graphics, player.pos.add(-Loader.graphicsWidth / 2, -Loader.graphicsHeight / 2));}}
-		}*/
-		
-		//leafLayer1.draw(defaultShader, camera);
-		//leafLayer2.draw(defaultShader, camera);
-		
 		SpriteRenderer.reset();
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
@@ -255,18 +246,17 @@ public class MainScene extends Scene {
 		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rotors != null) {for(int i = 0; i < rotors.length; i++) {rotors[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(springPoles != null) {for(int i = 0; i < springPoles.length; i++) {springPoles[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		
-		SpriteRenderer.draw(spriteShader, camera);
-		SpriteRenderer.reset();
+
 		
 		player.draw(dt, defaultShader, camera);
-		
+
 		SpriteRenderer.draw(spriteShader, camera);
-		
-		if(!showTileMasks) {leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);}
-		
 		SpriteRenderer.reset();
+		
+		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
+		
 		hud.draw(dt, player, defaultShader, camera);
+		
 		SpriteRenderer.draw(spriteShader, camera);
 	}
 	
@@ -293,7 +283,7 @@ public class MainScene extends Scene {
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
-		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE * (Window.getWidth() / 960);
+		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE/* * (Window.getWidth() / 960)*/;
 		
 		double x = camPos.x;
 		double y = camPos.y;

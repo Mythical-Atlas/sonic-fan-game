@@ -81,6 +81,7 @@ public class SpriteRenderBatch {
 					index++;
 				}
 			}
+			
 			return(true);
 		}
 		else {return(false);}

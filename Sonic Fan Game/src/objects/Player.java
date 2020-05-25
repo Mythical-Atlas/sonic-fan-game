@@ -333,7 +333,7 @@ public class Player {
 		checkKeys();
 		
 		if(starting) {starting();}
-		if(!starting && !stopCam) { // NOT ELSE
+		if(!starting && !stopCam && !springPoling) { // NOT ELSE
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 			
@@ -372,7 +372,7 @@ public class Player {
 				}
 			}
 		}
-		if(stopCam) {vel = new Vector();}
+		if(stopCam || springPoling) {vel = new Vector();}
 		
 		boolean[] platMasks = null;
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
@@ -1170,7 +1170,7 @@ public class Player {
 			if(!springPole.bouncing) {
 				springPoling = false;
 				bouncing = true;
-				stopCam = false;
+				//stopCam = false;
 				bounceType = 1;
 				
 				double lowPower = -15;
@@ -1225,7 +1225,7 @@ public class Player {
 						if(xDif >= 0.5) {springPole.fastBounce();}
 						else {springPole.slowBounce();}
 						
-						stopCam = true;
+						//stopCam = true;
 						springPoling = true;
 						dashing = false;
 						rampDashing = false;
