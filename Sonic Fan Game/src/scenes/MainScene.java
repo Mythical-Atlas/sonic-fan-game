@@ -30,6 +30,7 @@ import main.Loader;
 import main.Window;
 import misc.Background;
 import misc.HUD;
+import objects.Helix;
 import objects.Item;
 import objects.Player;
 import objects.Ramp;
@@ -78,6 +79,7 @@ public class MainScene extends Scene {
 	private Ramp[] ramps;
 	private Rotor[] rotors;
 	private SpringPole[] springPoles;
+	private Helix[] helixes;
 	
 	private HUD hud;
 	
@@ -152,6 +154,12 @@ public class MainScene extends Scene {
 		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
 		placeSpringPole(74, 13, 0,  6, 0, 0, 1);
 		
+		helixes = new Helix[]{
+			new Helix(( 49 + 16) * 96 * 2, (   6 + 16) * 96 * 2),
+			new Helix(( 69 + 16) * 96 * 2, (10.5 + 16) * 96 * 2),
+			new Helix((141 + 16) * 96 * 2, (  17 + 16) * 96 * 2),
+		};
+		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
 		leafBG.setTween(0, 1, new float[]{128.0f / 255.0f, 160.0f / 255.0f, 248.0f / 255.0f, 1});
@@ -221,7 +229,7 @@ public class MainScene extends Scene {
 		checkKeysReleased();
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles);
+			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles, helixes);
 			
 			removeRings();
 			removeBadniks();

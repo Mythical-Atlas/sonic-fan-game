@@ -169,6 +169,7 @@ public class Player {
 	private boolean dashing;
 	private boolean dashReady;
 	private boolean springPoling;
+	private boolean helixing;
 	
 	private double jumpSlowed;
 	public double groundSpeed;
@@ -180,6 +181,7 @@ public class Player {
 	private int swingStartFrame;
 	private int swingDirection;
 	private int bounceType;
+	private int helixDir;
 	
 	private double stepTimer;
 	private int stepIndex;
@@ -190,6 +192,7 @@ public class Player {
 	
 	private Rotor rotor;
 	private SpringPole springPole;
+	private Helix helix;
 	
 	public  Vector pos;
 	public  Vector vel;
@@ -329,7 +332,7 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles, Helix[] helixes) {
 		checkKeys();
 		
 		if(starting) {starting();}
@@ -373,6 +376,7 @@ public class Player {
 			}
 		}
 		if(stopCam || springPoling) {vel = new Vector();}
+		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
@@ -411,6 +415,7 @@ public class Player {
 		ramps(ramps);
 		rotors(rotors);
 		springPoles(springPoles);
+		helixes(helixes);
 
 		afterImages(dt);
 	}
@@ -644,6 +649,7 @@ public class Player {
 			jumping = true;
 			jumpSlowing = false;
 			spinning = false;
+			helixing = false;
 			
 			if(!shiftKey) {
 				jumpSlowed = groundAxis.y * -JUMP_IMPULSE * SCALE;
@@ -687,6 +693,7 @@ public class Player {
 		if(spindashReady && spaceBar || ground && controlKey && controlKeyReady && !spinning) {
 			if(!spindashing) {
 				spindashing = true;
+				helixing = false;
 				spindashCharge = false;
 				chargeReady = false;
 				chargeDustTimer = 45;
@@ -1243,6 +1250,58 @@ public class Player {
 					}
 				}
 			}
+		}
+	}
+	
+	private void helixes(Helix[] helixes) {
+		if(helixes != null) {
+			for(int i = 0; i < helixes.length; i++) {
+				Shape helixMaskLeft  = new Rectangle(helixes[i].pos.add(                 0, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+				Shape helixMaskRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2 - 8 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+				Shape helixMaskEndLeft  = new Rectangle(helixes[i].pos.add(    -8 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+				Shape helixMaskEndRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+				mask.relocate(pos);
+				
+				if(helixing) {
+					if(helixDir == 1 && groundSpeed < 0 || helixDir == -1 && groundSpeed > 0) {
+						helixing = false;
+						ground = false;
+					}
+					else {
+						if(!checkCollision(mask, helixMaskLeft)  && checkCollision(mask, helixMaskEndLeft)  && helixDir == -1) {helixing = false;}
+						if(!checkCollision(mask, helixMaskRight) && checkCollision(mask, helixMaskEndRight) && helixDir ==  1) {helixing = false;}
+					}
+				}
+				else {
+					if(checkCollision(mask, helixMaskLeft) && ground && groundSpeed > 0) {
+						helix = helixes[i];
+						helixDir = 1;
+						vel.y = 0;
+						helixing = true;
+					}
+					if(checkCollision(mask, helixMaskRight) && ground && groundSpeed < 0) {
+						helix = helixes[i];
+						helixDir = -1;
+						vel.y = 0;
+						helixing = true;
+					}
+				}
+			}
+		}
+		
+		if(helixing) {
+			ground = true;
+			double xDif = pos.x - helix.pos.x;
+			
+			if(xDif > 0) {pos.y = helix.pos.y + 5 * MASK_RADIUS * SCALE + (3 * 8 * 2) * cos(xDif / (1.5 * 96 * 2) * PI) - 3 * 2;}
+			else {pos.y = helix.pos.y + 96 * 2 - MASK_RADIUS * SCALE;}
+			
+			// height
+			// min = 12 - radius
+			// max = 7 + radius
+			// width
+			// min = 0
+			// max = + 96 * 1.5
 		}
 	}
 	
