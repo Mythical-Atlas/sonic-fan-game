@@ -13,7 +13,6 @@ import objects.SpringPole;
 import rendering.Image;
 import rendering.RenderBatch;
 import rendering.Texture;
-import rendering.TileRenderBatch;
 
 public class ListFunctions {
 	public static int[][] append(int[][] existingPoints, int[] pointToCheck) {
@@ -106,16 +105,6 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new SpringPole[]{pointToCheck});}
 		
 		SpringPole[] newList = new SpringPole[existingPoints.length + 1];
-		
-		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
-		newList[existingPoints.length] = pointToCheck;
-		
-		return(newList);
-	}
-	public static TileRenderBatch[] append(TileRenderBatch[] existingPoints, TileRenderBatch pointToCheck) {
-		if(existingPoints == null) {return(new TileRenderBatch[]{pointToCheck});}
-		
-		TileRenderBatch[] newList = new TileRenderBatch[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

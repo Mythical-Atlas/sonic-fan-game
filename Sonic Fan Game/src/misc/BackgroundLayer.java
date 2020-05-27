@@ -18,7 +18,6 @@ import objects.Player;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Renderer;
-import rendering.TileRenderer;
 
 public class BackgroundLayer {
 	private final int NONE  = 0;

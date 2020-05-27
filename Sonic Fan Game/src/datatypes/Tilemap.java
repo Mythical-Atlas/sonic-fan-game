@@ -12,11 +12,7 @@ import main.Loader;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Renderer;
-import rendering.TileRenderBatch;
-import rendering.TileRenderer;
 import rendering.Shader;
-
-import java.nio.ByteBuffer;
 
 public class Tilemap {
 	private Tileset[] tilesets;
@@ -28,7 +24,6 @@ public class Tilemap {
 		json = new TiledJSON(mapPath);
 		tilesets = new Tileset[json.tilesets.length];
 		
-		//layers = new TileRenderer[json.map.length];
 		layers = new Renderer[json.map.length];
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
@@ -58,9 +53,6 @@ public class Tilemap {
 					if(s > -1) {
 						float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
 						
-						/*if(layers[l] == null) {layers[l] = new TileRenderer(tilesets[s].image.tex);}
-						layers[l].add(positions, colors, tilesets[s].uvMaps[index]);*/
-						
 						if(layers[l] == null) {layers[l] = new Renderer();}
 						
 						Image image = new Image(tilesets[s].image.tex);
@@ -70,8 +62,6 @@ public class Tilemap {
 					}
 				}
 			}
-			
-			//if(layers[l] != null) {layers[l].load();}
 		}
 	}
 	
