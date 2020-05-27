@@ -160,7 +160,5 @@ public class RenderBatch {
 		for(int i = 0; i < textures.length; i++) {textures[i].unbind();}
 		
 		shader.detach();
-		
-		//glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 }

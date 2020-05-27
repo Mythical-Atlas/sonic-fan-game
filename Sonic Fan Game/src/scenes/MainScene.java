@@ -344,7 +344,12 @@ public class MainScene extends Scene {
 				if(!paused) {springs[i].manageAnimation(dt);}
 			}
 		}
-		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, r);}}
+		if(badniks != null) {
+			for(int i = 0; i < badniks.length; i++) {
+				badniks[i].draw(SCALE, SCALE, dt, r);
+				if(!paused) {badniks[i].manageAnimation(dt);}
+			}
+		}
 		if(rings != null) {
 			for(int i = 0; i < rings.length; i++) {
 				rings[i].draw(SCALE, SCALE, r);
@@ -372,9 +377,6 @@ public class MainScene extends Scene {
 		hud.draw(dt, player, camera, r);
 		if(!paused) {hud.manageAnimation(dt, player);}
 		
-		r.draw(spriteShader, camera);
-		r.reset();
-		
 		if(paused) {
 			float xOffset = camera.position.x;
 			float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
@@ -384,10 +386,10 @@ public class MainScene extends Scene {
 			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth(), yOffset + screenHeight / 2 - pause1.getHeight(), 2, 2, r);}
 			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth(), yOffset + screenHeight / 2 - pause2.getHeight(), 2, 2, r);}
 			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth(), yOffset + screenHeight / 2 - pause3.getHeight(), 2, 2, r);}
-			
-			r.draw(spriteShader, camera);
-			r.reset();
 		}
+		
+		r.draw(spriteShader, camera);
+		r.reset();
 	}
 	
 	public void checkKeysPressed() {

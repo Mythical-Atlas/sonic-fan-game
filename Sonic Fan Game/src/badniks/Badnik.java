@@ -11,6 +11,7 @@ public abstract class Badnik {
 	public Vector pos;
 	
 	public abstract void update(float dt);	
+	public abstract void manageAnimation(float dt);
 	public abstract void draw(int scaleX, int scaleY, float dt, Renderer r);
 	public abstract void destroy();
 }

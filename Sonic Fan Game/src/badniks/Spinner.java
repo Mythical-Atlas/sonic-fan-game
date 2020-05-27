@@ -18,11 +18,11 @@ public class Spinner extends Badnik {
 
 	public void update(float dt) {}
 	
-	public void draw(int scaleX, int scaleY, float dt, Renderer r) {
-		anim.draw(pos.x, pos.y, scaleX, scaleY, r);
+	public void manageAnimation(float dt) {
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {anim.update(1);}
 		if(destroy == 1 && anim.finished) {destroy = 2;}
 	}
+	public void draw(int scaleX, int scaleY, float dt, Renderer r) {anim.draw(pos.x, pos.y, scaleX, scaleY, r);}
 	
 	public void destroy() {
 		int initWidth = anim.getCurrentSize()[0];

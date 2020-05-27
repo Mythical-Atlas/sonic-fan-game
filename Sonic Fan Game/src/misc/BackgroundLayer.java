@@ -39,6 +39,8 @@ public class BackgroundLayer {
 	
 	private Tileset tileset;
 	
+	private Image image;
+	
 	public BackgroundLayer(ByteBuffer image, int index, int size, int scale, int tileSize) {
 		this.index = index;
 		this.tileSize = tileSize;
@@ -49,6 +51,7 @@ public class BackgroundLayer {
 		tweenType1 = NONE;
 		
 		tileset = new Tileset(image, tileSize, tileSize);
+		this.image = new Image(image);
 	}
 	
 	public void setTween(int tween, float[] color) {
@@ -134,14 +137,10 @@ public class BackgroundLayer {
 		float yCam = camera.position.y + (Window.getInitHeight() - Window.getHeight());
 		
 		double xOffset = (xCam / scrollSpeed) % (width * scale);
-		int iOffset = (int)(xCam / scrollSpeed / (width * scale));
 		
 		for(int i = -1; i < screenWidth + 1; i++) {
-			int x = (i + iOffset) % tileset.uvMaps2.length;
-			while(x < 0) {x += tileset.uvMaps2.length;}
-			
-			Image image = new Image(tileset.image.tex);
 			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
+			image.setUVMap(); // limit to just whats on screen
 			r.add(image);
 		}
 	}
