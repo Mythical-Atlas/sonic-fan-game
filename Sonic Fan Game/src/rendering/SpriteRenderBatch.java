@@ -161,6 +161,6 @@ public class SpriteRenderBatch {
 		
 		shader.detach();
 		
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		//glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 }

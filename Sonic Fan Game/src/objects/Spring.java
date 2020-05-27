@@ -30,11 +30,13 @@ public class Spring {
 	}
 	
 	public void manageAnimation(float dt) {
-		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {anim.update(1);}
-		
-		if(anim.finished) {
-			anim.reset();
-			bouncing = false;
+		if(bouncing) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {anim.update(1);}
+			
+			if(anim.finished) {
+				anim.reset();
+				bouncing = false;
+			}
 		}
 	}
 	
