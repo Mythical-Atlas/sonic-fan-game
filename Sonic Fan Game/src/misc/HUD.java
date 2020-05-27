@@ -78,6 +78,8 @@ public class HUD {
 		voice = 0;
 	}
 	
+	public void manageAnimation(float dt, Player p) {for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}}
+	
 	public void draw(float dt, Player p, Shader shader, Camera camera) {
 		frames[numFrames] = dt;
 		numFrames++;
@@ -98,10 +100,6 @@ public class HUD {
 		SpriteRenderer.add(hud);
 		
 		ring.draw(xOffset + 7 * SCALE, yOffset + 8 * SCALE, SCALE, SCALE, shader, camera);
-//		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/);
-//		ring.update((p.vel.getLength() / 10 + 1) * 1/*(dt / (1.0f / 60.0f))*/); // 30fps only
-		
-		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}
 		
 		if(p.rings > 0) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
 		else {

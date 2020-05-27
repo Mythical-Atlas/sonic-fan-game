@@ -21,18 +21,18 @@ public class Ring {
 		destroy = 0;
 	}
 	
-	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
+	public void manageAnimation(float dt) {
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {anim.update(1);}
+		
+		if(destroy == 2 && anim.finished) {destroy = 3;}
+	}
+	
+	public void draw(int scaleX, int scaleY, Shader shader, Camera camera) {
 		if(destroy == 1) {
 			destroy = 2;
 			anim = new Animation(Loader.sparkleAnim, new int[]{4, 4, 4, 5}, 0);
 		}
 		
 		anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
-//		anim.update(1/*dt / (1.0f / 60.0f)*/);
-		//anim.update(1/*dt / (1.0f / 60.0f)*/); // 30fps only
-		
-		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {anim.update(1);}
-		
-		if(destroy == 2 && anim.finished) {destroy = 3;}
 	}
 }

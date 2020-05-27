@@ -92,6 +92,10 @@ public class Loader {
 	public static ByteBuffer start2;
 	public static ByteBuffer start3;
 	
+	public static ByteBuffer pause1;
+	public static ByteBuffer pause2;
+	public static ByteBuffer pause3;
+	
 	public static ByteBuffer singleplayerWhiteSprite;
 	public static ByteBuffer singleplayerYellowSprite;
 	public static ByteBuffer multiplayerWhiteSprite;
@@ -291,6 +295,10 @@ public class Loader {
 			start1 = loadImage("/hudsprites/_1.png");
 			start2 = loadImage("/hudsprites/_2.png");
 			start3 = loadImage("/hudsprites/_3.png");
+			
+			pause1 = loadImage("/hudsprites/pause1.png");
+			pause2 = loadImage("/hudsprites/pause2.png");
+			pause3 = loadImage("/hudsprites/pause3.png");
 			
 			leafLayer1 = loadImage("/maps/Leaf_Forest_Act_1.png");
 			leafLayer2 = loadImage("/maps/Leaf_Forest_Act_1.png");

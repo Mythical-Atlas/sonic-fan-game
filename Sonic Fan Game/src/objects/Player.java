@@ -1256,10 +1256,10 @@ public class Player {
 	private void helixes(Helix[] helixes) {
 		if(helixes != null) {
 			for(int i = 0; i < helixes.length; i++) {
-				Shape helixMaskLeft  = new Rectangle(helixes[i].pos.add(                 0, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
-				Shape helixMaskRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2 - 8 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
-				Shape helixMaskEndLeft  = new Rectangle(helixes[i].pos.add(    -8 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
-				Shape helixMaskEndRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2, 96 * 2 - 8 * 2), new Vector(8 * 2, 8 * 2), Color.WHITE);
+				Shape helixMaskLeft  = new Rectangle(helixes[i].pos.add(                  0, 96 * 2 - 16 * 2), new Vector(16 * 2, 16 * 2), Color.WHITE);
+				Shape helixMaskRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2 - 16 * 2, 96 * 2 - 16 * 2), new Vector(16 * 2, 16 * 2), Color.WHITE);
+				Shape helixMaskEndLeft  = new Rectangle(helixes[i].pos.add(   -16 * 2, 96 * 2 - 16 * 2), new Vector(16 * 2, 16 * 2), Color.WHITE);
+				Shape helixMaskEndRight = new Rectangle(helixes[i].pos.add(6 * 96 * 2, 96 * 2 - 16 * 2), new Vector(16 * 2, 16 * 2), Color.WHITE);
 				mask.relocate(pos);
 				
 				if(helixing) {
@@ -1311,7 +1311,41 @@ public class Player {
 		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM) {landing = true;}}
 	}
 	
-	private void manageAnimations(float dt) {
+	private Animation getCurrentAnim() {
+		if(anim == RUN_ANIM) {
+			     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {return(runFastestAnim);}
+			else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {return(runFastAnim   );}
+			else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {return(runNormalAnim );}
+			else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {return(runSlowAnim   );}
+			else                                                   {return(runSlowestAnim);}
+		}
+		
+		if(anim == START_ANIM)           {return(startAnim         );}
+		if(anim == IDLE_ANIM)            {return(idleAnim          );}
+		if(anim == BOUNCING_UP_ANIM)     {return(bounceUpAnim      );}
+		if(anim == BOUNCING_DOWN_ANIM)   {return(bounceDownAnim    );}
+		if(anim == FALL_ANIM)            {return(fallAnim          );}
+		if(anim == SKID_ANIM)            {return(skidAnim          );}
+		if(anim == SKIRT_ANIM)           {return(skirtAnim         );}
+		if(anim == TURN_ANIM)            {return(turnAnim          );}
+		if(anim == CROUCH_ANIM_0)        {return(crouchAnim0       );}
+		if(anim == CROUCH_ANIM_1)        {return(crouchAnim1       );}
+		if(anim == SPINDASH_ANIM)        {return(spindashAnim      );}
+		if(anim == SPINDASH_CHARGE_ANIM) {return(spindashChargeAnim);}
+		if(anim == JUMP_ANIM)            {return(jumpAnim          );}
+		if(anim == LAND_ANIM)            {return(landAnim          );}
+		if(anim == TRICK_RIGHT_ANIM)     {return(trickRightAnim    );}
+		if(anim == TRICK_UP_0_ANIM)      {return(trickUp0Anim      );}
+		if(anim == TRICK_UP_1_ANIM)      {return(trickUp1Anim      );}
+		if(anim == RAMP_ANIM)            {return(rampAnim          );}
+		if(anim == SPIN_ANIM)            {return(spinAnim          );}
+		if(anim == SWING_ANIM)           {return(swingAnim         );}
+		if(anim == DASH_ANIM)            {return(dashAnim          );}
+		
+		return(null);
+	}
+
+	public void manageAnimations(float dt) {
 		if(!starting) {
 			if(swinging) {
 				if(anim != SWING_ANIM) {
@@ -1692,46 +1726,7 @@ public class Player {
 		}
 	}
 	
-	private Animation getCurrentAnim() {
-		if(anim == RUN_ANIM) {
-			     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {return(runFastestAnim);}
-			else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {return(runFastAnim   );}
-			else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {return(runNormalAnim );}
-			else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {return(runSlowAnim   );}
-			else                                                   {return(runSlowestAnim);}
-		}
-		
-		if(anim == START_ANIM)           {return(startAnim         );}
-		if(anim == IDLE_ANIM)            {return(idleAnim          );}
-		if(anim == BOUNCING_UP_ANIM)     {return(bounceUpAnim      );}
-		if(anim == BOUNCING_DOWN_ANIM)   {return(bounceDownAnim    );}
-		if(anim == FALL_ANIM)            {return(fallAnim          );}
-		if(anim == SKID_ANIM)            {return(skidAnim          );}
-		if(anim == SKIRT_ANIM)           {return(skirtAnim         );}
-		if(anim == TURN_ANIM)            {return(turnAnim          );}
-		if(anim == CROUCH_ANIM_0)        {return(crouchAnim0       );}
-		if(anim == CROUCH_ANIM_1)        {return(crouchAnim1       );}
-		if(anim == SPINDASH_ANIM)        {return(spindashAnim      );}
-		if(anim == SPINDASH_CHARGE_ANIM) {return(spindashChargeAnim);}
-		if(anim == JUMP_ANIM)            {return(jumpAnim          );}
-		if(anim == LAND_ANIM)            {return(landAnim          );}
-		if(anim == TRICK_RIGHT_ANIM)     {return(trickRightAnim    );}
-		if(anim == TRICK_UP_0_ANIM)      {return(trickUp0Anim      );}
-		if(anim == TRICK_UP_1_ANIM)      {return(trickUp1Anim      );}
-		if(anim == RAMP_ANIM)            {return(rampAnim          );}
-		if(anim == SPIN_ANIM)            {return(spinAnim          );}
-		if(anim == SWING_ANIM)           {return(swingAnim         );}
-		if(anim == DASH_ANIM)            {return(dashAnim          );}
-		
-		return(null);
-	}
-	
 	public void draw(float dt, Shader shader, Camera camera) {
-//		manageAnimations(dt);
-		//manageAnimations(dt); // 30fps only
-		
-		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {manageAnimations(dt);}
-		
 		if(afters != null) {for(int i = 0; i < afters.length; i++) {afters[i].draw(dt, shader, camera);}}
 		
 		/*if(DRAW_MASKS) {

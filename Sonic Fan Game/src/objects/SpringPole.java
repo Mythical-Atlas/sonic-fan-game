@@ -32,15 +32,8 @@ public class SpringPole {
 		bouncing = false;
 	}
 	
-	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
-		if(!slowBounce && !fastBounce) {
-			fastAnim.reset();
-			slowAnim.reset();
-			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
-		}
-		else if(fastBounce) {
-			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
-			
+	public void manageAnimation(float dt) {
+		if(fastBounce) {
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				fastAnim.update(1);
 			
@@ -54,8 +47,6 @@ public class SpringPole {
 			}
 		}
 		else if(slowBounce) {
-			slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
-			
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				slowAnim.update(1);
 			
@@ -68,6 +59,16 @@ public class SpringPole {
 				}
 			}
 		}
+	}
+	
+	public void draw(int scaleX, int scaleY, Shader shader, Camera camera) {
+		if(!slowBounce && !fastBounce) {
+			fastAnim.reset();
+			slowAnim.reset();
+			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
+		}
+		else if(fastBounce) {fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);}
+		else if(slowBounce) {slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);}
 	}
 	
 	public void fastBounce() {

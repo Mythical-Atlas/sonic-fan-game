@@ -72,6 +72,14 @@ public class MainScene extends Scene {
 	private boolean toggle0 = true;
 	private boolean toggle1 = true;
 	
+	private boolean upReady;
+	private boolean downReady;
+	private boolean pauseReady;
+	private boolean selectReady;
+	private boolean enterReady;
+	private boolean paused;
+	private int pauseSelection;
+	
 	private Ring[] rings;
 	private Spring[] springs;
 	private Badnik[] badniks;
@@ -87,6 +95,10 @@ public class MainScene extends Scene {
 	
 	private Image leafLayer1;
 	private Image leafLayer2;
+	
+	private Image pause1;
+	private Image pause2;
+	private Image pause3;
 	
 	private Shader defaultShader;
 	private Shader spriteShader;
@@ -112,6 +124,10 @@ public class MainScene extends Scene {
 		
 		leafLayer1 = new Image(Loader.leafLayer1);
 		leafLayer2 = new Image(Loader.leafLayer2);
+		
+		pause1 = new Image(Loader.pause1);
+		pause2 = new Image(Loader.pause2);
+		pause3 = new Image(Loader.pause3);
 		
 		leafLayer1.setPositions(0, 0, 2, 2);
 		leafLayer2.setPositions(0, 0, 2, 2);
@@ -222,20 +238,71 @@ public class MainScene extends Scene {
 		leaf1Music.flush();
 		leaf1Music.setFramePosition(0);
 		leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+		
+		pauseReady = false;
+		enterReady = false;
+		paused = false;
 	}
 		
 	public void update(float dt) {
 		checkKeysPressed();
 		checkKeysReleased();
 		
-		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-			player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles, helixes);
+		if(!paused) {
+			if(KeyListener.isKeyPressed(GLFW_KEY_ENTER) && enterReady || KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady) {
+				paused = true;
+				pauseReady = false;
+				upReady = false;
+				selectReady = false;
+				downReady = false;
+				enterReady = false;
+				pauseSelection = 0;
+				leaf1Music.stop();
+			}
+		}
+		else {
+			if(KeyListener.isKeyPressed(GLFW_KEY_UP) && upReady) {
+				pauseSelection--;
+				if(pauseSelection < 0) {pauseSelection = 2;}
+			}
+			if(KeyListener.isKeyPressed(GLFW_KEY_DOWN) && downReady) {
+				pauseSelection++;
+				if(pauseSelection > 2) {pauseSelection = 0;}
+			}
+			if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady) {
+				paused = false;
+				leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+			}
+			if(KeyListener.isKeyPressed(GLFW_KEY_ENTER) && enterReady || KeyListener.isKeyPressed(GLFW_KEY_C) && selectReady) {
+				if(pauseSelection == 0) {
+					paused = false;
+					leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+				}
+				if(pauseSelection == 1) {reset();}
+				if(pauseSelection == 2) {Window.changeScene(0);}
+			}
 			
-			removeRings();
-			removeBadniks();
-			removeItems();
-			
-			if(!player.stopCam) {moveCamera(dt);}
+			upReady = !KeyListener.isKeyPressed(GLFW_KEY_UP);
+			downReady = !KeyListener.isKeyPressed(GLFW_KEY_DOWN);
+			selectReady = !KeyListener.isKeyPressed(GLFW_KEY_C);
+			enterReady = !KeyListener.isKeyPressed(GLFW_KEY_ENTER);
+			pauseReady = !KeyListener.isKeyPressed(GLFW_KEY_ESCAPE);
+		}
+		
+		enterReady = !KeyListener.isKeyPressed(GLFW_KEY_ENTER);
+		pauseReady = !KeyListener.isKeyPressed(GLFW_KEY_ESCAPE);
+		
+		if(!paused) {
+			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+				player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles, helixes);
+				player.manageAnimations(dt);
+				
+				removeRings();
+				removeBadniks();
+				removeItems();
+				
+				if(!player.stopCam) {moveCamera(dt);}
+			}
 		}
 		
 		SpriteRenderer.reset();
@@ -247,13 +314,28 @@ public class MainScene extends Scene {
 		
 		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
 		
-		if(springs != null) {for(int i = 0; i < springs.length; i++) {springs[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(springs != null) {
+			for(int i = 0; i < springs.length; i++) {
+				springs[i].draw(SCALE, SCALE, defaultShader, camera);
+				if(!paused) {springs[i].manageAnimation(dt);}
+			}
+		}
 		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		if(rings != null) {for(int i = 0; i < rings.length; i++) {rings[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(rings != null) {
+			for(int i = 0; i < rings.length; i++) {
+				rings[i].draw(SCALE, SCALE, defaultShader, camera);
+				if(!paused) {rings[i].manageAnimation(dt);}
+			}
+		}
 		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
 		if(rotors != null) {for(int i = 0; i < rotors.length; i++) {rotors[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		if(springPoles != null) {for(int i = 0; i < springPoles.length; i++) {springPoles[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(springPoles != null) {
+			for(int i = 0; i < springPoles.length; i++) {
+				springPoles[i].draw(SCALE, SCALE, defaultShader, camera);
+				if(!paused) {springPoles[i].manageAnimation(dt);}
+			}
+		}
 
 		
 		player.draw(dt, defaultShader, camera);
@@ -264,12 +346,27 @@ public class MainScene extends Scene {
 		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
 		
 		hud.draw(dt, player, defaultShader, camera);
+		if(!paused) {hud.manageAnimation(dt, player);}
 		
 		SpriteRenderer.draw(spriteShader, camera);
+		SpriteRenderer.reset();
+		
+		if(paused) {
+			float xOffset = camera.position.x;
+			float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+			int screenWidth = Window.getWidth();
+			int screenHeight = Window.getHeight();
+			
+			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth(), yOffset + screenHeight / 2 - pause1.getHeight(), 2, 2, spriteShader, camera);}
+			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth(), yOffset + screenHeight / 2 - pause2.getHeight(), 2, 2, spriteShader, camera);}
+			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth(), yOffset + screenHeight / 2 - pause3.getHeight(), 2, 2, spriteShader, camera);}
+			
+			SpriteRenderer.draw(spriteShader, camera);
+		}
 	}
 	
 	public void checkKeysPressed() {
-		if(KeyListener.isKeyPressed(GLFW_KEY_F1) && toggle0) {
+		/*if(KeyListener.isKeyPressed(GLFW_KEY_F1) && toggle0) {
 			toggle0 = false;
 			player.DRAW_MASKS = !player.DRAW_MASKS;
 		}
@@ -282,11 +379,11 @@ public class MainScene extends Scene {
 			
 			Window.changeScene(0);
 		}
-		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}
+		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}*/
 	}
 	public void checkKeysReleased() {
-		if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
-		if(KeyListener.isKeyPressed(GLFW_KEY_F2)) {toggle1 = true;}
+		/*if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
+		if(KeyListener.isKeyPressed(GLFW_KEY_F2)) {toggle1 = true;}*/
 	}
 	
 	private void moveCamera(float dt) {
