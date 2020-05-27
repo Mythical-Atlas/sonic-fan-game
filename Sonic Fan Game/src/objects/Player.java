@@ -26,6 +26,7 @@ import datatypes.Vector;
 import main.KeyListener;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 import shapes.Circle;
 import shapes.Rectangle;
@@ -1726,33 +1727,9 @@ public class Player {
 		}
 	}
 	
-	public void draw(float dt, Shader shader, Camera camera) {
-		if(afters != null) {for(int i = 0; i < afters.length; i++) {afters[i].draw(dt, shader, camera);}}
+	public void draw(float dt, Renderer r) {
+		if(afters != null) {for(int i = 0; i < afters.length; i++) {afters[i].draw(dt, r);}}
 		
-		/*if(DRAW_MASKS) {
-			Shape temp;
-			
-			temp = getRotatedCircle(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2), GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);
-			temp.color = Color.CYAN;
-			temp.draw(graphics, new Vector());
-			
-			temp = getRotatedRectangle(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2), LEDGE_MASK_L_WIDTH * SCALE, LEDGE_MASK_L_HEIGHT * SCALE, LEDGE_MASK_L_OFFSET_X * SCALE, LEDGE_MASK_L_OFFSET_Y * SCALE);
-			temp.color = Color.BLUE;
-			temp.draw(graphics, new Vector());
-			
-			temp = getRotatedRectangle(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2), LEDGE_MASK_R_WIDTH * SCALE, LEDGE_MASK_R_HEIGHT * SCALE, LEDGE_MASK_R_OFFSET_X * SCALE, LEDGE_MASK_R_OFFSET_Y * SCALE);
-			temp.color = Color.BLUE;
-			temp.draw(graphics, new Vector());
-			
-			temp = getRotatedRectangle(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2), GROUND_MASK_WIDTH * SCALE, GROUND_MASK_HEIGHT * SCALE, GROUND_MASK_OFFSET_X * SCALE, GROUND_MASK_OFFSET_Y * SCALE);
-			temp.color = Color.PINK;
-			temp.draw(graphics, new Vector());
-			
-			temp = new Circle(MASK_RADIUS * SCALE);
-			temp.relocate(new Vector(Loader.graphicsWidth / 2, Loader.graphicsHeight / 2));
-			if(ground) {temp.color = Color.GREEN;}
-			temp.draw(graphics, new Vector());
-		}*/
 		if(DRAW_SPRITES) {
 			double w = idleAnim.getCurrentSize()[0] * 2;
 			double h = idleAnim.getCurrentSize()[1] * 2;
@@ -1761,39 +1738,39 @@ public class Player {
 			if(facing == -1) {s = 0;}
 			
 			if(anim == RUN_ANIM) {
-				     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {runFastestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-				else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {runFastAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-				else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {runNormalAnim. draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+				     if(abs(groundSpeed) >= FASTEST_MIN_SPEED * SCALE) {runFastestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+				else if(abs(groundSpeed) >= FAST_MIN_SPEED    * SCALE) {runFastAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+				else if(abs(groundSpeed) >= NORMAL_MIN_SPEED  * SCALE) {runNormalAnim. draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+				else if(abs(groundSpeed) >= SLOW_MIN_SPEED    * SCALE) {runSlowAnim.   draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+				else                                                   {runSlowestAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
 			}
 			
-			if(anim == START_ANIM)           {startAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == BOUNCING_UP_ANIM)     {bounceUpAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == BOUNCING_DOWN_ANIM)   {bounceDownAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == FALL_ANIM)            {fallAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SKID_ANIM)            {skidAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SKIRT_ANIM)           {skirtAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == TURN_ANIM)            {turnAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == TRICK_RIGHT_ANIM)     {trickRightAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == RAMP_ANIM)            {rampAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == DASH_ANIM)            {dashAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == START_ANIM)           {startAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == IDLE_ANIM)            {idleAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == BOUNCING_UP_ANIM)     {bounceUpAnim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == BOUNCING_DOWN_ANIM)   {bounceDownAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == FALL_ANIM)            {fallAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == SKID_ANIM)            {skidAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == SKIRT_ANIM)           {skirtAnim.         draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == TURN_ANIM)            {turnAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == JUMP_ANIM)            {jumpAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == LAND_ANIM)            {landAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == TRICK_RIGHT_ANIM)     {trickRightAnim.    draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == RAMP_ANIM)            {rampAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == DASH_ANIM)            {dashAnim.          draw(pos.x - w / 2, pos.y - h / 2 - 32 + 2, pos.x, pos.y, t, -facing * 2, 2, r);}
 			
-			if(anim == SWING_ANIM) {swingAnim.draw(pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SWING_ANIM) {swingAnim.draw(pos.x - w / 2 - 32 + 2, pos.y - h / 2 - 32 - 2, pos.x, pos.y, t, -facing * 2, 2, r);}
 			
-			if(anim == SPIN_ANIM) {spinAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, shader, camera);}
+			if(anim == SPIN_ANIM) {spinAnim.draw(pos.x - w / 2, pos.y - h / 2 - 32 - 4, pos.x, pos.y, 0, -facing * 2, 2, r);}
 		
-			if(anim == SPINDASH_ANIM)                   {spindashAnim.          draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(anim == SPINDASH_CHARGE_ANIM)            {spindashChargeAnim.    draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
-			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, shader, camera);}
+			if(anim == SPINDASH_ANIM)                   {spindashAnim.          draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(anim == SPINDASH_CHARGE_ANIM)            {spindashChargeAnim.    draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, r);}
+			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw(pos.x - w / 2 + s, pos.y - h / 2 - 32 - 4, pos.x, pos.y, t, -facing * 2, 2, r);}
 		}
 	}
 

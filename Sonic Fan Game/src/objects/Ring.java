@@ -6,6 +6,7 @@ import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 
 import static java.lang.Math.*;
@@ -27,12 +28,12 @@ public class Ring {
 		if(destroy == 2 && anim.finished) {destroy = 3;}
 	}
 	
-	public void draw(int scaleX, int scaleY, Shader shader, Camera camera) {
+	public void draw(int scaleX, int scaleY, Renderer r) {
 		if(destroy == 1) {
 			destroy = 2;
 			anim = new Animation(Loader.sparkleAnim, new int[]{4, 4, 4, 5}, 0);
 		}
 		
-		anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
+		anim.draw(pos.x, pos.y, scaleX, scaleY, r);
 	}
 }

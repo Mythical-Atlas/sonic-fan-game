@@ -6,6 +6,7 @@ import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 
 import static java.lang.Math.*;
@@ -40,8 +41,8 @@ public class Spring {
 		}
 	}
 	
-	public void draw(int scaleX, int scaleY, Shader shader, Camera camera) {
-		if(!bouncing) {anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);}
-		else {anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);}
+	public void draw(int scaleX, int scaleY, Renderer r) {
+		if(!bouncing) {anim.draw(pos.x, pos.y, scaleX, scaleY, r);}
+		else {anim.draw(pos.x, pos.y, scaleX, scaleY, r);}
 	}
 }

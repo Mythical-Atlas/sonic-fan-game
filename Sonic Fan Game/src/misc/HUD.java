@@ -13,8 +13,8 @@ import main.Window;
 import objects.Player;
 import rendering.Camera;
 import rendering.Image;
+import rendering.Renderer;
 import rendering.Shader;
-import rendering.SpriteRenderer;
 
 public class HUD {
 	public static final int FPS_SAMPLE_SIZE = 10;
@@ -80,7 +80,7 @@ public class HUD {
 	
 	public void manageAnimation(float dt, Player p) {for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}}
 	
-	public void draw(float dt, Player p, Shader shader, Camera camera) {
+	public void draw(float dt, Player p, Camera camera, Renderer r) {
 		frames[numFrames] = dt;
 		numFrames++;
 		if(numFrames == FPS_SAMPLE_SIZE) {
@@ -97,14 +97,14 @@ public class HUD {
 		int screenHeight = Window.getHeight();
 		
 		hud.setPositions(xOffset + 1 * SCALE, yOffset + 3 * SCALE, SCALE, SCALE);
-		SpriteRenderer.add(hud);
+		r.add(hud);
 		
-		ring.draw(xOffset + 7 * SCALE, yOffset + 8 * SCALE, SCALE, SCALE, shader, camera);
+		ring.draw(xOffset + 7 * SCALE, yOffset + 8 * SCALE, SCALE, SCALE, r);
 		
-		if(p.rings > 0) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
+		if(p.rings > 0) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, camera, r);}
 		else {
-			if(ringTimer < 30) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
-			else {drawRedNumber(28 * SCALE, 3 * SCALE, p.rings, 3, shader, camera);}
+			if(ringTimer < 30) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, camera, r);}
+			else {drawRedNumber(28 * SCALE, 3 * SCALE, p.rings, 3, camera, r);}
 			
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				ringTimer++;
@@ -112,7 +112,7 @@ public class HUD {
 			}
 		}
 
-		drawNumber((1 + 27) * SCALE, (3 + 14) * SCALE, p.score, 6, shader, camera);
+		drawNumber((1 + 27) * SCALE, (3 + 14) * SCALE, p.score, 6, camera, r);
 		
 		if(p.starting) {start = System.nanoTime();}
 		long change = System.nanoTime() - start;
@@ -122,13 +122,13 @@ public class HUD {
 		int m = (int)(s / 60);
 		
 		time.setPositions(xOffset + Window.getWidth() / 2 - time.getWidth() * SCALE / 2, yOffset + 3 * SCALE, SCALE, SCALE);
-		SpriteRenderer.add(time);
+		r.add(time);
 		
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, shader, camera);
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, shader, camera);
-		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, shader, camera);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 +  0 * SCALE, 3 * SCALE, m % 10, 1, camera, r);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 16 * SCALE, 3 * SCALE, s % 60, 2, camera, r);
+		drawNumber(Window.getWidth() / 2 - time.getWidth() * SCALE / 2 + 40 * SCALE, 3 * SCALE, ms % 100, 2, camera, r);
 		
-		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, shader, camera);
+		drawNumber(Window.getWidth() - numbers[0].getWidth() * SCALE * 2 - 1 * SCALE, 3 * SCALE, fps, 2, camera, r);
 		
 		if(p.voice != 0) {
 			voice = p.voice;
@@ -137,26 +137,26 @@ public class HUD {
 		
 		if(voice == 3) {
 			start3.setPositions(xOffset + screenWidth / 2 - start3.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start3.getHeight() * SCALE / 2, SCALE, SCALE);
-			SpriteRenderer.add(start3);
+			r.add(start3);
 		}
 		if(voice == 2) {
 			start2.setPositions(xOffset + screenWidth / 2 - start2.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start2.getHeight() * SCALE / 2, SCALE, SCALE);
-			SpriteRenderer.add(start2);
+			r.add(start2);
 		}
 		if(voice == 1) {
 			start1.setPositions(xOffset + screenWidth / 2 - start1.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start1.getHeight() * SCALE / 2, SCALE, SCALE);
-			SpriteRenderer.add(start1);
+			r.add(start1);
 		}
 		if(voice == 4) {
 			start0.setPositions(xOffset + screenWidth / 2 - start0.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start0.getHeight() * SCALE / 2, SCALE, SCALE);
-			SpriteRenderer.add(start0);
+			r.add(start0);
 			
 			voiceTimer = 60 * 2;
 			voice = 5;
 		}
 		if(voice == 5) {
 			start0.setPositions(xOffset + screenWidth / 2 - start0.getWidth() * SCALE / 2, yOffset + screenHeight / 2 - start0.getHeight() * SCALE / 2, SCALE, SCALE);
-			SpriteRenderer.add(start0);
+			r.add(start0);
 			
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 				voiceTimer--;
@@ -165,7 +165,7 @@ public class HUD {
 		}
 	}
 	
-	private void drawNumber(int x, int y, int num, int places, Shader shader, Camera camera) {
+	private void drawNumber(int x, int y, int num, int places, Camera camera, Renderer r) {
 		float xOffset = camera.position.x;
 		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
 		
@@ -173,11 +173,11 @@ public class HUD {
 			int n = (int)floor(num / pow(10, places - i - 1)) % 10;
 			
 			numbers[n].setPositions(xOffset + x + i * 8 * SCALE, yOffset + y, SCALE, SCALE);
-			SpriteRenderer.add(numbers[n]);
+			r.add(numbers[n]);
 		}
 	}
 	
-	private void drawRedNumber(int x, int y, int num, int places, Shader shader, Camera camera) {
+	private void drawRedNumber(int x, int y, int num, int places, Camera camera, Renderer r) {
 		float xOffset = camera.position.x;
 		float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
 		
@@ -185,7 +185,7 @@ public class HUD {
 			int n = (int)floor(num / pow(10, places - i - 1)) % 10;
 			
 			redNumbers[n].setPositions(xOffset + x + i * 8 * SCALE, yOffset + y, SCALE, SCALE);
-			SpriteRenderer.add(redNumbers[n]);
+			r.add(redNumbers[n]);
 		}
 	}
 }

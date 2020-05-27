@@ -6,6 +6,7 @@ import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 
 public class Rotor {
@@ -19,5 +20,5 @@ public class Rotor {
 		facing = 1;
 	}
 	
-	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {anim.draw(pos.x - anim.getCurrentWidth() / 2 * scaleX, pos.y - anim.getCurrentHeight() / 2 * scaleY, scaleX * facing, scaleY, shader, camera);}
+	public void draw(int scaleX, int scaleY, float dt, Renderer r) {anim.draw(pos.x - anim.getCurrentWidth() / 2 * scaleX, pos.y - anim.getCurrentHeight() / 2 * scaleY, scaleX * facing, scaleY, r);}
 }

@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import main.Loader;
 import objects.Player;
 import rendering.Camera;
+import rendering.Renderer;
 
 public class Background {
 	private int[] indices;
@@ -34,7 +35,7 @@ public class Background {
 	public void setTween(int layer, int tween, float[] color) {layers[layer].setTween(tween, color);}
 	public void setTween(int layer, int tween, int x, int y) {layers[layer].setTween(tween, x, y);}
 	
-	public void draw(int[] scrollSpeeds, Camera cam) {
+	public void draw(int[] scrollSpeeds, Camera cam, Renderer r) {
 		//int screenWidth = Loader.graphicsWidth / tileSize + 1;
 		//int screenHeight = Loader.graphicsHeight / tileSize + 1;
 		
@@ -44,7 +45,7 @@ public class Background {
 		actualIndices[2] = 200;
 		
 		for(int l = 0; l < layers.length; l++) {
-			layers[l].draw(actualIndices[l], scrollSpeeds[l], cam);
+			layers[l].draw(actualIndices[l], scrollSpeeds[l], cam, r);
 		}
 	}
 }

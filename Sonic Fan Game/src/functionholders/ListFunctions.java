@@ -12,8 +12,6 @@ import objects.Spring;
 import objects.SpringPole;
 import rendering.Image;
 import rendering.RenderBatch;
-//import rendering.ShapeRendererBatch;
-import rendering.SpriteRenderBatch;
 import rendering.Texture;
 import rendering.TileRenderBatch;
 
@@ -118,16 +116,6 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new TileRenderBatch[]{pointToCheck});}
 		
 		TileRenderBatch[] newList = new TileRenderBatch[existingPoints.length + 1];
-		
-		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
-		newList[existingPoints.length] = pointToCheck;
-		
-		return(newList);
-	}
-	public static SpriteRenderBatch[] append(SpriteRenderBatch[] existingPoints, SpriteRenderBatch pointToCheck) {
-		if(existingPoints == null) {return(new SpriteRenderBatch[]{pointToCheck});}
-		
-		SpriteRenderBatch[] newList = new SpriteRenderBatch[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

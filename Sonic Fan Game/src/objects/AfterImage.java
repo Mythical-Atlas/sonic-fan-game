@@ -3,6 +3,7 @@ package objects;
 import datatypes.Vector;
 import rendering.Camera;
 import rendering.Image;
+import rendering.Renderer;
 import rendering.Shader;
 
 import static java.lang.Math.*;
@@ -60,7 +61,7 @@ public class AfterImage {
 		}
 	}
 	
-	public void draw(float dt, Shader shader, Camera camera) {if(born) {image.draw(x, y, ox, oy, angle, xScale, yScale, shader, camera);}}
+	public void draw(float dt, Renderer r) {if(born) {image.draw(x, y, ox, oy, angle, xScale, yScale, r);}}
 	
 	private float[] getColors(float[] color) {
 		return(

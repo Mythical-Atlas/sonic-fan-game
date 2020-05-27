@@ -4,6 +4,7 @@ import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 
 public class Spinner extends Badnik {
@@ -16,11 +17,13 @@ public class Spinner extends Badnik {
 	}
 
 	public void update(float dt) {}
-	public void draw(int scaleX, int scaleY, float dt, Shader shader, Camera camera) {
-		anim.draw(pos.x, pos.y, scaleX, scaleY, shader, camera);
+	
+	public void draw(int scaleX, int scaleY, float dt, Renderer r) {
+		anim.draw(pos.x, pos.y, scaleX, scaleY, r);
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {anim.update(1);}
 		if(destroy == 1 && anim.finished) {destroy = 2;}
 	}
+	
 	public void destroy() {
 		int initWidth = anim.getCurrentSize()[0];
 		int initHeight = anim.getCurrentSize()[1];

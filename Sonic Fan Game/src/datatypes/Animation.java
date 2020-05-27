@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import rendering.Camera;
 import rendering.Image;
+import rendering.Renderer;
 import rendering.Shader;
 
 import static functionholders.GraphicsFunctions.*;
@@ -65,6 +66,6 @@ public class Animation {
 	public int getCurrentWidth() {return(getCurrentSize()[0]);}
 	public int getCurrentHeight() {return(getCurrentSize()[1]);}
 	
-	public void draw(double x, double y, int xScale, int yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, xScale, yScale, shader, camera);}
-	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {frames[frame].draw(x, y, ox, oy, angle, xScale, yScale, shader, camera);}
+	public void draw(double x, double y, int xScale, int yScale, Renderer r) {frames[frame].draw(x, y, xScale, yScale, r);}
+	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Renderer r) {frames[frame].draw(x, y, ox, oy, angle, xScale, yScale, r);}
 }

@@ -6,6 +6,7 @@ import datatypes.Animation;
 import datatypes.Vector;
 import main.Loader;
 import rendering.Camera;
+import rendering.Renderer;
 import rendering.Shader;
 
 import static java.lang.Math.*;
@@ -61,14 +62,14 @@ public class SpringPole {
 		}
 	}
 	
-	public void draw(int scaleX, int scaleY, Shader shader, Camera camera) {
+	public void draw(int scaleX, int scaleY, Renderer r) {
 		if(!slowBounce && !fastBounce) {
 			fastAnim.reset();
 			slowAnim.reset();
-			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);
+			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);
 		}
-		else if(fastBounce) {fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);}
-		else if(slowBounce) {slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, shader, camera);}
+		else if(fastBounce) {fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);}
+		else if(slowBounce) {slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);}
 	}
 	
 	public void fastBounce() {

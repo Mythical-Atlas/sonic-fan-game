@@ -31,14 +31,8 @@ public class Image {
 		0, 1, 3
 	};
 	
-	public Image(String filepath) {
-		tex = new Texture(filepath);
-		//load();
-	}
-	public Image(ByteBuffer imageBuffer) {
-		tex = new Texture(imageBuffer);
-		//load();
-	}
+	public Image(String filepath) {tex = new Texture(filepath);}
+	public Image(ByteBuffer imageBuffer) {tex = new Texture(imageBuffer);}
 	public Image(Texture tex) {this.tex = tex;}
 	public Image(Texture tex, float[] vertices) {
 		vertexArray = new float[36];
@@ -78,8 +72,6 @@ public class Image {
 			vertexArray[19] -= (float)(tex.height * yScale);
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
-		
-		//load();
 	}
 	
 	public void setPositionAndSize(double x, double y, double width, double height) {
@@ -112,8 +104,6 @@ public class Image {
 			vertexArray[19] -= (float)(height);
 			vertexArray[28] -= (float)(height);
 		}
-		
-		//load();
 	}
 	
 	public void setRawPositions(float[] pos) {
@@ -143,7 +133,6 @@ public class Image {
 		vertexArray[26] = map[5];
 		vertexArray[34] = map[6];
 		vertexArray[35] = map[7];
-		//load();
 	}
 	
 	public void setColors(float[] colors) {
@@ -226,64 +215,9 @@ public class Image {
 		);
 	}
 	
-	private void load() {
-		vaoID = glGenVertexArrays();
-		glBindVertexArray(vaoID);
-		
-		vboID = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_STATIC_DRAW);
-		
-		eboID = glGenBuffers();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementArray, GL_STATIC_DRAW);
-		
-		int positionsSize = 3;
-		int colorSize = 4;
-		int uvSize = 2;
-		int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
-		
-		glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
-		glEnableVertexAttribArray(0);
-		
-		glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
-		glEnableVertexAttribArray(1);
-		
-		glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
-		glEnableVertexAttribArray(2);
-	}
+	public void draw(Renderer r) {r.add(this);}
 	
-	public void draw(Shader shader, Camera camera) {
-		SpriteRenderer.add(this);
-		
-		/*shader.use();
-		
-		shader.uploadTexture("TEX_SAMPLER", 0);
-		glActiveTexture(GL_TEXTURE0);
-		tex.bind();
-		
-		shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-		shader.uploadMat4f("uView", camera.getViewMatrix());
-		
-		glBindVertexArray(vaoID);
-		
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
-		
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		
-		glBindVertexArray(0);
-		
-		shader.detach();*/
-	}
-	
-	public void draw(double x, double y, double xScale, double yScale, Shader shader, Camera camera) {
+	public void draw(double x, double y, double xScale, double yScale, Renderer r) {
 		vertexArray[0]  = (float)x + (float)(tex.width * xScale);
 		vertexArray[1]  = (float)y;
 		
@@ -314,45 +248,10 @@ public class Image {
 			vertexArray[28] -= (float)(tex.height * yScale);
 		}
 		
-		SpriteRenderer.add(this);
-		
-		/*if(
-			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
-		) {return;}*/
-		
-		/*load();
-		
-		shader.use();
-		
-		shader.uploadTexture("TEX_SAMPLER", 0);
-		glActiveTexture(GL_TEXTURE0);
-		tex.bind();
-		
-		shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-		shader.uploadMat4f("uView", camera.getViewMatrix());
-		
-		glBindVertexArray(vaoID);
-		
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
-		
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		
-		glBindVertexArray(0);
-		
-		shader.detach();*/
+		r.add(this);
 	}
 	
-	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Shader shader, Camera camera) {
+	public void draw(double x, double y, double ox, double oy, double angle, double xScale, double yScale, Renderer r) {
 		vertexArray[0]  = (float)x + (float)(tex.width * xScale);
 		vertexArray[1]  = (float)y;
 		
@@ -397,42 +296,7 @@ public class Image {
 		vertexArray[27] = (float)r3[0];
 		vertexArray[28] = (float)r3[1];
 		
-		/*if(
-			!checkOnScreen(new float[]{vertexArray[ 0], vertexArray[ 1]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[ 9], vertexArray[10]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[18], vertexArray[19]}, camera) &&
-			!checkOnScreen(new float[]{vertexArray[27], vertexArray[28]}, camera)
-		) {return;}*/
-		
-		SpriteRenderer.add(this);
-		
-		/*load();
-		
-		shader.use();
-		
-		shader.uploadTexture("TEX_SAMPLER", 0);
-		glActiveTexture(GL_TEXTURE0);
-		tex.bind();
-		
-		shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-		shader.uploadMat4f("uView", camera.getViewMatrix());
-		
-		glBindVertexArray(vaoID);
-		
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
-		
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		
-		glBindVertexArray(0);
-		
-		shader.detach();*/
+		r.add(this);
 	}
 	
 	public int getWidth() {return(tex.width);}
@@ -443,12 +307,5 @@ public class Image {
 		double ty = oy + (x - ox) * sin(angle) + (y - oy) * cos(angle);
 		
 		return(new double[]{tx, ty});
-	}
-	
-	private boolean checkOnScreen(float[] point, Camera cam) {
-		return(
-			point[0] >= 0 && point[0] < cam.position.x + Window.getWidth() &&
-			point[1] >= 0 && point[1] < cam.position.y + Window.getHeight()
-		);
 	}
 }

@@ -11,10 +11,10 @@ import org.lwjgl.BufferUtils;
 import main.Loader;
 import rendering.Camera;
 import rendering.Image;
+import rendering.Renderer;
 import rendering.TileRenderBatch;
 import rendering.TileRenderer;
 import rendering.Shader;
-import rendering.SpriteRenderer;
 
 import java.nio.ByteBuffer;
 
@@ -22,12 +22,14 @@ public class Tilemap {
 	private Tileset[] tilesets;
 	public TiledJSON json;
 	
-	private TileRenderer[] batches;
+	private Renderer[] layers;
 	
 	public Tilemap(String mapPath, String tilesetsDir) {
 		json = new TiledJSON(mapPath);
 		tilesets = new Tileset[json.tilesets.length];
-		batches = new TileRenderer[json.map.length];
+		
+		//layers = new TileRenderer[json.map.length];
+		layers = new Renderer[json.map.length];
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
 		
@@ -56,19 +58,26 @@ public class Tilemap {
 					if(s > -1) {
 						float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
 						
-						if(batches[l] == null) {batches[l] = new TileRenderer(tilesets[s].image.tex);}
-						batches[l].add(positions, colors, tilesets[s].uvMaps[index]);
+						/*if(layers[l] == null) {layers[l] = new TileRenderer(tilesets[s].image.tex);}
+						layers[l].add(positions, colors, tilesets[s].uvMaps[index]);*/
+						
+						if(layers[l] == null) {layers[l] = new Renderer();}
+						
+						Image image = new Image(tilesets[s].image.tex);
+						image.setRawPositions(positions);
+						image.setUVMap(tilesets[s].uvMaps[index]);
+						layers[l].add(image);
 					}
 				}
 			}
 			
-			if(batches[l] != null) {batches[l].load();}
+			//if(layers[l] != null) {layers[l].load();}
 		}
 	}
 	
 	public void draw(int layer, int scaleX, int scaleY, Shader shader, Camera camera) {
 		int l = layer;
-		if(batches[l] != null) {batches[l].draw(shader, camera);}
+		if(layers[l] != null) {layers[l].draw(shader, camera);}
 		
 		/*float[] colors = new float[]{
 			1.0f, 1.0f, 1.0f, 1.0f,

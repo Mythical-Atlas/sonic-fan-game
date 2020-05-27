@@ -17,7 +17,7 @@ import main.Window;
 import objects.Player;
 import rendering.Camera;
 import rendering.Image;
-import rendering.SpriteRenderer;
+import rendering.Renderer;
 import rendering.TileRenderer;
 
 public class BackgroundLayer {
@@ -73,7 +73,7 @@ public class BackgroundLayer {
 		}
 	}
 	
-	public void draw(int yStart2, int scrollSpeed, Camera camera) {
+	public void draw(int yStart2, int scrollSpeed, Camera camera, Renderer r) {
 		/*int yStart = yStart2;
 		if(yStart < 0) {yStart = index;}
 		
@@ -143,7 +143,7 @@ public class BackgroundLayer {
 			
 			Image image = new Image(tileset.image.tex);
 			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
-			SpriteRenderer.add(image);
+			r.add(image);
 		}
 	}
 	

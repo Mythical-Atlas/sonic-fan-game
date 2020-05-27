@@ -40,12 +40,12 @@ public class RenderBatch {
 		elements = new int[MAX_ARRAY_SIZE / 4 * 6];
 		
 		for(int i = 0; i < elements.length; i += 6) {
-			elements[i + 0] = i * 4 + 2;
-			elements[i + 1] = i * 4 + 1;
-			elements[i + 2] = i * 4 + 0;
-			elements[i + 3] = i * 4 + 0;
-			elements[i + 4] = i * 4 + 1;
-			elements[i + 5] = i * 4 + 3;
+			elements[i + 0] = i / 6 * 4 + 2;
+			elements[i + 1] = i / 6 * 4 + 1;
+			elements[i + 2] = i / 6 * 4 + 0;
+			elements[i + 3] = i / 6 * 4 + 0;
+			elements[i + 4] = i / 6 * 4 + 1;
+			elements[i + 5] = i / 6 * 4 + 3;
 		}
 		for(int i = 0; i < MAX_TEXTURES; i++) {texSlots = append(texSlots, i);}
 		
@@ -81,24 +81,7 @@ public class RenderBatch {
 					index++;
 				}
 			}
-			return(true);
-		}
-		else {return(false);}
-	}
-	
-	public boolean add(float[] positions, float[] colors, float[] uv) {
-		if(spriteIndex < MAX_ARRAY_SIZE / VERTEX_SIZE && index < MAX_ARRAY_SIZE / 10) {
-			spriteIndex++;
 			
-			for(int i = 0; i < 6; i++) { // WHY?
-				for(int v = 0; v < 4; v++) {
-					loadVertices(positions, v * POSITIONS_SIZE, POSITIONS_SIZE);
-					loadVertices(colors, v * COLORS_SIZE, COLORS_SIZE);
-					loadVertices(uv, v * UV_MAPS_SIZE, UV_MAPS_SIZE);
-					vertices.putFloat(0);
-					index++;
-				}
-			}
 			return(true);
 		}
 		else {return(false);}
@@ -178,6 +161,6 @@ public class RenderBatch {
 		
 		shader.detach();
 		
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		//glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 }

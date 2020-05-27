@@ -40,8 +40,8 @@ import objects.Spring;
 import objects.SpringPole;
 import rendering.Camera;
 import rendering.Image;
+import rendering.Renderer;
 import rendering.Shader;
-import rendering.SpriteRenderer;
 import shapes.Arc;
 import shapes.Circle;
 import shapes.InverseArc;
@@ -113,9 +113,9 @@ public class MainScene extends Scene {
 	
 	private Clip leaf1Music;
 	
+	private Renderer r;
+	
 	public void init() {
-		SpriteRenderer.reset();
-		
 		defaultShader = new Shader("/shaders/default.glsl");
 		defaultShader.compile();
 		
@@ -189,6 +189,8 @@ public class MainScene extends Scene {
 		leaf1Music = Loader.leaf1Music;
 		pauseSound = Loader.pauseSound;
 		selectSound = Loader.moveSound;
+		
+		r = new Renderer();
 		
 		reset();
 	}
@@ -329,51 +331,49 @@ public class MainScene extends Scene {
 			}
 		}
 		
-		SpriteRenderer.reset();
+		leafBG.draw(new int[]{200, 100, 50}, camera, r);
 		
-		leafBG.draw(new int[]{200, 100, 50}, camera);
+		r.draw(spriteShader, camera);
+		r.reset();
 		
-		SpriteRenderer.draw(spriteShader, camera);
-		SpriteRenderer.reset();
-		
-		leafForest1Map.draw(1, SCALE, SCALE, defaultShader, camera);
+		leafForest1Map.draw(1, SCALE, SCALE, spriteShader, camera);
 		
 		if(springs != null) {
 			for(int i = 0; i < springs.length; i++) {
-				springs[i].draw(SCALE, SCALE, defaultShader, camera);
+				springs[i].draw(SCALE, SCALE, r);
 				if(!paused) {springs[i].manageAnimation(dt);}
 			}
 		}
-		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(badniks != null) {for(int i = 0; i < badniks.length; i++) {badniks[i].draw(SCALE, SCALE, dt, r);}}
 		if(rings != null) {
 			for(int i = 0; i < rings.length; i++) {
-				rings[i].draw(SCALE, SCALE, defaultShader, camera);
+				rings[i].draw(SCALE, SCALE, r);
 				if(!paused) {rings[i].manageAnimation(dt);}
 			}
 		}
-		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
-		if(rotors != null) {for(int i = 0; i < rotors.length; i++) {rotors[i].draw(SCALE, SCALE, dt, defaultShader, camera);}}
+		if(items != null) {for(int i = 0; i < items.length; i++) {items[i].draw(SCALE, SCALE, dt, r);}}
+		if(ramps != null) {for(int i = 0; i < ramps.length; i++) {ramps[i].draw(SCALE, SCALE, dt, r);}}
+		if(rotors != null) {for(int i = 0; i < rotors.length; i++) {rotors[i].draw(SCALE, SCALE, dt, r);}}
 		if(springPoles != null) {
 			for(int i = 0; i < springPoles.length; i++) {
-				springPoles[i].draw(SCALE, SCALE, defaultShader, camera);
+				springPoles[i].draw(SCALE, SCALE, r);
 				if(!paused) {springPoles[i].manageAnimation(dt);}
 			}
 		}
 
 		
-		player.draw(dt, defaultShader, camera);
+		player.draw(dt, r);
 
-		SpriteRenderer.draw(spriteShader, camera);
-		SpriteRenderer.reset();
+		r.draw(spriteShader, camera);
+		r.reset();
 		
-		leafForest1Map.draw(2, SCALE, SCALE, defaultShader, camera);
+		leafForest1Map.draw(2, SCALE, SCALE, spriteShader, camera);
 		
-		hud.draw(dt, player, defaultShader, camera);
+		hud.draw(dt, player, camera, r);
 		if(!paused) {hud.manageAnimation(dt, player);}
 		
-		SpriteRenderer.draw(spriteShader, camera);
-		SpriteRenderer.reset();
+		r.draw(spriteShader, camera);
+		r.reset();
 		
 		if(paused) {
 			float xOffset = camera.position.x;
@@ -381,11 +381,12 @@ public class MainScene extends Scene {
 			int screenWidth = Window.getWidth();
 			int screenHeight = Window.getHeight();
 			
-			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth(), yOffset + screenHeight / 2 - pause1.getHeight(), 2, 2, spriteShader, camera);}
-			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth(), yOffset + screenHeight / 2 - pause2.getHeight(), 2, 2, spriteShader, camera);}
-			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth(), yOffset + screenHeight / 2 - pause3.getHeight(), 2, 2, spriteShader, camera);}
+			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth(), yOffset + screenHeight / 2 - pause1.getHeight(), 2, 2, r);}
+			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth(), yOffset + screenHeight / 2 - pause2.getHeight(), 2, 2, r);}
+			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth(), yOffset + screenHeight / 2 - pause3.getHeight(), 2, 2, r);}
 			
-			SpriteRenderer.draw(spriteShader, camera);
+			r.draw(spriteShader, camera);
+			r.reset();
 		}
 	}
 	

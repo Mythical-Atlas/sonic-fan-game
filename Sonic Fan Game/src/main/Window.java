@@ -19,7 +19,6 @@ import org.lwjgl.system.*;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Shader;
-import rendering.SpriteRenderer;
 import scenes.MainScene;
 import scenes.MenuScene;
 import scenes.Scene;

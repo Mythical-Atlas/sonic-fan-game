@@ -13,6 +13,11 @@ public class Renderer {
 	public Renderer() {
 		batches = null;
 		batchIndex = 0;
+		
+		for(int i = 0; i < 10; i++) {
+			batches = append(batches, new RenderBatch());
+			batches[batches.length - 1].load();
+		}
 	}
 	
 	public void reset() {if(batches != null) {
@@ -26,7 +31,13 @@ public class Renderer {
 			batches[batchIndex].load();
 		}
 		else {
-			boolean success = batches[batchIndex].add(image);
+			boolean success = false;
+			
+			for(int i = 0; i <= batchIndex; i++) {
+				success = batches[i].add(image);
+				if(success) {break;}
+			}
+			
 			if(!success) {
 				if(++batchIndex == batches.length) {
 					batches = append(batches, new RenderBatch());
@@ -38,23 +49,8 @@ public class Renderer {
 		batches[batchIndex].add(image);
 	}
 	
-	public void add(float[] positions, float[] colors, float[] uv) {
-		if(batches == null) {
-			batches = append(batches, new RenderBatch());
-			batches[batchIndex].load();
-		}
-		else {
-			boolean success = batches[batchIndex].add(positions, colors, uv);
-			if(!success) {
-				if(++batchIndex == batches.length) {
-					batches = append(batches, new RenderBatch());
-					batches[batchIndex].load();
-				}
-			}
-		}
-		
-		batches[batchIndex].add(positions, colors, uv);
+	public void draw(Shader shader, Camera camera) {
+		if(batches != null) {for(int i = 0; i < batches.length; i++) {batches[i].draw(shader, camera);}}
+		//reset();
 	}
-	
-	public void draw(Shader shader, Camera camera) {if(batches != null) {for(int i = 0; i < batches.length; i++) {batches[i].draw(shader, camera);}}}
 }
