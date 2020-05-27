@@ -77,6 +77,7 @@ public class MainScene extends Scene {
 	private boolean pauseReady;
 	private boolean selectReady;
 	private boolean enterReady;
+	private boolean zReady;
 	private boolean paused;
 	private int pauseSelection;
 	
@@ -106,6 +107,9 @@ public class MainScene extends Scene {
 	private Vector camPos;
 	
 	private Background leafBG;
+	
+	private Clip pauseSound;
+	private Clip selectSound;
 	
 	private Clip leaf1Music;
 	
@@ -183,6 +187,8 @@ public class MainScene extends Scene {
 		leafBG.setTween(2, 1, 14, 14);
 		
 		leaf1Music = Loader.leaf1Music;
+		pauseSound = Loader.pauseSound;
+		selectSound = Loader.moveSound;
 		
 		reset();
 	}
@@ -256,20 +262,37 @@ public class MainScene extends Scene {
 				selectReady = false;
 				downReady = false;
 				enterReady = false;
+				zReady = false;
 				pauseSelection = 0;
+				
 				leaf1Music.stop();
+				
+				pauseSound.stop();
+				pauseSound.flush();
+				pauseSound.setFramePosition(0);
+				pauseSound.start();
 			}
 		}
 		else {
 			if(KeyListener.isKeyPressed(GLFW_KEY_UP) && upReady) {
 				pauseSelection--;
 				if(pauseSelection < 0) {pauseSelection = 2;}
+				
+				selectSound.stop();
+				selectSound.flush();
+				selectSound.setFramePosition(0);
+				selectSound.start();
 			}
 			if(KeyListener.isKeyPressed(GLFW_KEY_DOWN) && downReady) {
 				pauseSelection++;
 				if(pauseSelection > 2) {pauseSelection = 0;}
+				
+				selectSound.stop();
+				selectSound.flush();
+				selectSound.setFramePosition(0);
+				selectSound.start();
 			}
-			if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady) {
+			if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady || KeyListener.isKeyPressed(GLFW_KEY_Z) && zReady) {
 				paused = false;
 				leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
 			}
@@ -287,6 +310,7 @@ public class MainScene extends Scene {
 			selectReady = !KeyListener.isKeyPressed(GLFW_KEY_C);
 			enterReady = !KeyListener.isKeyPressed(GLFW_KEY_ENTER);
 			pauseReady = !KeyListener.isKeyPressed(GLFW_KEY_ESCAPE);
+			zReady = !KeyListener.isKeyPressed(GLFW_KEY_Z);
 		}
 		
 		enterReady = !KeyListener.isKeyPressed(GLFW_KEY_ENTER);

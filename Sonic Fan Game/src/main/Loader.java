@@ -159,6 +159,7 @@ public class Loader {
 	public static Clip leaf1Music;
 	public static Clip titleScreenMusic;
 	
+	public static Clip pauseSound;
 	public static Clip titleSound;
 	public static Clip forwardSound;
 	public static Clip backSound;
@@ -260,6 +261,7 @@ public class Loader {
 			titleScreenMusic = loadSound("/objectsounds/titleScreen.wav", -20.0f);
 			leaf1Music = loadSound("/maps/leaf1.wav", -20.0f);
 			
+			pauseSound = loadSound("/objectsounds/pause.wav", -10.0f);
 			titleSound = loadSound("/objectsounds/title.wav", -10.0f);
 			forwardSound = loadSound("/objectsounds/forward.wav", -10.0f);
 			backSound = loadSound("/objectsounds/back.wav", -10.0f);
