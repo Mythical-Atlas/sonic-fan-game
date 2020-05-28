@@ -132,6 +132,7 @@ public class BackgroundLayer {
 		int yStart = yStart2;
 		
 		int screenWidth = Window.getWidth() / (width * scale) + 1;
+		int screenHeight = (Window.getInitHeight() * 2 - Window.getHeight());
 		
 		float xCam = camera.position.x;
 		float yCam = camera.position.y + (Window.getInitHeight() - Window.getHeight());
@@ -139,8 +140,47 @@ public class BackgroundLayer {
 		double xOffset = (xCam / scrollSpeed) % (width * scale);
 		
 		for(int i = -1; i < screenWidth + 1; i++) {
-			image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
-			image.setUVMap(); // limit to just whats on screen
+			/*if(yStart < 0 && (yStart + image.getHeight()) * scale <= screenHeight) {
+				int newHeight = image.getHeight() - yStart;
+				image.setPositions(xCam - xOffset + i * (width * scale), yCam, scale, ((newHeight * 1.0f) / (image.getHeight() * 1.0f)) * scale);
+				image.setUVMap(new float[]{
+					1, 1,
+					0, ((newHeight - image.getHeight()) * 1.0f) / (image.getHeight() * 1.0f),
+					1, ((newHeight - image.getHeight()) * 1.0f) / (image.getHeight() * 1.0f),
+					0, 1
+				});
+			}
+			else if(yStart >= 0 && (yStart + image.getHeight()) * scale > screenHeight) {
+				int newHeight = image.getHeight() * scale - ((yStart + image.getHeight()) * scale - screenHeight);
+				image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, ((newHeight * 1.0f) / (image.getHeight() * 1.0f)) * scale);
+				image.setUVMap(new float[]{
+					1, (newHeight * 1.0f) / (image.getHeight() * 1.0f),
+					0, 0,
+					1, 0,
+					0, (newHeight * 1.0f) / (image.getHeight() * 1.0f)
+				});
+			}
+			else if(yStart < 0 && (yStart + image.getHeight()) * scale > screenHeight) {
+				int newHeight2 = image.getHeight() * scale - ((yStart + image.getHeight()) * scale - screenHeight);
+				int newHeight = image.getHeight() * scale - ((yStart + image.getHeight()) * scale - screenHeight) - yStart * scale;
+				image.setPositions(xCam - xOffset + i * (width * scale), yCam, scale, ((newHeight2 * 1.0f) / (image.getHeight() * 1.0f)) * scale);
+				image.setUVMap(new float[]{
+					1, (newHeight2 * 1.0f) / (image.getHeight() * 1.0f),
+					0, (-yStart * 1.0f) / (image.getHeight() * 1.0f),
+					1, (-yStart * 1.0f) / (image.getHeight() * 1.0f),
+					0, (newHeight2 * 1.0f) / (image.getHeight() * 1.0f)
+				});
+			}
+			else {*/
+				image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
+				/*image.setUVMap(new float[]{
+					1, 1,
+					0, 0,
+					1, 0,
+					0, 1
+				});*/
+			//}
+			
 			r.add(image);
 		}
 	}

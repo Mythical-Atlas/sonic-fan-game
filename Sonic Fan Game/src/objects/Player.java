@@ -393,7 +393,7 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
-			if(bouncing && vel.y < 0 && !ground) {
+			if(bouncing && bounceType == 0 && vel.y < 0 && !ground) {
 				groundAxis = new Vector(0, -1);
 				groundFlipped = true;
 			}
@@ -519,7 +519,7 @@ public class Player {
 		}
 		
 		if(!crouching0 && !spindashing) {
-			if(!spinning && !rampDashing && !dashing) { // regular movement
+			if((!spinning || !ground) && !rampDashing && !dashing) { // regular movement
 				if(leftArrow && !rightArrow) {
 					if(groundSpeed <= 0 || !ground) {
 						if(!ground) {facing = -1;}
@@ -1416,7 +1416,7 @@ public class Player {
 					}
 				}
 			}
-			else {
+			else { // not tricking
 				if(rampDashing) {
 					if(anim != RAMP_ANIM) {
 						anim = RAMP_ANIM;
@@ -1571,7 +1571,7 @@ public class Player {
 											}
 										}
 									}
-									else {
+									else { // not skidding or skirting
 										if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || turning) {
 											turning = true;
 											
@@ -1608,52 +1608,6 @@ public class Player {
 												runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
 												runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
 												runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-												
-												stepTimer += min(abs(groundSpeed) * SCALE * STEP_SPEED_SCALE + STEP_SPEED_OFFSET, MAX_STEP_SPEED);
-												if(stepTimer >= STEP_SOUND_SPEED) {
-													stepTimer = 0;
-													
-													/*switch(stepIndex) {
-														case(0): {
-															stepSound0.stop();
-															stepSound0.flush();
-															stepSound0.setFramePosition(0);
-															stepSound0.start();
-															break;
-														}
-														case(1): {
-															stepSound1.stop();
-															stepSound1.flush();
-															stepSound1.setFramePosition(0);
-															stepSound1.start();
-															break;
-														}
-														case(2): {
-															stepSound2.stop();
-															stepSound2.flush();
-															stepSound2.setFramePosition(0);
-															stepSound2.start();
-															break;
-														}
-														case(3): {
-															stepSound3.stop();
-															stepSound3.flush();
-															stepSound3.setFramePosition(0);
-															stepSound3.start();
-															break;
-														}
-														case(4): {
-															stepSound4.stop();
-															stepSound4.flush();
-															stepSound4.setFramePosition(0);
-															stepSound4.start();
-															break;
-														}
-													}*/
-													
-													stepIndex++;
-													if(stepIndex == 5) {stepIndex = 0;}
-												}
 											}
 											else {
 												anim = RUN_ANIM;
@@ -1667,7 +1621,7 @@ public class Player {
 									}
 								}
 							}
-							else {
+							else { // not ground
 								if(jumping) {
 									if(anim != JUMP_ANIM) {
 										anim = JUMP_ANIM;
@@ -1699,6 +1653,7 @@ public class Player {
 											}
 										}
 									}
+									else if(bouncing && bounceType == 1) {if(anim == SPIN_ANIM && !spinning) {anim = FALL_ANIM;}}
 								}
 								
 								if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
