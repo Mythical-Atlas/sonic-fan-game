@@ -39,6 +39,7 @@ import objects.Rotor;
 import objects.Spring;
 import objects.SpringPole;
 import rendering.Camera;
+import rendering.Font;
 import rendering.Image;
 import rendering.Renderer;
 import rendering.Shader;
@@ -100,6 +101,8 @@ public class MainScene extends Scene {
 	private Image pause1;
 	private Image pause2;
 	private Image pause3;
+	
+	private Font f;
 	
 	private Shader defaultShader;
 	private Shader spriteShader;
@@ -193,6 +196,8 @@ public class MainScene extends Scene {
 		r = new Renderer();
 		
 		reset();
+		
+		initFont();
 	}
 	
 	private void reset() {
@@ -496,6 +501,48 @@ public class MainScene extends Scene {
 			for(int i = 0; i < items.length; i++) {if(items[i].destroy == 2) {removals = append(removals, i);}}
 			if(removals != null) {for(int i = 0; i < removals.length; i++) {items = removeIndex(items, removals[i]);}}
 		}
+	}
+	
+	private void initFont() {
+		f = new Font(Loader.font);
+		
+		f.addGlyph(  0, 0, 5, 11, '0');
+		f.addGlyph(  6, 0, 3, 11, '1');
+		f.addGlyph( 10, 0, 5, 11, '2');
+		f.addGlyph( 16, 0, 5, 11, '3');
+		f.addGlyph( 22, 0, 6, 11, '4');
+		f.addGlyph( 29, 0, 5, 11, '5');
+		f.addGlyph( 35, 0, 5, 11, '6');
+		f.addGlyph( 41, 0, 5, 11, '7');
+		f.addGlyph( 47, 0, 5, 11, '8');
+		f.addGlyph( 53, 0, 5, 11, '9');
+		
+		f.addGlyph( 59, 0, 6, 11, 'a');
+		f.addGlyph( 66, 0, 6, 11, 'b');
+		f.addGlyph( 73, 0, 6, 11, 'c');
+		f.addGlyph( 80, 0, 6, 11, 'd');
+		f.addGlyph( 87, 0, 6, 11, 'e');
+		f.addGlyph( 94, 0, 6, 11, 'f');
+		f.addGlyph(101, 0, 6, 11, 'g');
+		f.addGlyph(108, 0, 7, 11, 'h');
+		f.addGlyph(116, 0, 2, 11, 'i');
+		f.addGlyph(119, 0, 5, 11, 'j');
+		f.addGlyph(125, 0, 6, 11, 'k');
+		f.addGlyph(132, 0, 6, 11, 'l');
+		f.addGlyph(139, 0, 6, 11, 'm');
+		f.addGlyph(146, 0, 6, 11, 'n');
+		f.addGlyph(153, 0, 6, 11, 'o');
+		f.addGlyph(159, 0, 6, 11, 'p');
+		f.addGlyph(167, 0, 7, 11, 'q');
+		f.addGlyph(175, 0, 6, 11, 'r');
+		f.addGlyph(182, 0, 6, 11, 's');
+		f.addGlyph(189, 0, 6, 11, 't');
+		f.addGlyph(196, 0, 6, 11, 'u');
+		f.addGlyph(203, 0, 6, 11, 'v');
+		f.addGlyph(210, 0, 6, 11, 'w');
+		f.addGlyph(217, 0, 6, 11, 'x');
+		f.addGlyph(224, 0, 6, 11, 'y');
+		f.addGlyph(231, 0, 6, 11, 'z');
 	}
 	
 	private void interpretMap(TiledJSON json) {

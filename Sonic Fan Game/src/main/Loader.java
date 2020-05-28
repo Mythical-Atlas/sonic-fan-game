@@ -30,7 +30,6 @@ public class Loader {
 	private static Loader singleton = null;
 	
 	public static final String TITLE = "Sonic Advance 2 DX";
-	public static final int TARGET_FPS = 60;
 	public static final int DEFAULT_FRAME_WIDTH = 240 * 4;
 	public static final int DEFAULT_FRAME_HEIGHT = 160 * 4;
 	public static boolean loadedAssets;
@@ -43,6 +42,8 @@ public class Loader {
 	
 	public static int[][] testMap1;
 	public static int[][] testMap2;
+	
+	public static int fps = 60;
 	
 	public static ByteBuffer[] idleAnim;
 	public static ByteBuffer[] runSlowestAnim;
@@ -95,6 +96,8 @@ public class Loader {
 	public static ByteBuffer pause1;
 	public static ByteBuffer pause2;
 	public static ByteBuffer pause3;
+	
+	public static ByteBuffer font;
 	
 	public static ByteBuffer singleplayerWhiteSprite;
 	public static ByteBuffer singleplayerYellowSprite;
@@ -292,6 +295,8 @@ public class Loader {
 			
 			windowIcon2 = loadImage("/objectsprites/windowIcon2.png");
 			windowIcon3 = loadImage("/objectsprites/windowIcon3.png");
+			
+			font = loadImage("/menusprites/font.png");
 			
 			start0 = loadImage("/hudsprites/start.png");
 			start1 = loadImage("/hudsprites/_1.png");

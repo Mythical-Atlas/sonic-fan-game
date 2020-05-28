@@ -1,5 +1,7 @@
 package functionholders;
 
+import static java.lang.Math.*;
+
 import badniks.Badnik;
 import datatypes.Shape;
 import datatypes.Vector;
@@ -384,5 +386,26 @@ public class ListFunctions {
 		}
 		
 		return(list[largestIndex]);
+	}
+	
+	public static int[][] resize(int[][] array, int size) {
+		if(array == null) {return(new int[size][]);}
+		else {
+			int[][] output = new int[size][];
+			
+			for(int i = 0; i < min(size, array.length); i++) {output[i] = array[i];}
+			
+			return(output);
+		}
+	}
+	public static float[][] resize(float[][] array, int size) {
+		if(array == null) {return(new float[size][]);}
+		else {
+			float[][] output = new float[size][];
+			
+			for(int i = 0; i < min(size, array.length); i++) {output[i] = array[i];}
+			
+			return(output);
+		}
 	}
 }
