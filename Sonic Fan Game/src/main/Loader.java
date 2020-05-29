@@ -44,7 +44,7 @@ public class Loader {
 	public static int[][] testMap2;
 	
 	public static int fps = 60;
-	public static int scale = 3;
+	public static int scale = 2;
 	
 	public static ByteBuffer[] idleAnim;
 	public static ByteBuffer[] runSlowestAnim;

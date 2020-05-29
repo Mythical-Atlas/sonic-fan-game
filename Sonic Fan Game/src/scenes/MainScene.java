@@ -440,13 +440,13 @@ public class MainScene extends Scene {
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
-		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE / 2 * Loader.scale/* * (Window.getWidth() / 960)*/;
+		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE / 2 * Loader.scale;
 		
 		double x = camPos.x;
 		double y = camPos.y;
 		
-		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
-		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
+		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE / 2 * Loader.scale;
+		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE / 2 * Loader.scale;
 		
 		x = moveTowards(x, pos.x / 2 * Loader.scale + lead, xMinDist, 0.2, dt);
 		y = moveTowards(y, pos.y / 2 * Loader.scale,        yMinDist, 0.2, dt);
