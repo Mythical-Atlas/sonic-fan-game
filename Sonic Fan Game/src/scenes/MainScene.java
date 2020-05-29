@@ -202,7 +202,7 @@ public class MainScene extends Scene {
 	
 	private void reset() {
 		player = new Player(initPlayerPos.x, initPlayerPos.y);
-		camPos = new Vector(player.pos.x, player.pos.y);
+		camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
 		
 		rings = null;
 		
@@ -428,8 +428,8 @@ public class MainScene extends Scene {
 		double xMinDist = Window.getWidth() / X_MIN_DISTANCE_SCALE;
 		double yMinDist = (Window.getInitHeight() * 2 - Window.getHeight()) / Y_MIN_DISTANCE_SCALE;
 		
-		x = moveTowards(x, pos.x + lead, xMinDist, 0.2, dt);
-		y = moveTowards(y, pos.y,        yMinDist, 0.2, dt);
+		x = moveTowards(x, pos.x / 2 * Loader.scale + lead, xMinDist, 0.2, dt);
+		y = moveTowards(y, pos.y / 2 * Loader.scale,        yMinDist, 0.2, dt);
 		
 		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
 		
@@ -441,8 +441,8 @@ public class MainScene extends Scene {
 		
 		camera.position = new Vector2f((float)(int)x, (float)(int)y);
 		
-		if(camera.position.x < LEFT_CAMERA_LIMIT * SCALE) {camera.position.x = LEFT_CAMERA_LIMIT * SCALE;}
-		if(camera.position.y + (Window.getHeight() + (Window.getInitHeight() - Window.getHeight())) > LOWER_CAMERA_LIMIT * SCALE) {camera.position.y = LOWER_CAMERA_LIMIT * SCALE - (Window.getHeight() + (Window.getInitHeight() - Window.getHeight()));}
+		if(camera.position.x < LEFT_CAMERA_LIMIT * Loader.scale) {camera.position.x = LEFT_CAMERA_LIMIT * Loader.scale;}
+		if(camera.position.y + (Window.getHeight() + (Window.getInitHeight() - Window.getHeight())) > LOWER_CAMERA_LIMIT * Loader.scale) {camera.position.y = LOWER_CAMERA_LIMIT * Loader.scale - (Window.getHeight() + (Window.getInitHeight() - Window.getHeight()));}
 	}
 	
 	private double moveTowards(double value0, double value1, double minDist, double interval, float dt) {

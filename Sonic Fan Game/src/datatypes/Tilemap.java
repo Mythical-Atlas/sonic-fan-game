@@ -28,8 +28,8 @@ public class Tilemap {
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
 		
-		int scaleX = 2;
-		int scaleY = 2;
+		int scaleX = Loader.scale;
+		int scaleY = Loader.scale;
 		
 		float[] colors = new float[]{
 			1.0f, 0.0f, 0.0f, 1.0f,

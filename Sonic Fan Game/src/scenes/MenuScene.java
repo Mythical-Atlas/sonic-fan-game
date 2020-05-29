@@ -292,9 +292,9 @@ public class MenuScene extends Scene {
 		singleplayerYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		multiplayerWhiteSprite.  setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		
-		start.draw(screenWidth / 2 - start.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - start.getHeight(), 2, 2, r);
-		singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-		multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+		start.draw(screenWidth / 2 - start.getWidth() / 2 * Loader.scale + oldMovement * 2, screenHeight / 3 * 2 - start.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			oldMovement -= 10;
@@ -316,18 +316,18 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		if(menuSelection == 0) {
-			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth(), screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth(), screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth(), screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight(), 2, 2, r);
-			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth(), screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight(), 2, 2, r);
+			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
 		if(enterKey && enterReady) {
@@ -391,17 +391,17 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		if(menuSelection == 0) {multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth(), screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);}
-		if(menuSelection == 1) {singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth(), screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight(), 2, 2, r);}
+		if(menuSelection == 0) {multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+		if(menuSelection == 1) {singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		
 		if(blinkTimer % 10 < 5) {
-			if(menuSelection == 0) {singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth(), screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);}
-			if(menuSelection == 1) {multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth(), screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight(), 2, 2, r);}
+			if(menuSelection == 0) {singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(menuSelection == 1) {multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		}
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			blinkTimer++;
@@ -420,10 +420,10 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		singleplayerYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		multiplayerYellowSprite. setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
@@ -435,17 +435,17 @@ public class MenuScene extends Scene {
 		optionsWhiteSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		
 		if(menuSelection == 0) {
-			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight(), 2, 2, r);
-			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight(), 2, 2, r);
+			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
-		gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-		timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-		optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+		gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			oldMovement -= 10;
@@ -473,10 +473,10 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		start.                   setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		singleplayerYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
@@ -484,15 +484,15 @@ public class MenuScene extends Scene {
 		singleplayerWhiteSprite. setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		multiplayerWhiteSprite.  setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		
-		start.draw(screenWidth / 2 - start.getWidth() + newMovement * 2, screenHeight / 3 * 2 - start.getHeight(), 2, 2, r);
+		start.draw(screenWidth / 2 - start.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - start.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		if(menuSelection == 0) {
-			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+			singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+			singleplayerWhiteSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			multiplayerYellowSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
@@ -518,25 +518,32 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		
+		gameStartYellowSprite. setColor(1, 1, 1, 1);
+		timeAttackYellowSprite.setColor(1, 1, 1, 1);
+		optionsYellowSprite.   setColor(1, 1, 1, 1);
+		gameStartWhiteSprite.  setColor(1, 1, 1, 1);
+		timeAttackWhiteSprite. setColor(1, 1, 1, 1);
+		optionsWhiteSprite.    setColor(1, 1, 1, 1);
 		
 		if(menuSelection == 0) {
-			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth(), screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth(), screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth(), screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth(), screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight(), 2, 2, r);
-			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth(), screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth(), screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 2) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth(), screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight(), 2, 2, r);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth(), screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth(), screenHeight / 3 * 2 - optionsYellowSprite.getHeight(), 2, 2, r);
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
 		if(enterKey && enterReady) {
@@ -609,28 +616,28 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		if(menuSelection == 0) {
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth(), screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth(), screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth(), screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth(), screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 2) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth(), screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight(), 2, 2, r);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth(), screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
 		if(blinkTimer % 10 < 5) {
-			if(menuSelection == 0) {gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth(), screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);}
-			if(menuSelection == 1) {timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth(), screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight(), 2, 2, r);}
-			if(menuSelection == 2) {optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth(), screenHeight / 3 * 2 - optionsYellowSprite.getHeight(), 2, 2, r);}
+			if(menuSelection == 0) {gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(menuSelection == 1) {gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(menuSelection == 2) {optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - optionsYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		}
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {blinkTimer++;}
 		if(blinkTimer >= 30) {
@@ -647,18 +654,33 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		gameStartYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		
+		gameStartWhiteSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		timeAttackWhiteSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		optionsWhiteSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+		gameStartYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+		timeAttackYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
+		optionsYellowSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
-		
-		gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-		timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-		optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+		if(menuSelection == 0) {
+			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		}
+		if(menuSelection == 1) {
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		}
+		if(menuSelection == 2) {
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		}
 		
 		fade.setColor(0, 0, 0, 1.0f - getLinearFade(fadeTimer / 60.0f));
 		fade.draw(0, 0, screenWidth, screenHeight, r);
@@ -695,10 +717,10 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		singleplayerYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		multiplayerWhiteSprite.  setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
@@ -710,23 +732,23 @@ public class MenuScene extends Scene {
 		timeAttackWhiteSprite.setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		optionsWhiteSprite.   setColor(1, 1, 1, 1.0f - getLinearFade((newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		
-		singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight(), 2, 2, r);
-		multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() + newMovement * 2, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight(), 2, 2, r);
+		singleplayerYellowSprite.draw(screenWidth / 2 - singleplayerYellowSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - singleplayerYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+		multiplayerWhiteSprite.draw(screenWidth / 2 - multiplayerWhiteSprite.getWidth() / 2 * Loader.scale + newMovement * Loader.scale, screenHeight / 3 * 2 - multiplayerWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		if(menuSelection == 0) {
-			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			gameStartYellowSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 1) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackYellowSprite.draw(screenWidth / 2 - timeAttackYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsWhiteSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		if(menuSelection == 2) {
-			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartYellowSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - gameStartYellowSprite.getHeight(), 2, 2, r);
-			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight(), 2, 2, r);
-			optionsYellowSprite.draw(screenWidth / 2 - optionsWhiteSprite.getWidth() + oldMovement * 2, screenHeight / 3 * 2 - optionsWhiteSprite.getHeight(), 2, 2, r);
+			gameStartWhiteSprite.draw(screenWidth / 2 - gameStartWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - gameStartWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			timeAttackWhiteSprite.draw(screenWidth / 2 - timeAttackWhiteSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - timeAttackWhiteSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
+			optionsYellowSprite.draw(screenWidth / 2 - optionsYellowSprite.getWidth() / 2 * Loader.scale + oldMovement * Loader.scale, screenHeight / 3 * 2 - optionsYellowSprite.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		}
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
@@ -755,11 +777,11 @@ public class MenuScene extends Scene {
 	private void stateSettings(float dt) {
 		f.setColor(255, 255, 255, 255);
 		if(settingsSelection == 0) {f.setColor(255, 255, 0, 255);}
-		f.draw(100, 100, 2, "fps " + Loader.fps, r);
+		f.draw(50 * Loader.scale, 50 * Loader.scale, Loader.scale, "fps " + Loader.fps, r);
 		
 		f.setColor(255, 255, 255, 255);
 		if(settingsSelection == 1) {f.setColor(255, 255, 0, 255);}
-		f.draw(100, 124, 2, "scale " + Loader.scale, r);
+		f.draw(50 * Loader.scale, 62 * Loader.scale, Loader.scale, "scale " + Loader.scale, r);
 		
 		if(backKey && backReady) {
 			state = SETTINGS_FADE_OUT;
