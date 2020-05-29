@@ -43,8 +43,8 @@ public class Loader {
 	
 	public static int fps = 60;
 	public static int scale = 2;
-	public static int width = 240 * 6;
-	public static int height = 160 * 6;
+	public static int width = 240 * 4;
+	public static int height = 160 * 4;
 	
 	public static ByteBuffer[] idleAnim;
 	public static ByteBuffer[] runSlowestAnim;
