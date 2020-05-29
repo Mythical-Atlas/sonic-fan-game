@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import main.Loader;
 import main.Window;
 
 public class Camera {
@@ -37,7 +38,7 @@ public class Camera {
 	}
 	
 	public Matrix4f getProjectionMatrix() {
-		//adjustProjection();
+		adjustProjection();
 		return(projectionMatrix);
 	}
 }

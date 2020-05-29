@@ -15,11 +15,15 @@ public class Font {
 	private int width;
 	private int height;
 	
+	private float[] color;
+	
 	public Font(ByteBuffer imageBuffer) {
 		image = new Image(imageBuffer);
 		
 		glyphSizes = null;
 		glyphUVs = null;
+		
+		color = new float[]{1, 1, 1, 1};
 	}
 	
 	public void addGlyph(int x, int y, int w, int h, char index) {
@@ -42,6 +46,8 @@ public class Font {
 	
 	public void setSpaceWidth(int width) {this.width = width;}
 	
+	public void setColor(int r, int g, int b, int a) {color = new float[]{r * 1.0f / 255.0f, g * 1.0f / 255.0f, b * 1.0f / 255.0f, a * 1.0f / 255.0f};}
+	
 	public void draw(double x, double y, int scale, String s, Renderer r) {
 		char[] c = s.toCharArray();
 		
@@ -58,6 +64,7 @@ public class Font {
 				if(glyphSizes[c[i]] != null && glyphUVs[c[i]] != null) {
 					image.setPositionAndSize(x + ox, y + oy, glyphSizes[c[i]][0] * scale, glyphSizes[c[i]][1] * scale);
 					image.setUVMap(glyphUVs[c[i]]);
+					image.setColor(color);
 					image.draw(r);
 					
 					ox += glyphSizes[c[i]][0] * scale + scale;

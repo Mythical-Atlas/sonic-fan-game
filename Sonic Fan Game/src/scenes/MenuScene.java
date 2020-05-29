@@ -17,8 +17,6 @@ import rendering.Renderer;
 import rendering.Shader;
 
 public class MenuScene extends Scene {
-	//private final int SCALE = 2;
-	
 	private final int FADING_OUT 			= -1;
 	private final int FADING_IN 			=  0;
 	private final int FADING_TITLE 			=  1;
@@ -163,10 +161,10 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		glfwSetWindowShouldClose(Window.getWindow(), true);
 	}
@@ -177,8 +175,8 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		fade.setColor(1, 1, 1, 1.0f - getLinearFade(fadeTimer / 60.0f));
 		fade.draw(0, 0, screenWidth, screenHeight, r);
@@ -202,11 +200,11 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		title.setColor(1, 1, 1, getLinearFade(fadeTimer / 60.0f));
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			fadeTimer--;
@@ -230,12 +228,12 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		if(blinkTimer < 30) {start.draw(screenWidth / 2 - start.getWidth(), screenHeight / 3 * 2 - start.getHeight(), 2, 2, r);}
+		if(blinkTimer < 30) {start.draw(screenWidth / 2 - start.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - start.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			blinkTimer++;
 			if(blinkTimer == 60) {blinkTimer = 0;}
@@ -262,12 +260,12 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		if(blinkTimer % 10 < 5) {start.draw(screenWidth / 2 - start.getWidth(), screenHeight / 3 * 2 - start.getHeight(), 2, 2, r);}
+		if(blinkTimer % 10 < 5) {start.draw(screenWidth / 2 - start.getWidth() / 2 * Loader.scale, screenHeight / 3 * 2 - start.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
 			blinkTimer++;
 			if(blinkTimer == 30) {
@@ -285,10 +283,10 @@ public class MenuScene extends Scene {
 		
 		fade.setColor(0, 80.0f / 255.0f, 224.0f / 255.0f, 1);
 		fade.draw(0, 0, screenWidth, screenHeight, r);
-		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * 2, 2, 2, r);
-		rightCloud.draw(screenWidth - rightCloud.getWidth() * 2, screenHeight - rightCloud.getHeight() * 2, 2, 2, r);
+		leftCloud.draw(0, screenHeight -  leftCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
+		rightCloud.draw(screenWidth - rightCloud.getWidth() * Loader.scale, screenHeight - rightCloud.getHeight() * Loader.scale, Loader.scale, Loader.scale, r);
 		
-		title.draw(screenWidth / 2 - title.getWidth(), screenHeight / 3 - title.getHeight(), 2, 2, r);
+		title.draw(screenWidth / 2 - title.getWidth() / 2 * Loader.scale, screenHeight / 3 - title.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);
 		
 		start.                   setColor(1, 1, 1, 1.0f - getLinearFade(( newMovement * 1.0f) / (start.getWidth() * 1.0f)));
 		singleplayerYellowSprite.setColor(1, 1, 1, 1.0f - getLinearFade((oldMovement * 1.0f) / (start.getWidth() * 1.0f)));
@@ -755,29 +753,57 @@ public class MenuScene extends Scene {
 	private void stateSettingsFadeIn(float dt) {state = SETTINGS;}
 	
 	private void stateSettings(float dt) {
+		f.setColor(255, 255, 255, 255);
+		if(settingsSelection == 0) {f.setColor(255, 255, 0, 255);}
 		f.draw(100, 100, 2, "fps " + Loader.fps, r);
+		
+		f.setColor(255, 255, 255, 255);
+		if(settingsSelection == 1) {f.setColor(255, 255, 0, 255);}
+		f.draw(100, 124, 2, "scale " + Loader.scale, r);
 		
 		if(backKey && backReady) {
 			state = SETTINGS_FADE_OUT;
 			fadeTimer = 0;
 				
-			back.stop();
+			/*back.stop();
 			back.flush();
 			back.setFramePosition(0);
-			back.start();
+			back.start();*/
 		}
 		else if(leftKey && leftReady) {
-			if(Loader.fps == 60) {Loader.fps = 30;}
-			else if(Loader.fps == 30) {Loader.fps = 15;}
-			else if(Loader.fps == 15) {Loader.fps = 60;}
+			if(settingsSelection == 0) {
+				if(Loader.fps == 60) {Loader.fps = 30;}
+				else if(Loader.fps == 30) {Loader.fps = 15;}
+				else if(Loader.fps == 15) {Loader.fps = 60;}
+			}
+			if(settingsSelection == 1) {
+				if(Loader.scale == 4) {Loader.scale = 3;}
+				else if(Loader.scale == 3) {Loader.scale = 2;}
+				else if(Loader.scale == 2) {Loader.scale = 1;}
+				else if(Loader.scale == 1) {Loader.scale = 4;}
+			}
 		}
 		else if(rightKey && rightReady) {
-			if(Loader.fps == 15) {Loader.fps = 30;}
-			else if(Loader.fps == 30) {Loader.fps = 60;}
-			else if(Loader.fps == 60) {Loader.fps = 15;}
+			if(settingsSelection == 0) {
+				if(Loader.fps == 15) {Loader.fps = 30;}
+				else if(Loader.fps == 30) {Loader.fps = 60;}
+				else if(Loader.fps == 60) {Loader.fps = 15;}
+			}
+			if(settingsSelection == 1) {
+				if(Loader.scale == 1) {Loader.scale = 2;}
+				else if(Loader.scale == 2) {Loader.scale = 3;}
+				else if(Loader.scale == 3) {Loader.scale = 4;}
+				else if(Loader.scale == 4) {Loader.scale = 1;}
+			}
 		}
-		else if(upKey && upReady) {}
-		else if(downKey && downReady) {}
+		else if(upKey && upReady) {
+			settingsSelection--;
+			if(settingsSelection < 0) {settingsSelection = 1;}
+		}
+		else if(downKey && downReady) {
+			settingsSelection++;
+			if(settingsSelection > 1) {settingsSelection = 0;}
+		}
 		
 		enterReady = !enterKey;
 		backReady = !backKey;
