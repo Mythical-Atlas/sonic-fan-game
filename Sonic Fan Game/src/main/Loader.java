@@ -30,8 +30,6 @@ public class Loader {
 	private static Loader singleton = null;
 	
 	public static final String TITLE = "Sonic Advance 2 DX";
-	public static final int DEFAULT_FRAME_WIDTH = 240 * 4;
-	public static final int DEFAULT_FRAME_HEIGHT = 160 * 4;
 	public static boolean loadedAssets;
 	
 	public static Scene currentScene;
@@ -45,6 +43,8 @@ public class Loader {
 	
 	public static int fps = 60;
 	public static int scale = 2;
+	public static int width = 240 * 6;
+	public static int height = 160 * 6;
 	
 	public static ByteBuffer[] idleAnim;
 	public static ByteBuffer[] runSlowestAnim;

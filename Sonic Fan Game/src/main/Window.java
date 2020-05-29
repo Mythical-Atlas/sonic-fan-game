@@ -82,7 +82,7 @@ public class Window {
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
 		
-		glfwWindow = glfwCreateWindow(Loader.DEFAULT_FRAME_WIDTH, Loader.DEFAULT_FRAME_HEIGHT, Loader.TITLE, NULL, NULL);
+		glfwWindow = glfwCreateWindow(Loader.width, Loader.height, Loader.TITLE, NULL, NULL);
 		if(glfwWindow == NULL) {throw new IllegalStateException("Failed to create the GLFW window.");}
 		
 		glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
@@ -113,6 +113,8 @@ public class Window {
 		if(Loader.debugMode == 1) {changeScene(1);}
 		
 		glfwRestoreWindow(glfwWindow);
+		setWidth(Loader.width);
+		setHeight(Loader.height);
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(glfwWindow, (vidmode.width() - getWindowWidth()) / 2, (vidmode.height() - getWindowHeight()) / 2);
 		glfwShowWindow(glfwWindow);
@@ -164,6 +166,23 @@ public class Window {
 		int height = h.get(0);
 		
 		return(height);
+	}
+	
+	public static void setWidth(int width) {
+		glfwSetWindowSize(getWindow(), width, getHeight());
+		
+		//glfwHideWindow(getWindow());
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowPos(getWindow(), (vidmode.width() - getWindowWidth()) / 2, (vidmode.height() - getWindowHeight()) / 2);
+		//glfwShowWindow(getWindow());
+	}
+	public static void setHeight(int height) {
+		glfwSetWindowSize(getWindow(), getWidth(), height);
+		
+		//glfwHideWindow(getWindow());
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowPos(getWindow(), (vidmode.width() - getWindowWidth()) / 2, (vidmode.height() - getWindowHeight()) / 2);
+		//glfwShowWindow(getWindow());
 	}
 	
 	public static int getWindowWidth() {

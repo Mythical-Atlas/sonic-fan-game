@@ -783,6 +783,10 @@ public class MenuScene extends Scene {
 		if(settingsSelection == 1) {f.setColor(255, 255, 0, 255);}
 		f.draw(50 * Loader.scale, 62 * Loader.scale, Loader.scale, "scale " + Loader.scale, r);
 		
+		f.setColor(255, 255, 255, 255);
+		if(settingsSelection == 2) {f.setColor(255, 255, 0, 255);}
+		f.draw(50 * Loader.scale, 74 * Loader.scale, Loader.scale, "size " + Loader.width + " x " + Loader.height, r);
+		
 		if(backKey && backReady) {
 			state = SETTINGS_FADE_OUT;
 			fadeTimer = 0;
@@ -804,6 +808,26 @@ public class MenuScene extends Scene {
 				else if(Loader.scale == 2) {Loader.scale = 1;}
 				else if(Loader.scale == 1) {Loader.scale = 4;}
 			}
+			if(settingsSelection == 2) {
+			         if(Loader.width > 240 * 6) {Loader.width = 240 * 6;}
+				else if(Loader.width > 240 * 5) {Loader.width = 240 * 5;}
+				else if(Loader.width > 240 * 4) {Loader.width = 240 * 4;}
+				else if(Loader.width > 240 * 3) {Loader.width = 240 * 3;}
+				else if(Loader.width > 240 * 2) {Loader.width = 240 * 2;}
+				else if(Loader.width > 240 * 1) {Loader.width = 240 * 1;}
+				else                            {Loader.width = 240 * 6;}
+				     
+				     if(Loader.height > 160 * 6) {Loader.height = 160 * 6;}
+				else if(Loader.height > 160 * 5) {Loader.height = 160 * 5;}
+				else if(Loader.height > 160 * 4) {Loader.height = 160 * 4;}
+				else if(Loader.height > 160 * 3) {Loader.height = 160 * 3;}
+				else if(Loader.height > 160 * 2) {Loader.height = 160 * 2;}
+				else if(Loader.height > 160 * 1) {Loader.height = 160 * 1;}
+				else                             {Loader.height = 160 * 6;}
+				
+				Window.setWidth(Loader.width);
+				Window.setHeight(Loader.height);
+			}
 		}
 		else if(rightKey && rightReady) {
 			if(settingsSelection == 0) {
@@ -817,14 +841,34 @@ public class MenuScene extends Scene {
 				else if(Loader.scale == 3) {Loader.scale = 4;}
 				else if(Loader.scale == 4) {Loader.scale = 1;}
 			}
+			if(settingsSelection == 2) {
+				     if(Loader.width < 240 * 1) {Loader.width = 240 * 1;}
+				else if(Loader.width < 240 * 2) {Loader.width = 240 * 2;}
+				else if(Loader.width < 240 * 3) {Loader.width = 240 * 3;}
+				else if(Loader.width < 240 * 4) {Loader.width = 240 * 4;}
+				else if(Loader.width < 240 * 5) {Loader.width = 240 * 5;}
+				else if(Loader.width < 240 * 6) {Loader.width = 240 * 6;}
+				else                            {Loader.width = 240 * 1;}
+				     
+				     if(Loader.height < 160 * 1) {Loader.height = 160 * 1;}
+				else if(Loader.height < 160 * 2) {Loader.height = 160 * 2;}
+				else if(Loader.height < 160 * 3) {Loader.height = 160 * 3;}
+				else if(Loader.height < 160 * 4) {Loader.height = 160 * 4;}
+				else if(Loader.height < 160 * 5) {Loader.height = 160 * 5;}
+				else if(Loader.height < 160 * 6) {Loader.height = 160 * 6;}
+				else                             {Loader.height = 160 * 1;}
+				     
+				Window.setWidth(Loader.width);
+				Window.setHeight(Loader.height);
+			}
 		}
 		else if(upKey && upReady) {
 			settingsSelection--;
-			if(settingsSelection < 0) {settingsSelection = 1;}
+			if(settingsSelection < 0) {settingsSelection = 2;}
 		}
 		else if(downKey && downReady) {
 			settingsSelection++;
-			if(settingsSelection > 1) {settingsSelection = 0;}
+			if(settingsSelection > 2) {settingsSelection = 0;}
 		}
 		
 		enterReady = !enterKey;
