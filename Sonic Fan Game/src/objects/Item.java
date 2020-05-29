@@ -24,7 +24,7 @@ public class Item {
 
 	public void update(float dt) {}
 	public void draw(int scaleX, int scaleY, float dt, Renderer r) {
-		anim.draw(pos.x, pos.y, scaleX, scaleY, r);
+		anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);
 		for(int f = 1; f < 60.0f / (1.0f / dt); f++) {anim.update(1);}
 		if(destroy == 1 && anim.finished) {destroy = 2;}
 	}

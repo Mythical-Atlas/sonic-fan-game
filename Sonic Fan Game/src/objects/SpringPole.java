@@ -66,10 +66,10 @@ public class SpringPole {
 		if(!slowBounce && !fastBounce) {
 			fastAnim.reset();
 			slowAnim.reset();
-			fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);
+			fastAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale * direction, scaleY / 2 * Loader.scale, r);
 		}
-		else if(fastBounce) {fastAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);}
-		else if(slowBounce) {slowAnim.draw(pos.x, pos.y, scaleX * direction, scaleY, r);}
+		else if(fastBounce) {fastAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale * direction, scaleY / 2 * Loader.scale, r);}
+		else if(slowBounce) {slowAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale * direction, scaleY / 2 * Loader.scale, r);}
 	}
 	
 	public void fastBounce() {

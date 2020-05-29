@@ -131,13 +131,13 @@ public class BackgroundLayer {
 		
 		int yStart = yStart2;
 		
-		int screenWidth = Window.getWidth() / (width * scale) + 1;
+		int screenWidth = Window.getWidth() / (width * scale / 2 * Loader.scale) + 1;
 		int screenHeight = (Window.getInitHeight() * 2 - Window.getHeight());
 		
 		float xCam = camera.position.x;
 		float yCam = camera.position.y + (Window.getInitHeight() - Window.getHeight());
 		
-		double xOffset = (xCam / scrollSpeed) % (width * scale);
+		double xOffset = (xCam / scrollSpeed) % (width * scale / 2 * Loader.scale);
 		
 		for(int i = -1; i < screenWidth + 1; i++) {
 			/*if(yStart < 0 && (yStart + image.getHeight()) * scale <= screenHeight) {
@@ -172,7 +172,7 @@ public class BackgroundLayer {
 				});
 			}
 			else {*/
-				image.setPositions(xCam - xOffset + i * (width * scale), yCam + yStart * scale, scale, scale);
+				image.setPositions(xCam - xOffset + i * (width * scale / 2 * Loader.scale), yCam + yStart * scale / 2 * Loader.scale, scale / 2 * Loader.scale, scale / 2 * Loader.scale);
 				/*image.setUVMap(new float[]{
 					1, 1,
 					0, 0,

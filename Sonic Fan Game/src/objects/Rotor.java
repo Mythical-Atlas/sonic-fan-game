@@ -20,5 +20,5 @@ public class Rotor {
 		facing = 1;
 	}
 	
-	public void draw(int scaleX, int scaleY, float dt, Renderer r) {anim.draw(pos.x - anim.getCurrentWidth() / 2 * scaleX, pos.y - anim.getCurrentHeight() / 2 * scaleY, scaleX * facing, scaleY, r);}
+	public void draw(int scaleX, int scaleY, float dt, Renderer r) {anim.draw(pos.x - anim.getCurrentWidth() / 2 * scaleX / 2 * Loader.scale, pos.y - anim.getCurrentHeight() / 2 * scaleY / 2 * Loader.scale, scaleX / 2 * Loader.scale * facing, scaleY / 2 * Loader.scale, r);}
 }

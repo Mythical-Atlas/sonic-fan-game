@@ -28,17 +28,17 @@ public class Tilemap {
 		
 		for(int s = 0; s < json.tilesets.length; s++) {tilesets[s] = new Tileset(Loader.get().loadImage(tilesetsDir + "/" + json.tilesets[s] + ".png"), json.tileWidth, json.tileHeight);}
 		
+		load();
+	}
+	
+	public void load() {
 		int scaleX = Loader.scale;
 		int scaleY = Loader.scale;
 		
-		float[] colors = new float[]{
-			1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 0.0f, 1.0f
-		};
-		
 		for(int l = 0; l < json.map.length; l++) {
+			if(layers[l] != null) {layers[l].reset();}
+			if(layers[l] == null) {layers[l] = new Renderer();}
+			
 			for(int x = 0; x < json.map[l].length; x++) {
 				for(int y = 0; y < json.map[l][x].length; y++) {
 					int s = -1;
@@ -52,8 +52,6 @@ public class Tilemap {
 					
 					if(s > -1) {
 						float[] positions = setPositions(x * json.tileWidth * scaleX, y * json.tileHeight * scaleY, json.tileWidth, json.tileHeight, scaleX, scaleY);
-						
-						if(layers[l] == null) {layers[l] = new Renderer();}
 						
 						Image image = new Image(tilesets[s].image.tex);
 						image.setRawPositions(positions);

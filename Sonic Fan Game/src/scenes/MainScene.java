@@ -21,7 +21,6 @@ import org.joml.Vector2f;
 import badniks.Badnik;
 import badniks.Spinner;
 import datatypes.Shape;
-import datatypes.State;
 import datatypes.TiledJSON;
 import datatypes.Tilemap;
 import datatypes.Vector;
@@ -388,9 +387,9 @@ public class MainScene extends Scene {
 			int screenWidth = Window.getWidth();
 			int screenHeight = Window.getHeight();
 			
-			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth(), yOffset + screenHeight / 2 - pause1.getHeight(), 2, 2, r);}
-			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth(), yOffset + screenHeight / 2 - pause2.getHeight(), 2, 2, r);}
-			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth(), yOffset + screenHeight / 2 - pause3.getHeight(), 2, 2, r);}
+			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause1.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause2.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause3.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 		}
 		
 		r.draw(spriteShader, camera);
@@ -412,6 +411,27 @@ public class MainScene extends Scene {
 			Window.changeScene(0);
 		}
 		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}*/
+		
+		if(KeyListener.isKeyPressed(GLFW_KEY_1)) {
+			Loader.scale = 1;
+			leafForest1Map.load();
+			camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
+		}
+		if(KeyListener.isKeyPressed(GLFW_KEY_2)) {
+			Loader.scale = 2;
+			leafForest1Map.load();
+			camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
+		}
+		if(KeyListener.isKeyPressed(GLFW_KEY_3)) {
+			Loader.scale = 3;
+			leafForest1Map.load();
+			camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
+		}
+		if(KeyListener.isKeyPressed(GLFW_KEY_4)) {
+			Loader.scale = 4;
+			leafForest1Map.load();
+			camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
+		}
 	}
 	public void checkKeysReleased() {
 		/*if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
@@ -420,7 +440,7 @@ public class MainScene extends Scene {
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
-		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE/* * (Window.getWidth() / 960)*/;
+		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE / 2 * Loader.scale/* * (Window.getWidth() / 960)*/;
 		
 		double x = camPos.x;
 		double y = camPos.y;

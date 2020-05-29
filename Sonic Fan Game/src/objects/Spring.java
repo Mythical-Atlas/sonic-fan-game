@@ -42,7 +42,7 @@ public class Spring {
 	}
 	
 	public void draw(int scaleX, int scaleY, Renderer r) {
-		if(!bouncing) {anim.draw(pos.x, pos.y, scaleX, scaleY, r);}
-		else {anim.draw(pos.x, pos.y, scaleX, scaleY, r);}
+		if(!bouncing) {anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
+		else {anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
 	}
 }

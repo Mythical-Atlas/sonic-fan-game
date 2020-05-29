@@ -18,7 +18,7 @@ import rendering.Shader;
 
 public class HUD {
 	public static final int FPS_SAMPLE_SIZE = 10;
-	public static final int SCALE = 2;
+	public static int SCALE = 2;
 	
 	private Image hud;
 	private Image time;
@@ -81,6 +81,8 @@ public class HUD {
 	public void manageAnimation(float dt, Player p) {for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}}
 	
 	public void draw(float dt, Player p, Camera camera, Renderer r) {
+		SCALE = Loader.scale;
+		
 		frames[numFrames] = dt;
 		numFrames++;
 		if(numFrames == FPS_SAMPLE_SIZE) {

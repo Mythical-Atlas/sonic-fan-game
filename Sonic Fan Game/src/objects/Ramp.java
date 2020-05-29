@@ -64,5 +64,5 @@ public class Ramp {
 		return(shapes);
 	}
 	
-	public void draw(int scaleX, int scaleY, float dt, Renderer r) {image.draw(pos.x, pos.y, scaleX, scaleY, r);}
+	public void draw(int scaleX, int scaleY, float dt, Renderer r) {image.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
 }

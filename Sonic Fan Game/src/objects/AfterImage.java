@@ -1,6 +1,7 @@
 package objects;
 
 import datatypes.Vector;
+import main.Loader;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Renderer;
@@ -61,7 +62,7 @@ public class AfterImage {
 		}
 	}
 	
-	public void draw(float dt, Renderer r) {if(born) {image.draw(x, y, ox, oy, angle, xScale, yScale, r);}}
+	public void draw(float dt, Renderer r) {if(born) {image.draw(x / 2 * Loader.scale, y / 2 * Loader.scale, ox / 2 * Loader.scale, oy / 2 * Loader.scale, angle, xScale / 2 * Loader.scale, yScale / 2 * Loader.scale, r);}}
 	
 	private float[] getColors(float[] color) {
 		return(

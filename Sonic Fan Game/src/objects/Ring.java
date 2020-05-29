@@ -34,6 +34,6 @@ public class Ring {
 			anim = new Animation(Loader.sparkleAnim, new int[]{4, 4, 4, 5}, 0);
 		}
 		
-		anim.draw(pos.x, pos.y, scaleX, scaleY, r);
+		anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);
 	}
 }
