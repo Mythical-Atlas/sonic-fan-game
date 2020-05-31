@@ -26,8 +26,22 @@ public class Spring {
 		this.type = type;
 		
 		pos = new Vector(x, y);
-		anim = new Animation(Loader.springAnim, new int[]{2, 2, 1, 5, 3}, 0);
 		bouncing = false;
+		
+		switch(type) {
+			case(0): anim = new Animation(Loader.spring0Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(1): anim = new Animation(Loader.spring1Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(2): anim = new Animation(Loader.spring2Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(3): anim = new Animation(Loader.spring3Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(4): anim = new Animation(Loader.spring4Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(5): anim = new Animation(Loader.spring5Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(6): anim = new Animation(Loader.spring6Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(7): anim = new Animation(Loader.spring7Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(8): anim = new Animation(Loader.spring8Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(9): anim = new Animation(Loader.spring9Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(10): anim = new Animation(Loader.spring10Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+			case(11): anim = new Animation(Loader.spring11Anim, new int[]{2, 2, 1, 5, 3}, 0); break;
+		}
 	}
 	
 	public void manageAnimation(float dt) {
@@ -41,8 +55,5 @@ public class Spring {
 		}
 	}
 	
-	public void draw(int scaleX, int scaleY, Renderer r) {
-		if(!bouncing) {anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
-		else {anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
-	}
+	public void draw(int scaleX, int scaleY, Renderer r) {anim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
 }

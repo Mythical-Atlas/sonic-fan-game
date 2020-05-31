@@ -75,7 +75,22 @@ public class Loader {
 	public static ByteBuffer[] sonicRotorAnim;
 	public static ByteBuffer[] dashAnim;
 	
-	public static ByteBuffer[] springAnim;
+	public static ByteBuffer[] spring0Anim;
+	public static ByteBuffer[] spring1Anim;
+	public static ByteBuffer[] spring2Anim;
+	public static ByteBuffer[] spring3Anim;
+	public static ByteBuffer[] spring4Anim;
+	public static ByteBuffer[] spring5Anim;
+	public static ByteBuffer[] spring6Anim;
+	public static ByteBuffer[] spring7Anim;
+	public static ByteBuffer[] spring8Anim;
+	public static ByteBuffer[] spring9Anim;
+	public static ByteBuffer[] spring10Anim;
+	public static ByteBuffer[] spring11Anim;
+	
+	public static ByteBuffer[] blueSpring0Anim;
+	public static ByteBuffer[] blueSpring1Anim;
+	
 	public static ByteBuffer[] ringAnim;
 	public static ByteBuffer[] sparkleAnim;
 	public static ByteBuffer[] rotorAnim;
@@ -232,9 +247,24 @@ public class Loader {
 			sonicRotorAnim = loadImages("/sonicsprites", "sonicRotor");
 			dashAnim = loadImages("/sonicsprites", "dash");
 			
+			spring0Anim = loadImages("/objectsprites", "spring0");
+			spring1Anim = loadImages("/objectsprites", "spring1");
+			spring2Anim = loadImages("/objectsprites", "spring2");
+			spring3Anim = loadImages("/objectsprites", "spring3");
+			spring4Anim = loadImages("/objectsprites", "spring4");
+			spring5Anim = loadImages("/objectsprites", "spring5");
+			spring6Anim = loadImages("/objectsprites", "spring6");
+			spring7Anim = loadImages("/objectsprites", "spring7");
+			spring8Anim = loadImages("/objectsprites", "spring8");
+			spring9Anim = loadImages("/objectsprites", "spring9");
+			spring10Anim = loadImages("/objectsprites", "spring10");
+			spring11Anim = loadImages("/objectsprites", "spring11");
+			
+			blueSpring0Anim = loadImages("/objectsprites", "blueSpring0");
+			blueSpring1Anim = loadImages("/objectsprites", "blueSpring1");
+			
 			itemBox = loadImage("/objectsprites/itemBox.png");
 			ramp = loadImage("/objectsprites/ramp.png");
-			springAnim = loadImages("/objectsprites", "spring");
 			ringAnim = loadImages("/hudsprites", "ring");
 			sparkleAnim = loadImages("/objectsprites", "effect");
 			rotorAnim = loadImages("/objectsprites", "rotor");
