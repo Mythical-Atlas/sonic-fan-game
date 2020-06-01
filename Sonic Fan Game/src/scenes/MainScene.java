@@ -29,9 +29,12 @@ import main.Loader;
 import main.Window;
 import misc.Background;
 import misc.HUD;
+import objects.BlueSpring;
+import objects.DashPad;
 import objects.Helix;
 import objects.Item;
 import objects.Player;
+import objects.Rail;
 import objects.Ramp;
 import objects.Ring;
 import objects.Rotor;
@@ -67,11 +70,6 @@ public class MainScene extends Scene {
 	private Shape[] layer2Triggers;
 	private Shape[] platforms;
 	
-	private boolean showTileMasks;
-	
-	private boolean toggle0 = true;
-	private boolean toggle1 = true;
-	
 	private boolean upReady;
 	private boolean downReady;
 	private boolean pauseReady;
@@ -89,6 +87,9 @@ public class MainScene extends Scene {
 	private Rotor[] rotors;
 	private SpringPole[] springPoles;
 	private Helix[] helixes;
+	private DashPad[] dashPads;
+	private Rail[] rails;
+	private BlueSpring[] blueSprings;
 	
 	private HUD hud;
 	
@@ -258,7 +259,6 @@ public class MainScene extends Scene {
 		
 	public void update(float dt) {
 		checkKeysPressed();
-		checkKeysReleased();
 		
 		if(!paused) {
 			if(KeyListener.isKeyPressed(GLFW_KEY_ENTER) && enterReady || KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady) {
@@ -324,7 +324,7 @@ public class MainScene extends Scene {
 		
 		if(!paused) {
 			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-				player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles, helixes);
+				player.update(dt, layer0, layer1, layer2, layer1Triggers, layer2Triggers, platforms, rings, springs, badniks, items, ramps, rotors, springPoles, helixes, dashPads, rails, blueSprings);
 				player.manageAnimations(dt);
 				
 				removeRings();
@@ -397,21 +397,6 @@ public class MainScene extends Scene {
 	}
 	
 	public void checkKeysPressed() {
-		/*if(KeyListener.isKeyPressed(GLFW_KEY_F1) && toggle0) {
-			toggle0 = false;
-			player.DRAW_MASKS = !player.DRAW_MASKS;
-		}
-		if(KeyListener.isKeyPressed(GLFW_KEY_F2) && toggle1) {
-			toggle1 = false;
-			showTileMasks = !showTileMasks;
-		}
-		if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
-			leaf1Music.stop();
-			
-			Window.changeScene(0);
-		}
-		if(KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE)) {reset();}*/
-		
 		if(KeyListener.isKeyPressed(GLFW_KEY_1)) {
 			Loader.scale = 1;
 			leafForest1Map.load();
@@ -433,10 +418,6 @@ public class MainScene extends Scene {
 			camPos = new Vector(player.pos.x / 2 * Loader.scale, player.pos.y / 2 * Loader.scale);
 		}
 	}
-	public void checkKeysReleased() {
-		/*if(KeyListener.isKeyPressed(GLFW_KEY_F1)) {toggle0 = true;}
-		if(KeyListener.isKeyPressed(GLFW_KEY_F2)) {toggle1 = true;}*/
-	}
 	
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
@@ -450,8 +431,6 @@ public class MainScene extends Scene {
 		
 		x = moveTowards(x, pos.x / 2 * Loader.scale + lead, xMinDist, 0.2, dt);
 		y = moveTowards(y, pos.y / 2 * Loader.scale,        yMinDist, 0.2, dt);
-		
-		//x = moveTowards(x, pos.x + lead, 0, 0.1, dt);
 		
 		camPos.x = x;
 		camPos.y = y;

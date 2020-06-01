@@ -333,7 +333,7 @@ public class Player {
 		voice = 0;
 	}
 	
-	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles, Helix[] helixes) {
+	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles, Helix[] helixes, DashPad[] dashPads, Rail[] rails, BlueSpring[] blueSprings) {
 		checkKeys();
 		
 		if(starting) {starting();}
@@ -417,6 +417,9 @@ public class Player {
 		rotors(rotors);
 		springPoles(springPoles);
 		helixes(helixes);
+		dashPads(dashPads);
+		rails(rails);
+		blueSprings(blueSprings);
 
 		afterImages(dt);
 	}
@@ -1296,15 +1299,14 @@ public class Player {
 			
 			if(xDif > 0) {pos.y = helix.pos.y + 5 * MASK_RADIUS * SCALE + (3 * 8 * 2) * cos(xDif / (1.5 * 96 * 2) * PI) - 3 * 2;}
 			else {pos.y = helix.pos.y + 96 * 2 - MASK_RADIUS * SCALE;}
-			
-			// height
-			// min = 12 - radius
-			// max = 7 + radius
-			// width
-			// min = 0
-			// max = + 96 * 1.5
 		}
 	}
+	
+	private void dashPads(DashPad[] dashPads) {}
+	
+	private void rails(Rail[] rails) {}
+	
+	private void blueSprings(BlueSpring[] blueSprings) {}
 	
 	private void checkLanding(Shape[] shapes) {
 		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);

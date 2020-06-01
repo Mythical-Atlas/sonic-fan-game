@@ -91,6 +91,7 @@ public class Loader {
 	public static ByteBuffer[] blueSpring0Anim;
 	public static ByteBuffer[] blueSpring1Anim;
 	
+	public static ByteBuffer[] dashPad;
 	public static ByteBuffer[] ringAnim;
 	public static ByteBuffer[] sparkleAnim;
 	public static ByteBuffer[] rotorAnim;
@@ -263,6 +264,7 @@ public class Loader {
 			blueSpring0Anim = loadImages("/objectsprites", "blueSpring0");
 			blueSpring1Anim = loadImages("/objectsprites", "blueSpring1");
 			
+			dashPad = loadImages("/objectsprites", "dashPad");
 			itemBox = loadImage("/objectsprites/itemBox.png");
 			ramp = loadImage("/objectsprites/ramp.png");
 			ringAnim = loadImages("/hudsprites", "ring");
