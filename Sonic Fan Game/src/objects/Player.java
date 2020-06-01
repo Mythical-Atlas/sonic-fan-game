@@ -1302,7 +1302,25 @@ public class Player {
 		}
 	}
 	
-	private void dashPads(DashPad[] dashPads) {}
+	private void dashPads(DashPad[] dashPads) {
+		if(dashPads != null) {
+			for(int i = 0; i < dashPads.length; i++) {
+				Shape padMask = new Rectangle(dashPads[i].pos.add(0, 8 * Loader.scale), new Vector(2 * 8 * Loader.scale, 8 * Loader.scale), Color.WHITE);
+				mask.relocate(pos);
+				
+				if(checkCollision(mask, padMask) && ground) {
+					vel = new Vector(GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE * dashPads[i].direction, 0);
+					facing = dashPads[i].direction;
+					boostMode = true;
+					
+					boostSound.stop();
+					boostSound.flush();
+					boostSound.setFramePosition(0);
+					boostSound.start();
+				}
+			}
+		}
+	}
 	
 	private void rails(Rail[] rails) {}
 	

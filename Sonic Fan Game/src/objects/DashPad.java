@@ -18,6 +18,7 @@ public class DashPad {
 	
 	private Animation anim;
 	
+	public DashPad(Vector pos, int direction, double angle) {this(pos.x, pos.y, direction, angle);}
 	public DashPad(double x, double y, int direction, double angle) {
 		this.direction = direction;
 		this.angle = angle;

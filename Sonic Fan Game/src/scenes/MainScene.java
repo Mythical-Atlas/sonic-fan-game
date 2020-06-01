@@ -183,6 +183,10 @@ public class MainScene extends Scene {
 			new Helix((141 + 16) * 96 * 2, (  17 + 16) * 96 * 2),
 		};
 		
+		dashPads = null;
+		
+		placeDashPad(34, 11, 0, 10, 0, 0, 1, 0);
+		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
 		leafBG.setTween(0, 1, new float[]{128.0f / 255.0f, 160.0f / 255.0f, 248.0f / 255.0f, 1});
@@ -369,7 +373,12 @@ public class MainScene extends Scene {
 				if(!paused) {springPoles[i].manageAnimation(dt);}
 			}
 		}
-
+		if(dashPads != null) {
+			for(int i = 0; i < dashPads.length; i++) {
+				dashPads[i].draw(r);
+				if(!paused) {dashPads[i].manageAnimation(dt);}
+			}
+		}
 		
 		player.draw(dt, r);
 
@@ -476,6 +485,8 @@ public class MainScene extends Scene {
 	}
 	
 	private void placeSpring(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength, int type) {springs = append(springs, new Spring(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength, type));}
+	
+	private void placeDashPad(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, int direction, double angle) {dashPads = append(dashPads, new DashPad(getPos(xTile, yTile, xTwelfth, yTwelfth, xOffset, yOffset), direction, angle));}
 	
 	private Vector getPos(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {return(new Vector(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	
