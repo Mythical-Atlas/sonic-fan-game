@@ -143,20 +143,13 @@ public class MainScene extends Scene {
 		initPlayerPos = new Vector(player.pos.x, player.pos.y);
 		
 		springs = null;
-		
-		placeSpring( 35,  6,  8,  6, -14, -33, PI / 2, 55, 0);
-		placeSpring( 56, 10, 10,  6, -14, -33, PI / 2, 55, 0);
-		placeSpring( 88, 16, 10,  6, -14, -33, PI / 2, 55, 0);
-		placeSpring(125, 18, 10, 12, -14, -33, PI / 2, 55, 0);
-		placeSpring(137, 18,  8,  6, -14, -33, PI / 2, 55, 0);
-		placeSpring(157, 24,  8,  6, -14, -33, PI / 2, 55, 0);
-		placeSpring( 40,  6,  9, 12, -14, -33, PI / 2, 55, 0);
-		
 		ramps = null;
+		rotors = null;
+		springPoles = null;
+		dashPads = null;
+		blueSprings = null;
 		
-		placeRamp(15,  4, 0, 2, 4, 4, PI / 4, 30);
-		placeRamp(31,  6, 2, 8, 4, 4, PI / 4, 30);
-		placeRamp(51, 13, 6, 8, 4, 4, PI / 4, 30);
+		placeObjects();
 		
 		if(ramps != null) {
 			for(int i = 0; i < ramps.length; i++) {
@@ -164,28 +157,6 @@ public class MainScene extends Scene {
 				for(int s = 0; s < rampShapes.length; s++) {layer0 = append(layer0, rampShapes[s]);}
 			}
 		}
-		
-		rotors = null;
-		
-		placeRotor(32, 7, 11, 11, 4, 4);
-		placeRotor(41, 9, 10, 10, 0, 0);
-		
-		springPoles = null;
-		
-		placeSpringPole(34,  7, 0,  0, 0, 0, 1);
-		placeSpringPole(40, 12, 0,  3, 0, 0, 1);
-		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
-		placeSpringPole(74, 13, 0,  6, 0, 0, 1);
-		
-		helixes = new Helix[]{
-			new Helix(( 49 + 16) * 96 * 2, (   6 + 16) * 96 * 2),
-			new Helix(( 69 + 16) * 96 * 2, (10.5 + 16) * 96 * 2),
-			new Helix((141 + 16) * 96 * 2, (  17 + 16) * 96 * 2),
-		};
-		
-		dashPads = null;
-		
-		placeDashPad(34, 11, 0, 10, 0, 0, 1, 0);
 		
 		leafBG = new Background(new ByteBuffer[]{Loader.leafBG0, Loader.leafBG1, Loader.leafBG2}, new int[]{0, 5, 2}, new int[]{5, 10, 13}, 2, 16);
 		leafBG.setTween(0, 0, new float[]{120.0f / 255.0f, 136.0f / 255.0f, 248.0f / 255.0f, 1});
@@ -202,6 +173,37 @@ public class MainScene extends Scene {
 		reset();
 		
 		initFont();
+	}
+	
+	private void placeObjects() {
+		placeSpring( 35,  6,  8,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring( 56, 10, 10,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring( 88, 16, 10,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring(125, 18, 10, 11, -16, -32, PI / 2, 55, 0);
+		placeSpring(137, 18,  8,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring(157, 24,  8,  5, -16, -32, PI / 2, 55, 0);
+		
+		placeRamp(15,  4, 0, 2, 4, 4, PI / 4, 30);
+		placeRamp(31,  6, 2, 8, 4, 4, PI / 4, 30);
+		placeRamp(51, 13, 6, 8, 4, 4, PI / 4, 30);
+		
+		placeRotor(32, 7, 11, 11, 4, 4);
+		placeRotor(41, 9, 10, 10, 0, 0);
+		
+		placeSpringPole(34,  7, 0,  0, 0, 0, 1);
+		placeSpringPole(40, 12, 0,  3, 0, 0, 1);
+		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
+		placeSpringPole(74, 13, 0,  6, 0, 0, 1);
+		
+		helixes = new Helix[]{
+			new Helix(( 49 + 16) * 96 * 2, (   6 + 16) * 96 * 2),
+			new Helix(( 69 + 16) * 96 * 2, (10.5 + 16) * 96 * 2),
+			new Helix((141 + 16) * 96 * 2, (  17 + 16) * 96 * 2),
+		};
+		
+		placeDashPad(34, 11, 0, 10, 0, 0, 1, 0);
+		
+		placeBlueSpring( 40,  6,  9, 10, -16, -32);
 	}
 	
 	private void reset() {
@@ -346,6 +348,34 @@ public class MainScene extends Scene {
 		
 		leafForest1Map.draw(1, SCALE, SCALE, spriteShader, camera);
 		
+		drawObjects(dt);
+		
+		player.draw(dt, r);
+
+		r.draw(spriteShader, camera);
+		r.reset();
+		
+		leafForest1Map.draw(2, SCALE, SCALE, spriteShader, camera);
+		
+		hud.draw(dt, player, camera, r);
+		if(!paused) {hud.manageAnimation(dt, player);}
+		
+		if(paused) {
+			float xOffset = camera.position.x;
+			float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
+			int screenWidth = Window.getWidth();
+			int screenHeight = Window.getHeight();
+			
+			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause1.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause2.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause3.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+		}
+		
+		r.draw(spriteShader, camera);
+		r.reset();
+	}
+	
+	private void drawObjects(float dt) {
 		if(springs != null) {
 			for(int i = 0; i < springs.length; i++) {
 				springs[i].draw(SCALE, SCALE, r);
@@ -379,30 +409,12 @@ public class MainScene extends Scene {
 				if(!paused) {dashPads[i].manageAnimation(dt);}
 			}
 		}
-		
-		player.draw(dt, r);
-
-		r.draw(spriteShader, camera);
-		r.reset();
-		
-		leafForest1Map.draw(2, SCALE, SCALE, spriteShader, camera);
-		
-		hud.draw(dt, player, camera, r);
-		if(!paused) {hud.manageAnimation(dt, player);}
-		
-		if(paused) {
-			float xOffset = camera.position.x;
-			float yOffset = camera.position.y + (Window.getInitHeight() - Window.getHeight());
-			int screenWidth = Window.getWidth();
-			int screenHeight = Window.getHeight();
-			
-			if(pauseSelection == 0) {pause1.draw(xOffset + screenWidth / 2 - pause1.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause1.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
-			if(pauseSelection == 1) {pause2.draw(xOffset + screenWidth / 2 - pause2.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause2.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
-			if(pauseSelection == 2) {pause3.draw(xOffset + screenWidth / 2 - pause3.getWidth() / 2 * Loader.scale, yOffset + screenHeight / 2 - pause3.getHeight() / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+		if(blueSprings != null) {
+			for(int i = 0; i < blueSprings.length; i++) {
+				blueSprings[i].draw(r);
+				if(!paused) {blueSprings[i].manageAnimation(dt);}
+			}
 		}
-		
-		r.draw(spriteShader, camera);
-		r.reset();
 	}
 	
 	public void checkKeysPressed() {
@@ -471,6 +483,10 @@ public class MainScene extends Scene {
 	
 	private void placeRing(double xTile, double yTile, double xRing, double yRing, double xOffset, double yOffset) {rings = append(rings, new Ring(xTile * 96 * SCALE + xRing * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yRing * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	private void placeRamp(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength) {ramps = append(ramps, new Ramp(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength));}
+	private void placeSpring(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength, int type) {springs = append(springs, new Spring(getPos(xTile, yTile, xTwelfth, yTwelfth, xOffset, yOffset), angle, strength, type));}
+	private void placeDashPad(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, int direction, double angle) {dashPads = append(dashPads, new DashPad(getPos(xTile, yTile, xTwelfth, yTwelfth, xOffset, yOffset), direction, angle));}
+	private void placeBlueSpring(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {blueSprings = append(blueSprings, new BlueSpring(getPos(xTile, yTile, xTwelfth, yTwelfth, xOffset, yOffset)));}
+	
 	private void placeRotor(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {
 		rotors = append(rotors, new Rotor(
 				xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));
@@ -483,10 +499,6 @@ public class MainScene extends Scene {
 		
 		springPoles = append(springPoles, new SpringPole(getPos(xTile, yTile, xTwelfth + xExtra, yTwelfth + yExtra, xOffset, yOffset), direction));
 	}
-	
-	private void placeSpring(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, double angle, double strength, int type) {springs = append(springs, new Spring(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE, angle, strength, type));}
-	
-	private void placeDashPad(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset, int direction, double angle) {dashPads = append(dashPads, new DashPad(getPos(xTile, yTile, xTwelfth, yTwelfth, xOffset, yOffset), direction, angle));}
 	
 	private Vector getPos(double xTile, double yTile, double xTwelfth, double yTwelfth, double xOffset, double yOffset) {return(new Vector(xTile * 96 * SCALE + xTwelfth * 8 * SCALE + xOffset * SCALE + 16 * 96 * SCALE, yTile * 96 * SCALE + yTwelfth * 8 * SCALE + yOffset * SCALE + 16 * 96 * SCALE));}
 	

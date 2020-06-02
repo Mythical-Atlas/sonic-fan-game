@@ -6,6 +6,7 @@ import badniks.Badnik;
 import datatypes.Shape;
 import datatypes.Vector;
 import objects.AfterImage;
+import objects.BlueSpring;
 import objects.DashPad;
 import objects.Item;
 import objects.Ramp;
@@ -168,6 +169,16 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new DashPad[]{pointToCheck});}
 		
 		DashPad[] newList = new DashPad[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static BlueSpring[] append(BlueSpring[] existingPoints, BlueSpring pointToCheck) {
+		if(existingPoints == null) {return(new BlueSpring[]{pointToCheck});}
+		
+		BlueSpring[] newList = new BlueSpring[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

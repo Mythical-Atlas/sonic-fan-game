@@ -13,18 +13,14 @@ import static java.lang.Math.*;
 
 public class BlueSpring {
 	public Vector pos;
-	public double angle;
-	public double strength;
 	
-	private int bouncing;
+	public int bouncing;
 	
 	private Animation smallAnim;
 	private Animation largeAnim;
 	
-	public BlueSpring(double x, double y, double angle, double strength) {
-		this.angle = angle;
-		this.strength = strength;
-		
+	public BlueSpring(Vector pos) {this(pos.x, pos.y);}
+	public BlueSpring(double x, double y) {
 		pos = new Vector(x, y);
 		bouncing = 0;
 		
@@ -53,9 +49,9 @@ public class BlueSpring {
 		}
 	}
 	
-	public void draw(int scaleX, int scaleY, Renderer r) {
-		if(bouncing == 0 || bouncing == 1) {smallAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
-		else {largeAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, scaleX / 2 * Loader.scale, scaleY / 2 * Loader.scale, r);}
+	public void draw(Renderer r) {
+		if(bouncing == 0 || bouncing == 1) {smallAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
+		else {largeAnim.draw(pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, Loader.scale, Loader.scale, r);}
 	}
 	
 	public void slowBounce() {if(bouncing == 0) {bouncing = 1;}}

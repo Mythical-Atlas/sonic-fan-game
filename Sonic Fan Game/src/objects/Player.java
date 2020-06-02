@@ -1324,7 +1324,39 @@ public class Player {
 	
 	private void rails(Rail[] rails) {}
 	
-	private void blueSprings(BlueSpring[] blueSprings) {}
+	private void blueSprings(BlueSpring[] blueSprings) {
+		if(blueSprings != null) {
+			for(int i = 0; i < blueSprings.length; i++) {
+				if(blueSprings[i].bouncing == 0) {
+					Shape springMask = new Rectangle(blueSprings[i].pos.add(0, 12), new Vector(28, 21), Color.WHITE);
+					mask.relocate(pos);
+					
+					if(checkCollision(mask, springMask)) {
+						vel = vel.project(new Vector(1, 0));
+						vel.translate(new Vector(0, -1).scale(55 * SCALE));
+						blueSprings[i].slowBounce();
+						
+						jumpReady = false;
+						ground = false;
+						jumping = false;
+						jumpSlowing = false;
+						spinning = false;
+						bouncing = true;
+						trickType = 0;
+						bounceType = 0;
+						trickReadyReady = true;
+						rampDashing = false;
+						dashing = false;
+						
+						springSound.stop();
+						springSound.flush();
+						springSound.setFramePosition(0);
+						springSound.start();
+					}
+				}
+			}
+		}
+	}
 	
 	private void checkLanding(Shape[] shapes) {
 		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
