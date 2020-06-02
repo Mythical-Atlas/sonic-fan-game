@@ -1030,7 +1030,11 @@ public class Player {
 					mask.relocate(pos);
 					
 					if(checkCollision(mask, springMask)) {
-						vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));
+						if(springs[i].type <= 3) {vel = vel.project(new Vector(sin(springs[i].angle), cos(springs[i].angle)));}
+						else{
+							vel.x = 0;
+							vel.y = 0;
+						}
 						vel.translate(new Vector(cos(springs[i].angle), -sin(springs[i].angle)).scale(springs[i].strength * SCALE));
 						springs[i].bouncing = true;
 						
@@ -1305,7 +1309,7 @@ public class Player {
 	private void dashPads(DashPad[] dashPads) {
 		if(dashPads != null) {
 			for(int i = 0; i < dashPads.length; i++) {
-				Shape padMask = new Rectangle(dashPads[i].pos.add(0, 8 * Loader.scale), new Vector(2 * 8 * Loader.scale, 8 * Loader.scale), Color.WHITE);
+				Shape padMask = new Rectangle(dashPads[i].pos.add(0, 8 * 2), new Vector(2 * 8 * 2, 8 * 2), Color.WHITE);
 				mask.relocate(pos);
 				
 				if(checkCollision(mask, padMask) && ground) {

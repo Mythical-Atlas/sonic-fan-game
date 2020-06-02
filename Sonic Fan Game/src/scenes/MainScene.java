@@ -180,13 +180,14 @@ public class MainScene extends Scene {
 		placeSpring( 46,  5, 10,  3, -16, -32, PI / 2, 55, 0);
 		placeSpring( 56, 10, 10,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring( 59, 13, 10,  5, -16, -32, PI / 2, 55, 0);
-		placeSpring( 88, 16, 10,  5, -16, -32, PI / 2, 55, 0);
+		//placeSpring( 88, 16, 10,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring(125, 18, 10, 11, -16, -32, PI / 2, 55, 0);
 		placeSpring(137, 18,  8,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring(157, 24,  8,  5, -16, -32, PI / 2, 55, 0);
 		
-		//placeSpring( 88, 16, 10,  5, -16, -32, PI / 2 + PI / 4, 55, 4);
-		//placeSpring( 87, 14,  4,  5, -16, -32, PI / 2 - PI / 4, 55, 9);
+		placeSpring( 84, 11, 10,  5, -16, -32, PI / 2 - PI / 4, 55, 5);
+		placeSpring( 88, 16,  8,  7, -16, -32, PI / 2 + PI / 4, 55, 4);
+		placeSpring( 87, 14,  2,  8, -16, -32, PI / 2 - PI / 4, 55, 9);
 		
 		placeRamp(15,  4, 0, 2, 4, 4, PI / 4, 30);
 		placeRamp(31,  6, 2, 8, 4, 4, PI / 4, 30);

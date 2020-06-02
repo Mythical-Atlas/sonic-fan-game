@@ -16,9 +16,9 @@ public class Spring {
 	public double angle;
 	public double strength;
 	public boolean bouncing;
+	public int type;
 	
 	private Animation anim;
-	private int type;
 	
 	public Spring(Vector pos, double angle, double strength, int type) {this(pos.x, pos.y, angle, strength, type);}
 	public Spring(double x, double y, double angle, double strength, int type) {
