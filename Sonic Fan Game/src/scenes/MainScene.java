@@ -177,23 +177,31 @@ public class MainScene extends Scene {
 	
 	private void placeObjects() {
 		placeSpring( 35,  6,  8,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring( 46,  5, 10,  3, -16, -32, PI / 2, 55, 0);
 		placeSpring( 56, 10, 10,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring( 59, 13, 10,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring( 88, 16, 10,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring(125, 18, 10, 11, -16, -32, PI / 2, 55, 0);
 		placeSpring(137, 18,  8,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring(157, 24,  8,  5, -16, -32, PI / 2, 55, 0);
 		
+		//placeSpring( 88, 16, 10,  5, -16, -32, PI / 2 + PI / 4, 55, 4);
+		//placeSpring( 87, 14,  4,  5, -16, -32, PI / 2 - PI / 4, 55, 9);
+		
 		placeRamp(15,  4, 0, 2, 4, 4, PI / 4, 30);
 		placeRamp(31,  6, 2, 8, 4, 4, PI / 4, 30);
 		placeRamp(51, 13, 6, 8, 4, 4, PI / 4, 30);
+		placeRamp(68,  6, 6, 2, 4, 4, PI / 4, 30);
 		
 		placeRotor(32, 7, 11, 11, 4, 4);
 		placeRotor(41, 9, 10, 10, 0, 0);
+		placeRotor(57, 5,  3,  7, 0, 4);
 		
 		placeSpringPole(34,  7, 0,  0, 0, 0, 1);
 		placeSpringPole(40, 12, 0,  3, 0, 0, 1);
 		placeSpringPole(23,  5, 0, -7, 0, 0, 1);
 		placeSpringPole(74, 13, 0,  6, 0, 0, 1);
+		placeSpringPole(74, 12, 0,  3, 0, 0, 1);
 		
 		helixes = new Helix[]{
 			new Helix(( 49 + 16) * 96 * 2, (   6 + 16) * 96 * 2),
@@ -202,6 +210,7 @@ public class MainScene extends Scene {
 		};
 		
 		placeDashPad(34, 11, 0, 10, 0, 0, 1, 0);
+		placeDashPad(75, 11, 2, 4, 0, 0, 1, 0);
 		
 		placeBlueSpring( 40,  6,  9, 10, -16, -32);
 	}
