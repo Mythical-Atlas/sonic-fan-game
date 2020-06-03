@@ -31,9 +31,7 @@ public class MenuScene extends Scene {
 	private final int MENU_2_BLINK 			= 10;
 	private final int MENU_2_FADE_FORWARDS	= 11;
 	private final int MENU_2_FADE_BACKWARDS	= 12;
-	private final int SETTINGS_FADE_IN		= 13;
-	private final int SETTINGS				= 14;
-	private final int SETTINGS_FADE_OUT		= 15;
+	private final int SETTINGS				= 13;
 	
 	private int state;
 	
@@ -77,6 +75,8 @@ public class MenuScene extends Scene {
 	private boolean leftKey;
 	private boolean rightKey;
 	
+	private boolean settings;
+	
 	private boolean enterReady;
 	private boolean backReady;
 	private boolean upReady;
@@ -87,6 +87,8 @@ public class MenuScene extends Scene {
 	private Renderer r;
 	
 	private Font f;
+	
+	private SettingsSubScene sss;
 	
 	public void init() {
 		shader = new Shader("/shaders/spriteBatch.glsl");
@@ -122,16 +124,20 @@ public class MenuScene extends Scene {
 		fadeTimer = 120;
 		blinkTimer = 0;
 		state = 0;
+		settings = false;
 		
 		r = new Renderer();
+		sss = new SettingsSubScene();
 		
 		initFont();
 	}
 		
 	public void update(float dt) {
-		checkKeys();
-		
-		camera.position = new Vector2f(0, -(Window.getInitHeight() - Window.getHeight()));
+		if(!settings) {
+			checkKeys();
+			
+			camera.position = new Vector2f(0, -(Window.getInitHeight() - Window.getHeight()));
+		}
 		
 		if(state == FADING_IN) {stateFadingIn(dt);}
 		if(state == FADING_TITLE) {stateFadingTitle(dt);}
@@ -146,13 +152,27 @@ public class MenuScene extends Scene {
 		if(state == MENU_2_BLINK) {stateMenu2Blink(dt);}
 		if(state == MENU_2_FADE_FORWARDS) {stateMenu2FadeForwards(dt);}
 		if(state == MENU_2_FADE_BACKWARDS) {stateMenu2FadeBackwards(dt);}
-		if(state == SETTINGS_FADE_IN) {stateSettingsFadeIn(dt);}
-		if(state == SETTINGS) {stateSettings(dt);}
-		if(state == SETTINGS_FADE_OUT) {stateSettingsFadeOut(dt);}
+		if(state == SETTINGS) {
+			if(!settings) {
+				sss.init();
+				settings = true;
+			}
+			else {
+				sss.update(dt);
+				if(sss.exit) {
+					fadeTimer = 120;
+					blinkTimer = 0;
+					state = 0;
+					settings = false;
+				}
+			}
+		}
 		if(state == FADING_OUT) {stateFadingOut(dt);}
 		
-		r.draw(shader, camera);
-		r.reset();
+		if(!settings) {
+			r.draw(shader, camera);
+			r.reset();
+		}
 	}
 	
 	private void stateFadingOut(float dt) {
@@ -705,7 +725,7 @@ public class MenuScene extends Scene {
 				if(menuSelection == 2) {
 					fadeTimer = 120;
 					settingsSelection = 0;
-					state = SETTINGS_FADE_IN;
+					state = SETTINGS;
 				}
 			}
 		}
@@ -771,115 +791,6 @@ public class MenuScene extends Scene {
 			menuSelection = 0;
 		}
 	}
-	
-	private void stateSettingsFadeIn(float dt) {state = SETTINGS;}
-	
-	private void stateSettings(float dt) {
-		f.setColor(255, 255, 255, 255);
-		if(settingsSelection == 0) {f.setColor(255, 255, 0, 255);}
-		f.draw(50 * Loader.scale, 50 * Loader.scale, Loader.scale, "fps " + Loader.fps, r);
-		
-		f.setColor(255, 255, 255, 255);
-		if(settingsSelection == 1) {f.setColor(255, 255, 0, 255);}
-		f.draw(50 * Loader.scale, 62 * Loader.scale, Loader.scale, "scale " + Loader.scale, r);
-		
-		f.setColor(255, 255, 255, 255);
-		if(settingsSelection == 2) {f.setColor(255, 255, 0, 255);}
-		f.draw(50 * Loader.scale, 74 * Loader.scale, Loader.scale, "size " + Loader.width + " x " + Loader.height, r);
-		
-		if(backKey && backReady) {
-			state = SETTINGS_FADE_OUT;
-			fadeTimer = 0;
-				
-			/*back.stop();
-			back.flush();
-			back.setFramePosition(0);
-			back.start();*/
-		}
-		else if(leftKey && leftReady) {
-			if(settingsSelection == 0) {
-				if(Loader.fps == 60) {Loader.fps = 30;}
-				else if(Loader.fps == 30) {Loader.fps = 15;}
-				else if(Loader.fps == 15) {Loader.fps = 60;}
-			}
-			if(settingsSelection == 1) {
-				if(Loader.scale == 4) {Loader.scale = 3;}
-				else if(Loader.scale == 3) {Loader.scale = 2;}
-				else if(Loader.scale == 2) {Loader.scale = 1;}
-				else if(Loader.scale == 1) {Loader.scale = 4;}
-			}
-			if(settingsSelection == 2) {
-			         if(Loader.width > 240 * 6) {Loader.width = 240 * 6;}
-				else if(Loader.width > 240 * 5) {Loader.width = 240 * 5;}
-				else if(Loader.width > 240 * 4) {Loader.width = 240 * 4;}
-				else if(Loader.width > 240 * 3) {Loader.width = 240 * 3;}
-				else if(Loader.width > 240 * 2) {Loader.width = 240 * 2;}
-				else if(Loader.width > 240 * 1) {Loader.width = 240 * 1;}
-				else                            {Loader.width = 240 * 6;}
-				     
-				     if(Loader.height > 160 * 6) {Loader.height = 160 * 6;}
-				else if(Loader.height > 160 * 5) {Loader.height = 160 * 5;}
-				else if(Loader.height > 160 * 4) {Loader.height = 160 * 4;}
-				else if(Loader.height > 160 * 3) {Loader.height = 160 * 3;}
-				else if(Loader.height > 160 * 2) {Loader.height = 160 * 2;}
-				else if(Loader.height > 160 * 1) {Loader.height = 160 * 1;}
-				else                             {Loader.height = 160 * 6;}
-				
-				Window.setWidth(Loader.width);
-				Window.setHeight(Loader.height);
-			}
-		}
-		else if(rightKey && rightReady) {
-			if(settingsSelection == 0) {
-				if(Loader.fps == 15) {Loader.fps = 30;}
-				else if(Loader.fps == 30) {Loader.fps = 60;}
-				else if(Loader.fps == 60) {Loader.fps = 15;}
-			}
-			if(settingsSelection == 1) {
-				if(Loader.scale == 1) {Loader.scale = 2;}
-				else if(Loader.scale == 2) {Loader.scale = 3;}
-				else if(Loader.scale == 3) {Loader.scale = 4;}
-				else if(Loader.scale == 4) {Loader.scale = 1;}
-			}
-			if(settingsSelection == 2) {
-				     if(Loader.width < 240 * 1) {Loader.width = 240 * 1;}
-				else if(Loader.width < 240 * 2) {Loader.width = 240 * 2;}
-				else if(Loader.width < 240 * 3) {Loader.width = 240 * 3;}
-				else if(Loader.width < 240 * 4) {Loader.width = 240 * 4;}
-				else if(Loader.width < 240 * 5) {Loader.width = 240 * 5;}
-				else if(Loader.width < 240 * 6) {Loader.width = 240 * 6;}
-				else                            {Loader.width = 240 * 1;}
-				     
-				     if(Loader.height < 160 * 1) {Loader.height = 160 * 1;}
-				else if(Loader.height < 160 * 2) {Loader.height = 160 * 2;}
-				else if(Loader.height < 160 * 3) {Loader.height = 160 * 3;}
-				else if(Loader.height < 160 * 4) {Loader.height = 160 * 4;}
-				else if(Loader.height < 160 * 5) {Loader.height = 160 * 5;}
-				else if(Loader.height < 160 * 6) {Loader.height = 160 * 6;}
-				else                             {Loader.height = 160 * 1;}
-				     
-				Window.setWidth(Loader.width);
-				Window.setHeight(Loader.height);
-			}
-		}
-		else if(upKey && upReady) {
-			settingsSelection--;
-			if(settingsSelection < 0) {settingsSelection = 2;}
-		}
-		else if(downKey && downReady) {
-			settingsSelection++;
-			if(settingsSelection > 2) {settingsSelection = 0;}
-		}
-		
-		enterReady = !enterKey;
-		backReady = !backKey;
-		upReady = !upKey;
-		downReady = !downKey;
-		leftReady = !leftKey;
-		rightReady = !rightKey;
-	}
-	
-	private void stateSettingsFadeOut(float dt) {state = FADING_IN;}
 	
 	private void checkKeys() {
 		backKey = KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) || KeyListener.isKeyPressed(GLFW_KEY_BACKSPACE) || KeyListener.isKeyPressed(GLFW_KEY_Z);

@@ -41,33 +41,49 @@ public class KeyListener {
 	
 	public static boolean isKeyPressed(int key) {
 		if(glfwGetJoystickName(GLFW_JOYSTICK_1) != null) {
-			if(glfwGetJoystickName(GLFW_JOYSTICK_1).equals("Pro Controller")) {
+			//if(glfwGetJoystickName(GLFW_JOYSTICK_1).equals("Pro Controller")) {
 				get().joystickButtonPressed = glfwGetJoystickButtons(GLFW_JOYSTICK_1);
 				
-				if(key == GLFW_KEY_C && get().joystickButtonPressed.get(1) == 1) {return(true);}
-				if(key == GLFW_KEY_X && get().joystickButtonPressed.get(3) == 1) {return(true);}
-				if(key == GLFW_KEY_Z && get().joystickButtonPressed.get(0) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_C      && get().joystickButtonPressed.get(Loader.joyA) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_X      && get().joystickButtonPressed.get(Loader.joyX) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_Z      && get().joystickButtonPressed.get(Loader.joyB) == 1) {return(true);}
 				
-				if(key == GLFW_KEY_ESCAPE && get().joystickButtonPressed.get(8) == 1) {return(true);}
-				if(key == GLFW_KEY_ENTER && get().joystickButtonPressed.get(9) == 1) {return(true);}
-				if(key == GLFW_KEY_BACKSPACE && get().joystickButtonPressed.get(13) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_ESCAPE && get().joystickButtonPressed.get(Loader.joyStart) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_ENTER  && get().joystickButtonPressed.get(Loader.joyBack) == 1) {return(true);}
 				
-				if(key == GLFW_KEY_UP && get().joystickButtonPressed.get(16) == 1) {return(true);}
-				if(key == GLFW_KEY_DOWN && get().joystickButtonPressed.get(18) == 1) {return(true);}
-				if(key == GLFW_KEY_LEFT && get().joystickButtonPressed.get(19) == 1) {return(true);}
-				if(key == GLFW_KEY_RIGHT && get().joystickButtonPressed.get(17) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_UP     && get().joystickButtonPressed.get(Loader.joyUp) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_DOWN   && get().joystickButtonPressed.get(Loader.joyDown) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_LEFT   && get().joystickButtonPressed.get(Loader.joyLeft) == 1) {return(true);}
+				if(get().keyPressed[key] || key == GLFW_KEY_RIGHT  && get().joystickButtonPressed.get(Loader.joyRight) == 1) {return(true);}
 				
 				if(key < get().keyPressed.length) {return(get().keyPressed[key]);}
 				return(false);
-			}
+			/*}
 			else {
 				if(key < get().keyPressed.length) {return(get().keyPressed[key]);}
 				return(false);
-			}
+			}*/
 		}
 		else {
 			if(key < get().keyPressed.length) {return(get().keyPressed[key]);}
 			return(false);
 		}
+	}
+	
+	public static int getNumJoystickKeysPressed() {
+		if(glfwGetJoystickName(GLFW_JOYSTICK_1) != null) {
+			get().joystickButtonPressed = glfwGetJoystickButtons(GLFW_JOYSTICK_1);
+			
+			int out = 0;
+			for(int i = 0; i < get().joystickButtonPressed.capacity(); i++) {if(get().joystickButtonPressed.get(i) == 1) {out++;}}
+			
+			return(out);
+		}
+		else {return(0);}
+	}
+	
+	public static int getNextJoystickButton() {
+		for(int i = 0; i < get().joystickButtonPressed.capacity(); i++) {if(get().joystickButtonPressed.get(i) == 1) {return(i);}}
+		return(-1);
 	}
 }

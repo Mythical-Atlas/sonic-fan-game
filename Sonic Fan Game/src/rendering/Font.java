@@ -72,4 +72,28 @@ public class Font {
 			}
 		}
 	}
+	
+	public int getStringWidth(int scale, String s) {
+		char[] c = s.toCharArray();
+		
+		int ox = 0;
+		int oy = 0;
+		int mx = 0;
+		
+		for(int i = 0; i < c.length; i++) {
+			if(c[i] == '\n') {
+				ox = 0;
+				oy += height * scale + scale;
+			}
+			else if(c[i] == ' ') {ox += width * scale;}
+			else {
+				if(glyphSizes[c[i]] != null && glyphUVs[c[i]] != null) {
+					ox += glyphSizes[c[i]][0] * scale + scale;
+					mx = max(ox, mx);
+				}
+			}
+		}
+		
+		return(mx);
+	}
 }
