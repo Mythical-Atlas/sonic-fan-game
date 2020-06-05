@@ -33,7 +33,7 @@ import shapes.Rectangle;
 
 public class Player {
 	private final double SPRINT_ACCEL 		 	= 2;
-	private final double MOVE_ACCEL  		  	= 0.15; // 0.115
+	private final double MOVE_ACCEL  		  	= 0.15;
 	private final double AIR_ACCEL  		  	= 0.15;
 	private final double GROUND_ACCEL_LIMIT  	= 35;
 	private final double BOOST_ACCEL_SCALE	 	= 2;
