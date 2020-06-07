@@ -11,10 +11,10 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import Player.Player;
 import datatypes.Tileset;
 import main.Loader;
 import main.Window;
-import objects.Player;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Renderer;

@@ -18,6 +18,7 @@ import javax.sound.sampled.Clip;
 
 import org.joml.Vector2f;
 
+import Player.Player;
 import badniks.Badnik;
 import badniks.Spinner;
 import datatypes.Shape;
@@ -33,7 +34,6 @@ import objects.BlueSpring;
 import objects.DashPad;
 import objects.Helix;
 import objects.Item;
-import objects.Player;
 import objects.Rail;
 import objects.Ramp;
 import objects.Ring;
@@ -360,7 +360,7 @@ public class MainScene extends Scene {
 				removeBadniks();
 				removeItems();
 				
-				if(!player.stopCam) {moveCamera(dt);}
+				/*if(!player.stopCam) {*/moveCamera(dt);//}
 			}
 		}
 		

@@ -1,4 +1,4 @@
-package objects;
+package Player;
 
 import static java.lang.Math.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -8,6 +8,9 @@ import static functionholders.ListFunctions.*;
 import static functionholders.DebugFunctions.*;
 import static functionholders.MathFunctions.*;
 import static java.awt.event.KeyEvent.*;
+
+import static Player.PlayerConstants.*;
+import static Player.PlayerActions.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,6 +28,17 @@ import datatypes.Shape;
 import datatypes.Vector;
 import main.KeyListener;
 import main.Loader;
+import objects.AfterImage;
+import objects.BlueSpring;
+import objects.DashPad;
+import objects.Helix;
+import objects.Item;
+import objects.Rail;
+import objects.Ramp;
+import objects.Ring;
+import objects.Rotor;
+import objects.Spring;
+import objects.SpringPole;
 import rendering.Camera;
 import rendering.Renderer;
 import rendering.Shader;
@@ -32,237 +46,141 @@ import shapes.Circle;
 import shapes.Rectangle;
 
 public class Player {
-	private final double SPRINT_ACCEL 		 	= 2;
-	private final double MOVE_ACCEL  		  	= 0.15;
-	private final double AIR_ACCEL  		  	= 0.15;
-	private final double GROUND_ACCEL_LIMIT  	= 35;
-	private final double BOOST_ACCEL_SCALE	 	= 2;
-	private final double BOOST_LIMIT_SCALE	  	= 1.5;
-	private final double BOOST_START_SPEED	  	= 25;
-	private final double BOOST_STOP_SPEED	  	= 10;
-	private final int 	 BOOST_TIME			 	= 60 * 3;
-	private final double SKID_ACCEL  		  	= 1;
-	private final double DRAG_DECEL   		  	= 0.108;
-	private final double DEBUG_JUMP_IMPULSE  	= 50;
-	private final double JUMP_IMPULSE 		  	= 25;
-	private final double JUMP_SWITCH  		  	= 2;
-	private final double GRAVITY      		  	= 1;
-	private final double GROUND_GRAVITY_ACCEL 	= 0.6;
-	private final double GROUND_GRAVITY_DECEL 	= 0.4;
-	private final double SPIN_DECEL			  	= 0.025;
-	private final double MIN_POTENTIAL_GRAVITY 	= 0.1;
-	
-	private final double SLOW_MIN_SPEED 	= 10;
-	private final double NORMAL_MIN_SPEED 	= 20;
-	private final double FAST_MIN_SPEED 	= 30;
-	private final double FASTEST_MIN_SPEED 	= 40;
-	private final double SKID_MIN_SPEED 	= 5;
-	
-	private final double SPINDASH_MIN_STRENGTH = 35;
-	private final double SPINDASH_CHARGE_SCALE = 5;
-	private final double SPINDASH_MAX_STRENGTH = 50;
-	
-	private final double GROUND_ANGLE_MASK_OFFSET_X  = 0;
-	private final double GROUND_ANGLE_MASK_OFFSET_Y  = 1;
-	private final double GROUND_ANGLE_MASK_RADIUS    = 50;
-	
-	private final double STICK_OFFSET_SCALE = 1;
-	private final double STICK_MIN_SPEED    = 10;
-	
-	private final double GROUND_MASK_OFFSET_X  = 0;
-	private final double GROUND_MASK_OFFSET_Y  = 1;
-	private final double GROUND_MASK_WIDTH     = 100;
-	private final double GROUND_MASK_HEIGHT    = 50;
-	
-	private final double LEDGE_MASK_L_OFFSET_X  = -37.5;
-	private final double LEDGE_MASK_L_OFFSET_Y  = 50;
-	private final double LEDGE_MASK_L_WIDTH     = 25;
-	private final double LEDGE_MASK_L_HEIGHT    = 50;
-	
-	private final double LEDGE_MASK_R_OFFSET_X  = 37.5;
-	private final double LEDGE_MASK_R_OFFSET_Y  = 50;
-	private final double LEDGE_MASK_R_WIDTH     = 25;
-	private final double LEDGE_MASK_R_HEIGHT    = 50;
-	
-	private final double LAND_MASK_OFFSET_Y  = 100;
-	private final double LAND_MASK_WIDTH     = 100;
-	private final double LAND_MASK_HEIGHT    = 100;
-	
-	private final double MASK_RADIUS = 50;
-	
-	private final double SCALE 					= 0.5;
-	private final int    SPRITE_SCALE 			= 4;
-	private final double ANIM_SPEED_SCALE 		= 0.4;
-	private final double STEP_SOUND_SPEED		= 100;
-	private final double STEP_SPEED_SCALE 		= 1;
-	private final double STEP_SPEED_OFFSET		= 2;
-	private final double MAX_STEP_SPEED 		= 25;
-	
-	public boolean        DRAW_MASKS 	= false;
-	private final boolean DRAW_SPRITES	= true;
-	
-	private final int IDLE_ANIM 			= 0;
-	private final int RUN_ANIM 				= 1;
-	private final int FALL_ANIM 			= 2;
-	private final int JUMP_ANIM 			= 3;
-	private final int SKID_ANIM 			= 4;
-	private final int SPIN_ANIM 			= 5;
-	private final int CROUCH_ANIM_0 		= 6;
-	private final int CROUCH_ANIM_1 		= 7;
-	private final int SPINDASH_ANIM 		= 8;
-	private final int SPINDASH_CHARGE_ANIM 	= 9;
-	private final int SKIRT_ANIM		 	= 10;
-	private final int TURN_ANIM			 	= 11;
-	private final int BOUNCING_UP_ANIM		= 12;
-	private final int BOUNCING_DOWN_ANIM	= 13;
-	private final int LAND_ANIM				= 14;
-	private final int START_ANIM			= 15;
-	private final int TRICK_RIGHT_ANIM		= 16;
-	private final int TRICK_UP_0_ANIM		= 17;
-	private final int TRICK_UP_1_ANIM		= 18;
-	private final int RAMP_ANIM				= 19;
-	private final int SWING_ANIM			= 20;
-	private final int DASH_ANIM				= 21;
-	
-	private final int NO_DUST_ANIM 		= 0;
-	private final int REGULAR_DUST_ANIM = 1;
-	private final int CHARGE_DUST_ANIM 	= 2;
-	
 	// keys
-	private boolean upArrow;
-	private boolean downArrow;
-	private boolean leftArrow;
-	private boolean rightArrow;
-	private boolean spaceBar;
-	private boolean shiftKey;
-	private boolean controlKey;
-	//private boolean trickKey;
+	public boolean upArrow;
+	public boolean downArrow;
+	public boolean leftArrow;
+	public boolean rightArrow;
+	public boolean spaceBar;
+	public boolean shiftKey;
+	public boolean controlKey;
+	//public boolean trickKey;
 	
 	// flags
-	private boolean skidding;
-	private boolean skirting;
-	private boolean turning;
-	private boolean ground;
-	private boolean ledge;
-	private boolean jumping;
-	private boolean jumpReady;
-	private boolean jumpSlowing;
-	private boolean spinning;
-	private boolean crouching0;
-	private boolean crouching1;
-	private boolean spindashReady;
-	private boolean spindashing;
-	private boolean spindashCharge;
-	private boolean chargeReady;
-	private boolean bouncing;
-	private boolean landing;
-	private boolean controlKeyReady;
+	public boolean skidding;
+	public boolean skirting;
+	public boolean turning;
+	public boolean ground;
+	public boolean ledge;
+	public boolean jumping;
+	public boolean jumpReady;
+	public boolean jumpSlowing;
+	public boolean spinning;
+	public boolean crouching0;
+	public boolean crouching1;
+	public boolean spindashReady;
+	public boolean spindashing;
+	public boolean spindashCharge;
+	public boolean chargeReady;
+	public boolean bouncing;
+	public boolean landing;
+	public boolean controlKeyReady;
 	public boolean starting;
-	private boolean trickReady;
-	private boolean trickReadyReady;
+	public boolean trickReady;
+	public boolean trickReadyReady;
 	public boolean stopCam;
-	private boolean groundFlipped;
-	private boolean boostMode;
-	private boolean boostReady;
-	private boolean rampDashing;
-	private boolean swinging;
-	private boolean justSwang;
-	private boolean dashing;
-	private boolean dashReady;
-	private boolean springPoling;
-	private boolean helixing;
+	public boolean groundFlipped;
+	public boolean boostMode;
+	public boolean boostReady;
+	public boolean rampDashing;
+	public boolean swinging;
+	public boolean justSwang;
+	public boolean dashing;
+	public boolean dashReady;
+	public boolean springPoling;
+	public boolean helixing;
 	
-	private double jumpSlowed;
+	public double jumpSlowed;
 	public double groundSpeed;
-	private double spindashStrength;
-	private double preSpringPoleXSpeed;
+	public double spindashStrength;
+	public double preSpringPoleXSpeed;
 	
-	private int trickType;
-	private int boostTimer;
-	private int swingStartFrame;
-	private int swingDirection;
-	private int bounceType;
-	private int helixDir;
+	public int trickType;
+	public int boostTimer;
+	public int swingStartFrame;
+	public int swingDirection;
+	public int bounceType;
+	public int helixDir;
 	
-	private double stepTimer;
-	private int stepIndex;
-	private int chargeDustTimer;
+	public double stepTimer;
+	public int stepIndex;
+	public int chargeDustTimer;
 	public int layer;
 	
-	private Shape mask;
+	public Shape mask;
 	
-	private Rotor rotor;
-	private SpringPole springPole;
-	private Helix helix;
+	public Rotor rotor;
+	public SpringPole springPole;
+	public Helix helix;
 	
 	public  Vector pos;
 	public  Vector vel;
-	private Vector groundAxis;
+	public Vector groundAxis;
 	
-	private Animation idleAnim;
-	private Animation runSlowestAnim;
-	private Animation runSlowAnim;
-	private Animation runNormalAnim;
-	private Animation runFastAnim;
-	private Animation runFastestAnim;
-	private Animation bounceUpAnim;
-	private Animation bounceDownAnim;
-	private Animation fallAnim;
-	private Animation jumpAnim;
-	private Animation skidAnim;
-	private Animation spinAnim;
-	private Animation crouchAnim0;
-	private Animation crouchAnim1;
-	private Animation spindashAnim;
-	private Animation spindashChargeAnim;
-	private Animation spindashDustAnim;
-	private Animation spindashChargeDustAnim;
-	private Animation skirtAnim;
-	private Animation turnAnim;
-	private Animation landAnim;
-	private Animation startAnim;
-	private Animation trickRightAnim;
-	private Animation trickUp0Anim;
-	private Animation trickUp1Anim;
-	private Animation rampAnim;
-	private Animation swingAnim;
-	private Animation dashAnim;
+	public Animation idleAnim;
+	public Animation runSlowestAnim;
+	public Animation runSlowAnim;
+	public Animation runNormalAnim;
+	public Animation runFastAnim;
+	public Animation runFastestAnim;
+	public Animation bounceUpAnim;
+	public Animation bounceDownAnim;
+	public Animation fallAnim;
+	public Animation jumpAnim;
+	public Animation skidAnim;
+	public Animation spinAnim;
+	public Animation crouchAnim0;
+	public Animation crouchAnim1;
+	public Animation spindashAnim;
+	public Animation spindashChargeAnim;
+	public Animation spindashDustAnim;
+	public Animation spindashChargeDustAnim;
+	public Animation skirtAnim;
+	public Animation turnAnim;
+	public Animation landAnim;
+	public Animation startAnim;
+	public Animation trickRightAnim;
+	public Animation trickUp0Anim;
+	public Animation trickUp1Anim;
+	public Animation rampAnim;
+	public Animation swingAnim;
+	public Animation dashAnim;
 	
-	public  int facing;
-	public  int anim;
-	private int dustAnim;
+	public int facing;
+	public int anim;
+	public int dustAnim;
 	
-	private Clip jumpSound0;
-	private Clip jumpSound1;
-	private Clip landSound;
-	private Clip skidSound;
-	private Clip spinSound;
-	private Clip spindashChargeSound;
-	private Clip spindashReleaseSound;
-	private Clip stepSound0;
-	private Clip stepSound1;
-	private Clip stepSound2;
-	private Clip stepSound3;
-	private Clip stepSound4;
-	private Clip trickSound;
-	private Clip boostSound;
-	private Clip dashSound;
+	public Clip jumpSound0;
+	public Clip jumpSound1;
+	public Clip landSound;
+	public Clip skidSound;
+	public Clip spinSound;
+	public Clip spindashChargeSound;
+	public Clip spindashReleaseSound;
+	public Clip stepSound0;
+	public Clip stepSound1;
+	public Clip stepSound2;
+	public Clip stepSound3;
+	public Clip stepSound4;
+	public Clip trickSound;
+	public Clip boostSound;
+	public Clip dashSound;
 	
-	private Clip popSound;
-	private Clip ringSound;
-	private Clip springSound;
-	private Clip springPoleSound;
+	public Clip popSound;
+	public Clip ringSound;
+	public Clip springSound;
+	public Clip springPoleSound;
 	
-	private Clip voice3;
-	private Clip voice2;
-	private Clip voice1;
-	private Clip voiceGo;
+	public Clip voice3;
+	public Clip voice2;
+	public Clip voice1;
+	public Clip voiceGo;
 	public int voice;
 	
 	public int rings;
 	public int score;
 	
-	private AfterImage[] afters;
+	public AfterImage[] afters;
 	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
@@ -341,40 +259,15 @@ public class Player {
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 			
-			movement();
-			drag();
-			jump();
-			trick();
-			spindash();
-			crouch();
-			dash();
-			gravity();
-			
-			if(ground) {
-				if(!boostMode) {
-					if(abs(groundSpeed) >= BOOST_START_SPEED * SCALE) {
-						boostReady = true;
-						boostTimer--;
-						if(boostTimer == 0) {
-							boostMode = true;
-							if(groundSpeed > 0) {groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
-							if(groundSpeed < 0) {groundSpeed = -GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
-							
-							boostSound.stop();
-							boostSound.flush();
-							boostSound.setFramePosition(0);
-							boostSound.start();
-						}
-					}
-					else {
-						boostReady = false;
-						boostTimer = BOOST_TIME;
-					}
-				}
-				else {
-					if(abs(groundSpeed) < BOOST_STOP_SPEED) {boostMode = false;}
-				}
-			}
+			movement(this);
+			drag(this);
+			jump(this);
+			trick(this);
+			spindash(this);
+			crouch(this);
+			dash(this);
+			gravity(this);
+			boost(this);
 		}
 		if(stopCam || springPoling) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
@@ -501,326 +394,6 @@ public class Player {
 			if(removals != null) {for(int i = 0; i < removals.length; i++) {afters = removeIndex(afters, removals[i]);}}
 		}
 	}
-	
-	private void movement() {
-		double moveSpeed;
-		if(!shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
-		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
-		
-		double accelScale = 1;
-		double capScale = 1;
-		
-		if(boostMode) {
-			accelScale = BOOST_ACCEL_SCALE;
-			capScale = BOOST_LIMIT_SCALE;
-		}
-		
-		if(!ground) {
-			skidding = false;
-			skirting = false;
-			turning = false;
-		}
-		
-		if(!crouching0 && !spindashing) {
-			if((!spinning || !ground) && !rampDashing && !dashing) { // regular movement
-				if(leftArrow && !rightArrow) {
-					if(groundSpeed <= 0 || !ground) {
-						if(!ground) {facing = -1;}
-						if(skidding) {
-							skidding = false;
-							if(facing == 1) {skirting = true;}
-						}
-						
-						if(groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
-							if(ground || shiftKey) {groundSpeed -= moveSpeed * accelScale;}
-							if(!ground) {groundSpeed -= AIR_ACCEL * accelScale;}
-							if(groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-						}
-					}
-					else {
-						groundSpeed -= SKID_ACCEL * SCALE;
-						if(groundSpeed >= SKID_MIN_SPEED) {skidding = true;}
-					}
-				}
-				if(rightArrow && !leftArrow) {
-					if(groundSpeed >= 0 || !ground) {
-						if(!ground) {facing = 1;}
-						if(skidding) {
-							skidding = false;
-							if(facing == -1) {skirting = true;}
-						}
-						
-						if(groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || shiftKey) {
-							if(ground || shiftKey) {groundSpeed += moveSpeed * accelScale;}
-							if(!ground) {groundSpeed += AIR_ACCEL * accelScale;}
-							if(groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey) {groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
-						}
-					}
-					else {
-						groundSpeed += SKID_ACCEL * SCALE;
-						if(groundSpeed <= -SKID_MIN_SPEED) {skidding = true;}
-					}
-				}
-			}
-			else { // movement while spinning
-				if(ground) {
-					if(leftArrow && !rightArrow) {
-						if(groundSpeed > 0) {
-							groundSpeed -= SKID_ACCEL * SCALE;
-							if(groundSpeed <= 0) {
-								spinning = false;
-								facing = -1;
-							}
-						}
-						else {facing = -1;}
-					}
-					if(rightArrow && !leftArrow) {
-						if(groundSpeed < 0) {
-							groundSpeed += SKID_ACCEL * SCALE;
-							if(groundSpeed >= 0) {
-								spinning = false;
-								facing = 1;
-							}
-						}
-						else {facing = 1;}
-					}
-				}
-				else {
-					if(leftArrow && !rightArrow) {
-						groundSpeed -= MOVE_ACCEL * SCALE;
-						if(groundSpeed < 0) {facing = -1;}
-					}
-					if(rightArrow && !leftArrow) {
-						groundSpeed += MOVE_ACCEL * SCALE;
-						if(groundSpeed > 0) {facing = 1;}
-					}
-				}
-			}
-		}
-	}
-	
-	private void drag() {
-		if(!leftArrow && !rightArrow && ground || leftArrow && rightArrow && ground) {
-			skidding = false;
-			
-			if(!spinning && !spindashing) { // regular drag
-				     if(groundSpeed > 0) {groundSpeed -= DRAG_DECEL * SCALE;}
-				else if(groundSpeed < 0) {groundSpeed += DRAG_DECEL * SCALE;}
-				
-				if(groundSpeed >= -DRAG_DECEL * SCALE && groundSpeed <= DRAG_DECEL * SCALE) {groundSpeed = 0;}
-			}
-			else if(spinning) { // spinning drag
-			         if(groundSpeed > 0) {groundSpeed -= SPIN_DECEL * SCALE;}
-				else if(groundSpeed < 0) {groundSpeed += SPIN_DECEL * SCALE;}
-				
-				if(groundSpeed >= -SPIN_DECEL * SCALE && groundSpeed <= SPIN_DECEL * SCALE) {
-					groundSpeed = 0;
-					spinning = false;
-				}
-			}
-			
-			if(downArrow && groundSpeed != 0) {
-				if(!spinning) {
-					spinning = true;
-					crouching0 = false;
-					crouching1 = false;
-					spindashReady = false;
-					
-					spinSound.stop();
-					spinSound.flush();
-					spinSound.setFramePosition(0);
-					spinSound.start();
-				}
-			}
-		}
-		
-		if(spindashing) {
-		         if(groundSpeed > 0) {groundSpeed -= SKID_ACCEL * SCALE;}
-			else if(groundSpeed < 0) {groundSpeed += SKID_ACCEL * SCALE;}
-			
-			if(groundSpeed >= -SKID_ACCEL * SCALE && groundSpeed <= SKID_ACCEL * SCALE) {groundSpeed = 0;}
-		}
-	}
-
-	private void jump() {
-		if(ground && !spaceBar) {jumpReady = true;}
-		if(!ground) {jumpReady = false;}
-		else {jumping = false;}
-		
-		if(jumpReady && spaceBar && !crouching0 && ground && !spindashing) {
-			jumpReady = false;
-			ground = false;
-			jumping = true;
-			jumpSlowing = false;
-			spinning = false;
-			helixing = false;
-			
-			if(!shiftKey) {
-				jumpSlowed = groundAxis.y * -JUMP_IMPULSE * SCALE;
-				vel.translate(groundAxis.scale(-JUMP_IMPULSE * SCALE));
-			}
-			else {
-				jumpSlowed = groundAxis.y * -DEBUG_JUMP_IMPULSE * SCALE;
-				vel.translate(groundAxis.scale(-DEBUG_JUMP_IMPULSE * SCALE));
-			}
-		}
-		else {
-			if(jumping) {
-				if(!spaceBar || jumpSlowing) {
-					vel.translate(0, JUMP_SWITCH * SCALE);
-					jumpSlowed += JUMP_SWITCH * SCALE;
-					jumpSlowing = true;
-				}
-				
-				if(jumpSlowed >= 0 && (anim == JUMP_ANIM || anim == LAND_ANIM)) {jumping = false;}
-			}
-		}
-	}
-	
-	private void trick() {
-		if(spaceBar && trickReady) {
-			if(rightArrow || leftArrow) {trickType = 1;}
-			else if(upArrow) {trickType = 2;}
-			
-			if(trickType != 0) {
-				trickReady = false;
-				trickReadyReady = false;
-				stopCam = true;
-				vel = new Vector();
-				groundSpeed = 0;
-			}
-		}
-		if((bouncing || rampDashing) && !spaceBar && trickReadyReady) {trickReady = true;}
-	}
-	
-	private void spindash() {
-		if(spindashReady && spaceBar || ground && controlKey && controlKeyReady && !spinning) {
-			if(!spindashing) {
-				spindashing = true;
-				helixing = false;
-				spindashCharge = false;
-				chargeReady = false;
-				chargeDustTimer = 45;
-				spindashStrength = SPINDASH_MIN_STRENGTH * SCALE;
-				
-				spindashChargeSound.stop();
-				spindashChargeSound.flush();
-				spindashChargeSound.setFramePosition(0);
-				spindashChargeSound.start();
-			}
-		}
-		
-		if(!spindashing && spinning && controlKey && controlKeyReady) {spinning = false;}
-		
-		controlKeyReady = !controlKey;
-		
-		if(spindashing) {
-			if(downArrow || controlKey) {
-				if(spaceBar && chargeReady) {
-					chargeDustTimer = 45;
-					spindashCharge = true;
-					spindashStrength += SPINDASH_CHARGE_SCALE * SCALE;
-					spindashStrength = min(spindashStrength, SPINDASH_MAX_STRENGTH);
-					
-					spindashChargeSound.stop();
-					spindashChargeSound.flush();
-					spindashChargeSound.setFramePosition(0);
-					spindashChargeSound.start();
-				}
-				
-				if(!spaceBar) {chargeReady = true;}
-				else {chargeReady = false;}
-			}
-			else {
-				crouching0 = false;
-				crouching1 = false;
-				spindashReady = false;
-				spindashing = false;
-				spinning = true;
-				jumpReady = false;
-				groundSpeed = spindashStrength * facing;
-				
-				spindashReleaseSound.stop();
-				spindashReleaseSound.flush();
-				spindashReleaseSound.setFramePosition(0);
-				spindashReleaseSound.start();
-			}
-		}
-	}
-	
-	private void crouch() {
-		if(ground && groundSpeed == 0 && downArrow && !spindashing) {
-			crouching0 = true;
-			crouching1 = true;
-			spindashReady = false;
-		}
-		if(crouching0 && !downArrow) {
-			crouching1 = false;
-			spindashReady = false;
-		}
-		
-		if(crouching0 && groundSpeed != 0) {
-			crouching0 = false;
-			crouching1 = false;
-			spindashReady = false;
-			spinning = true;
-			
-			spinSound.stop();
-			spinSound.flush();
-			spinSound.setFramePosition(0);
-			spinSound.start();
-		}
-	}
-
-	private void dash() {
-		if(controlKey && dashReady && !dashing && !bouncing && !rampDashing && !spinning && !spindashing && (anim == JUMP_ANIM || anim == LAND_ANIM)) {
-			jumping = false;
-			jumpSlowing = false;
-			trickReady = false;
-			trickReadyReady = false;
-			dashing = true;
-			jumping = false;
-			
-			groundSpeed += 15 * SCALE * facing;
-			if(groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !boostMode) {groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
-			if(groundSpeed > GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE && boostMode) {groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
-			vel.y = 0;
-			
-			dashSound.stop();
-			dashSound.flush();
-			dashSound.setFramePosition(0);
-			dashSound.start();
-		}
-		dashReady = !ground && !controlKey;
-	}
-	
-	private void gravity() {
-		double capScale = 1;
-		
-		if(boostMode) {capScale = BOOST_LIMIT_SCALE;}
-		
-		if(!ground) {
-			vel.translate(0, GRAVITY * SCALE);
-			
-			if(jumping) {jumpSlowed += GRAVITY * SCALE;}
-			
-			if(vel.x < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {vel.x = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-			if(vel.x > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {vel.x = GROUND_ACCEL_LIMIT * capScale * SCALE;}
-		}
-		else {
-			Vector tempGrav = new Vector(0, SCALE).project(groundAxis.getPerpendicular().normalize());
-			Vector accelGrav = new Vector(0, GROUND_GRAVITY_ACCEL * SCALE).project(groundAxis.getPerpendicular().normalize());
-			Vector decelGrav = new Vector(0, GROUND_GRAVITY_DECEL * SCALE).project(groundAxis.getPerpendicular().normalize());
-			
-			if(abs(groundSpeed + getRotatedVectorComponents(tempGrav, groundAxis).x) >= abs(groundSpeed)) {tempGrav = accelGrav;}
-			else {tempGrav = decelGrav;}
-			
-			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {groundSpeed += getRotatedVectorComponents(tempGrav, groundAxis).x;}
-			
-			if(groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-			if(groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !shiftKey && !spinning) {groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
-		}
-	}
 
 	private void checkLayer(Shape[] layer1Triggers, Shape[] layer2Triggers) {
 		mask = new Circle(MASK_RADIUS * SCALE);
@@ -926,6 +499,14 @@ public class Player {
 	
 	private void getGroundAxis(Shape[] shapes) {
 		if(ground && !ledge) {
+			double oldAngle = getAngleOfVector(groundAxis);
+			Vector oldAxis = new Vector(groundAxis.x, groundAxis.y);
+			
+			if(!ground) {
+				oldAxis = new Vector(0, 1);
+				oldAngle = getAngleOfVector(oldAxis);
+			}
+			
 			if(abs(groundSpeed) < STICK_MIN_SPEED * SCALE) {groundAxis = new Vector(0, 1);}
 			
 			Shape groundMask;
@@ -937,6 +518,8 @@ public class Player {
 			
 			if(groundAxis.getLength() != 0) {groundAxis = groundAxis.scale(-1).normalize();}
 			else {groundAxis = new Vector(0, 1);}
+			
+			if(abs(getAngleOfVector(groundAxis) - oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
 		}
 		else {groundAxis = new Vector(0, 1);}
 	}
@@ -1796,7 +1379,7 @@ public class Player {
 		//trickKey = KeyListener.isKeyPressed(GLFW_KEY_Z);
 	}
 	
-	private Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
+	public Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
 		Shape groundMask = new Circle(radius);
 		groundMask.relocate(pos);
 		
@@ -1806,7 +1389,7 @@ public class Player {
 		return(groundMask);
 	}
 	
-	private Shape getRotatedRectangle(Vector pos, double w, double h, double offsetX, double offsetY) {
+	public Shape getRotatedRectangle(Vector pos, double w, double h, double offsetX, double offsetY) {
 		Shape groundMask = new Rectangle(w, h);
 		groundMask.relocate(pos);
 		
@@ -1817,7 +1400,7 @@ public class Player {
 		return(groundMask);
 	}
 	
-	private Vector getRotatedVectorComponents(Vector vel, Vector groundAxis) {
+	public Vector getRotatedVectorComponents(Vector vel, Vector groundAxis) {
 		Vector testVel = vel.getNew();
 		if(!groundAxis.normalize().checkEqual(new Vector(0, 1))) {
 			Vector tempGroundAxis = groundAxis.getPerpendicular().normalize();

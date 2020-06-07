@@ -7,10 +7,10 @@ import java.awt.image.BufferedImage;
 
 import org.joml.Vector2f;
 
+import Player.Player;
 import datatypes.Animation;
 import main.Loader;
 import main.Window;
-import objects.Player;
 import rendering.Camera;
 import rendering.Image;
 import rendering.Renderer;
