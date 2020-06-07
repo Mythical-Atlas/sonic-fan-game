@@ -517,7 +517,7 @@ public class Player {
 			double tempAngle = getAngleOfVector(groundAxis);
 			double tempAngle0 = getAngleOfVector(new Vector(0, 1));
 			
-			if(getDistanceBetweenAngles(tempAngle, oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
+			//if(getDistanceBetweenAngles(tempAngle, oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
 		}
 		else {groundAxis = new Vector(0, 1);}
 	}
