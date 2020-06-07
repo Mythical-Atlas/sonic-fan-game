@@ -18,7 +18,6 @@ import javax.sound.sampled.Clip;
 
 import org.joml.Vector2f;
 
-import Player.Player;
 import badniks.Badnik;
 import badniks.Spinner;
 import datatypes.Shape;
@@ -40,6 +39,7 @@ import objects.Ring;
 import objects.Rotor;
 import objects.Spring;
 import objects.SpringPole;
+import player.Player;
 import rendering.Camera;
 import rendering.Font;
 import rendering.Image;

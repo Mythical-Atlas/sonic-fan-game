@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import Player.Player;
 import main.Loader;
+import player.Player;
 import rendering.Camera;
 import rendering.Renderer;
 

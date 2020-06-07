@@ -1,8 +1,8 @@
-package Player;
+package player;
 
-import static Player.PlayerConstants.*;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import static player.PlayerConstants.*;
 
 import datatypes.Vector;
 

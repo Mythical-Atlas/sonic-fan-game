@@ -1,4 +1,4 @@
-package Player;
+package player;
 
 public class PlayerGraphics {
 

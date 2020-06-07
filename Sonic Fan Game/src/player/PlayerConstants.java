@@ -1,4 +1,4 @@
-package Player;
+package player;
 
 public class PlayerConstants {
 	public static final double SPRINT_ACCEL 		 	= 2;
