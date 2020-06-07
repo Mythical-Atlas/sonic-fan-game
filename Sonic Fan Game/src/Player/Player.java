@@ -499,13 +499,8 @@ public class Player {
 	
 	private void getGroundAxis(Shape[] shapes) {
 		if(ground && !ledge) {
-			double oldAngle = getAngleOfVector(groundAxis);
 			Vector oldAxis = new Vector(groundAxis.x, groundAxis.y);
-			
-			if(!ground) {
-				oldAxis = new Vector(0, 1);
-				oldAngle = getAngleOfVector(oldAxis);
-			}
+			double oldAngle = getAngleOfVector(oldAxis);
 			
 			if(abs(groundSpeed) < STICK_MIN_SPEED * SCALE) {groundAxis = new Vector(0, 1);}
 			
@@ -519,7 +514,10 @@ public class Player {
 			if(groundAxis.getLength() != 0) {groundAxis = groundAxis.scale(-1).normalize();}
 			else {groundAxis = new Vector(0, 1);}
 			
-			if(abs(getAngleOfVector(groundAxis) - oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
+			double tempAngle = getAngleOfVector(groundAxis);
+			double tempAngle0 = getAngleOfVector(new Vector(0, 1));
+			
+			if(getDistanceBetweenAngles(tempAngle, oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
 		}
 		else {groundAxis = new Vector(0, 1);}
 	}

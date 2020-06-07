@@ -22,6 +22,13 @@ public class MathFunctions {
 		return(axisAngle);
 	}
 	
+	public static double getDistanceBetweenAngles(double a0, double a1) {
+		double b0 = limitAngle(a0);
+		double b1 = limitAngle(a1);
+		
+		return(min(limitAngle(b0 - b1), limitAngle(b1 - b0)));
+	}
+	
 	public static Vector fixAxis(Vector axis0) {
 		Vector axis = new Vector(axis0.x, axis0.y);
 		
