@@ -1,12 +1,10 @@
 package player;
 
 import static functionholders.CollisionFunctions.*;
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
+
 import static player.PlayerConstants.*;
+import static player.PlayerSounds.*;
 
 import java.awt.Color;
 
@@ -37,10 +35,7 @@ public class PlayerObjectHandling {
 					if(checkCollision(p.mask, ringMask)) {
 						p.rings++;
 						rings[i].destroy = 1;
-						p.ringSound.stop();
-						p.ringSound.flush();
-						p.ringSound.setFramePosition(0);
-						p.ringSound.start();
+						p.ps.playSound(SOUND_RING);
 					}
 				}
 			}
@@ -65,10 +60,7 @@ public class PlayerObjectHandling {
 							
 							badniks[i].destroy();
 							
-							p.popSound.stop();
-							p.popSound.flush();
-							p.popSound.setFramePosition(0);
-							p.popSound.start();
+							p.ps.playSound(SOUND_POP);
 						}
 					}
 				}
@@ -98,10 +90,7 @@ public class PlayerObjectHandling {
 							p.dashing = false;
 						}
 						
-						p.popSound.stop();
-						p.popSound.flush();
-						p.popSound.setFramePosition(0);
-						p.popSound.start();
+						p.ps.playSound(SOUND_POP);
 					}
 				}
 			}
@@ -136,10 +125,7 @@ public class PlayerObjectHandling {
 						p.rampDashing = false;
 						p.dashing = false;
 						
-						p.springSound.stop();
-						p.springSound.flush();
-						p.springSound.setFramePosition(0);
-						p.springSound.start();
+						p.ps.playSound(SOUND_SPRING);
 					}
 				}
 			}
@@ -166,10 +152,7 @@ public class PlayerObjectHandling {
 						p.rampDashing = true;
 						p.dashing = false;
 						
-						p.boostSound.stop();
-						p.boostSound.flush();
-						p.boostSound.setFramePosition(0);
-						p.boostSound.start();
+						p.ps.playSound(SOUND_BOOST);
 					}
 				}
 			}
@@ -221,10 +204,7 @@ public class PlayerObjectHandling {
 							p.rotor = rotors[i];
 							p.rotor.facing = -p.facing;
 							
-							p.boostSound.stop();
-							p.boostSound.flush();
-							p.boostSound.setFramePosition(0);
-							p.boostSound.start();
+							p.ps.playSound(SOUND_BOOST);
 						}
 					}
 				}
@@ -335,10 +315,7 @@ public class PlayerObjectHandling {
 						p.trickReadyReady = false;
 						p.anim = JUMP_ANIM;
 						
-						p.springPoleSound.stop();
-						p.springPoleSound.flush();
-						p.springPoleSound.setFramePosition(0);
-						p.springPoleSound.start();
+						p.ps.playSound(SOUND_SPRING_POLE);
 						
 						break;
 					}
@@ -403,10 +380,7 @@ public class PlayerObjectHandling {
 					p.facing = dashPads[i].direction;
 					p.boostMode = true;
 					
-					p.boostSound.stop();
-					p.boostSound.flush();
-					p.boostSound.setFramePosition(0);
-					p.boostSound.start();
+					p.ps.playSound(SOUND_BOOST);
 				}
 			}
 		}
@@ -438,10 +412,7 @@ public class PlayerObjectHandling {
 						p.rampDashing = false;
 						p.dashing = false;
 						
-						p.springSound.stop();
-						p.springSound.flush();
-						p.springSound.setFramePosition(0);
-						p.springSound.start();
+						p.ps.playSound(SOUND_SPRING);
 					}
 				}
 			}

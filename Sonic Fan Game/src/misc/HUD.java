@@ -34,7 +34,7 @@ public class HUD {
 	
 	public int rings;
 	
-	private long start;
+	//private long start;
 	
 	//private Camera camera;
 	
@@ -42,11 +42,14 @@ public class HUD {
 	private int numFrames;
 	
 	private int fps;
-	
 	private int voice;
 	private int voiceTimer;
-	
 	private int ringTimer;
+	
+	//private boolean paused;
+	//private long pauseTime;
+	
+	private double timeFrames;
 	
 	public HUD() {
 		//camera = new Camera(new Vector2f());
@@ -67,7 +70,7 @@ public class HUD {
 		
 		ring = new Animation(Loader.hudRingAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4}, 0);
 		
-		start = System.nanoTime();
+		//start = System.nanoTime();
 		
 		hud.setPositions(1 * SCALE, 3 * SCALE, SCALE, SCALE);
 		
@@ -76,9 +79,12 @@ public class HUD {
 		
 		fps = 0;
 		voice = 0;
+		timeFrames = 0;
 	}
 	
 	public void manageAnimation(float dt, Player p) {for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}}
+	
+	public void updateTime(float dt) {timeFrames += dt * 1000000000;}
 	
 	public void draw(float dt, Player p, Camera camera, Renderer r) {
 		SCALE = Loader.scale;
@@ -116,10 +122,10 @@ public class HUD {
 
 		drawNumber((1 + 27) * SCALE, (3 + 14) * SCALE, p.score, 6, camera, r);
 		
-		if(p.starting) {start = System.nanoTime();}
-		long change = System.nanoTime() - start;
+		//if(p.starting) {start = System.nanoTime();}
+		//long change = System.nanoTime() - start;
 		
-		int ms = (int)(change / 10000000);
+		int ms = (int)(timeFrames / 10000000);
 		int s = (int)(ms / 100);
 		int m = (int)(s / 60);
 		

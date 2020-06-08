@@ -306,6 +306,8 @@ public class MainScene extends Scene {
 				pauseSound.flush();
 				pauseSound.setFramePosition(0);
 				pauseSound.start();
+				
+				player.ps.pauseAllSounds();
 			}
 		}
 		else {
@@ -330,11 +332,13 @@ public class MainScene extends Scene {
 			if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE) && pauseReady || KeyListener.isKeyPressed(GLFW_KEY_Z) && zReady) {
 				paused = false;
 				leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+				player.ps.resumeAllSounds();
 			}
 			if(KeyListener.isKeyPressed(GLFW_KEY_ENTER) && enterReady || KeyListener.isKeyPressed(GLFW_KEY_C) && selectReady) {
 				if(pauseSelection == 0) {
 					paused = false;
 					leaf1Music.loop(Clip.LOOP_CONTINUOUSLY);
+					player.ps.resumeAllSounds();
 				}
 				if(pauseSelection == 1) {reset();}
 				if(pauseSelection == 2) {Window.changeScene(0);}
@@ -363,6 +367,8 @@ public class MainScene extends Scene {
 				/*if(!player.stopCam) {*/moveCamera(dt);//}
 			}
 		}
+		
+		if(!paused && !player.starting) {hud.updateTime(dt);}
 		
 		leafBG.draw(new int[]{200, 100, 50}, camera, r);
 		

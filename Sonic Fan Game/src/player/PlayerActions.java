@@ -1,8 +1,9 @@
 package player;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
+
 import static player.PlayerConstants.*;
+import static player.PlayerSounds.*;
 
 import datatypes.Vector;
 
@@ -131,10 +132,7 @@ public class PlayerActions {
 					p.crouching1 = false;
 					p.spindashReady = false;
 					
-					p.spinSound.stop();
-					p.spinSound.flush();
-					p.spinSound.setFramePosition(0);
-					p.spinSound.start();
+					p.ps.playSound(SOUND_SPIN);
 				}
 			}
 		}
@@ -208,10 +206,7 @@ public class PlayerActions {
 				p.chargeDustTimer = 45;
 				p.spindashStrength = SPINDASH_MIN_STRENGTH * SCALE;
 				
-				p.spindashChargeSound.stop();
-				p.spindashChargeSound.flush();
-				p.spindashChargeSound.setFramePosition(0);
-				p.spindashChargeSound.start();
+				p.ps.playSound(SOUND_SPINDASH_CHARGE);
 			}
 		}
 		
@@ -227,10 +222,7 @@ public class PlayerActions {
 					p.spindashStrength += SPINDASH_CHARGE_SCALE * SCALE;
 					p.spindashStrength = min(p.spindashStrength, SPINDASH_MAX_STRENGTH);
 					
-					p.spindashChargeSound.stop();
-					p.spindashChargeSound.flush();
-					p.spindashChargeSound.setFramePosition(0);
-					p.spindashChargeSound.start();
+					p.ps.playSound(SOUND_SPINDASH_CHARGE);
 				}
 				
 				if(!p.spaceBar) {p.chargeReady = true;}
@@ -245,10 +237,7 @@ public class PlayerActions {
 				p.jumpReady = false;
 				p.groundSpeed = p.spindashStrength * p.facing;
 				
-				p.spindashReleaseSound.stop();
-				p.spindashReleaseSound.flush();
-				p.spindashReleaseSound.setFramePosition(0);
-				p.spindashReleaseSound.start();
+				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 			}
 		}
 	}
@@ -270,10 +259,7 @@ public class PlayerActions {
 			p.spindashReady = false;
 			p.spinning = true;
 			
-			p.spinSound.stop();
-			p.spinSound.flush();
-			p.spinSound.setFramePosition(0);
-			p.spinSound.start();
+			p.ps.playSound(SOUND_SPIN);
 		}
 	}
 
@@ -291,10 +277,7 @@ public class PlayerActions {
 			if(p.groundSpeed > GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE && p.boostMode) {p.groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
 			p.vel.y = 0;
 			
-			p.dashSound.stop();
-			p.dashSound.flush();
-			p.dashSound.setFramePosition(0);
-			p.dashSound.start();
+			p.ps.playSound(SOUND_DASH);
 		}
 		p.dashReady = !p.ground && !p.controlKey;
 	}
@@ -338,10 +321,7 @@ public class PlayerActions {
 						if(p.groundSpeed > 0) {p.groundSpeed = GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
 						if(p.groundSpeed < 0) {p.groundSpeed = -GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE;}
 						
-						p.boostSound.stop();
-						p.boostSound.flush();
-						p.boostSound.setFramePosition(0);
-						p.boostSound.start();
+						p.ps.playSound(SOUND_BOOST);
 					}
 				}
 				else {

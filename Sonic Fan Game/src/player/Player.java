@@ -12,6 +12,7 @@ import static java.awt.event.KeyEvent.*;
 import static player.PlayerActions.*;
 import static player.PlayerConstants.*;
 import static player.PlayerObjectHandling.*;
+import static player.PlayerSounds.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -150,38 +151,14 @@ public class Player {
 	public int facing;
 	public int anim;
 	public int dustAnim;
-	
-	public Clip jumpSound0;
-	public Clip jumpSound1;
-	public Clip landSound;
-	public Clip skidSound;
-	public Clip spinSound;
-	public Clip spindashChargeSound;
-	public Clip spindashReleaseSound;
-	public Clip stepSound0;
-	public Clip stepSound1;
-	public Clip stepSound2;
-	public Clip stepSound3;
-	public Clip stepSound4;
-	public Clip trickSound;
-	public Clip boostSound;
-	public Clip dashSound;
-	
-	public Clip popSound;
-	public Clip ringSound;
-	public Clip springSound;
-	public Clip springPoleSound;
-	
-	public Clip voice3;
-	public Clip voice2;
-	public Clip voice1;
-	public Clip voiceGo;
 	public int voice;
 	
 	public int rings;
 	public int score;
 	
 	public AfterImage[] afters;
+	
+	public PlayerSounds ps;
 	
 	public Player(double x, double y) {
 		pos = new Vector(x, y);
@@ -221,31 +198,7 @@ public class Player {
 		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
 		trickUp1Anim = new Animation(Loader.trickUp1Anim, new int[]{3, 3, 3, 2, 2, 2}, 3);
 		
-		jumpSound0 = Loader.jumpSound0;
-		jumpSound1 = Loader.jumpSound1;
-		landSound = Loader.landSound;
-		skidSound = Loader.skidSound;
-		spinSound = Loader.spinSound;
-		spindashChargeSound = Loader.spindashChargeSound;
-		spindashReleaseSound = Loader.spindashReleaseSound;
-		stepSound0 = Loader.stepSound0;
-		stepSound1 = Loader.stepSound1;
-		stepSound2 = Loader.stepSound2;
-		stepSound3 = Loader.stepSound3;
-		stepSound4 = Loader.stepSound4;
-		trickSound = Loader.trickSound;
-		boostSound = Loader.boostSound;
-		dashSound = Loader.dashSound;
-		
-		popSound = Loader.popSound;
-		ringSound = Loader.ringSound;
-		springSound = Loader.springSound;
-		springPoleSound = Loader.springPoleSound;
-		
-		voice3 = Loader.voice3;
-		voice2 = Loader.voice2;
-		voice1 = Loader.voice1;
-		voiceGo = Loader.voiceGo;
+		ps = new PlayerSounds();
 		
 		starting = true;
 		ground = true;
@@ -270,6 +223,7 @@ public class Player {
 			gravity(this);
 			boost(this);
 		}
+		
 		if(stopCam || springPoling) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
@@ -277,7 +231,7 @@ public class Player {
 		if(platforms != null) {platMasks = checkPlatforms(platforms);}
 		
 		vel.translate(groundAxis.getPerpendicular().normalize().scale(-groundSpeed));
-		pos.translate(vel/*.scale(dt / (1.0f / 60.0f))*/);
+		pos.translate(vel);
 		
 		checkLayer(layer1Triggers, layer2Triggers);
 		
@@ -331,24 +285,15 @@ public class Player {
 			
 			if(startAnim.frame == 37 && startAnim.timer == 3) {
 				voice = 3;
-				voice3.stop();
-				voice3.flush();
-				voice3.setFramePosition(0);
-				voice3.start();
+				ps.playSound(SOUND_VOICE_3);
 			}
 			if(startAnim.frame == 38 && startAnim.timer == 59) {
 				voice = 2;
-				voice2.stop();
-				voice2.flush();
-				voice2.setFramePosition(0);
-				voice2.start();
+				ps.playSound(SOUND_VOICE_2);
 			}
 			if(startAnim.frame == 40 && startAnim.timer == 3) {
 				voice = 1;
-				voice1.stop();
-				voice1.flush();
-				voice1.setFramePosition(0);
-				voice1.start();
+				ps.playSound(SOUND_VOICE_1);
 			}
 			
 			startAnim.update(1);
@@ -362,10 +307,7 @@ public class Player {
 				
 				vel = new Vector(10, 0);
 				
-				voiceGo.stop();
-				voiceGo.flush();
-				voiceGo.setFramePosition(0);
-				voiceGo.start();
+				ps.playSound(SOUND_VOICE_GO);
 			}
 		}
 	}
@@ -478,19 +420,11 @@ public class Player {
 			rampDashing = false;
 			dashing = false;
 			
-			/*landSound.stop();
-			landSound.flush();
-			landSound.setFramePosition(0);
-			landSound.start();*/
-			
 			if(downArrow) {
 				if(!spinning && vel.x != 0) {
 					spinning = true;
 					
-					spinSound.stop();
-					spinSound.flush();
-					spinSound.setFramePosition(0);
-					spinSound.start();
+					ps.playSound(SOUND_SPIN);
 				}
 			}
 			else {spinning = false;}
@@ -587,11 +521,7 @@ public class Player {
 					if(anim != TRICK_RIGHT_ANIM) {
 						anim = TRICK_RIGHT_ANIM;
 						trickRightAnim.reset();
-						
-						trickSound.stop();
-						trickSound.flush();
-						trickSound.setFramePosition(0);
-						trickSound.start();
+						ps.playSound(SOUND_TRICK);
 					}
 					else {
 						trickRightAnim.update(1);
@@ -607,11 +537,7 @@ public class Player {
 					if(anim != TRICK_UP_0_ANIM && anim != TRICK_UP_1_ANIM) {
 						anim = TRICK_UP_0_ANIM;
 						trickUp0Anim.reset();
-						
-						trickSound.stop();
-						trickSound.flush();
-						trickSound.setFramePosition(0);
-						trickSound.start();
+						ps.playSound(SOUND_TRICK);
 					}
 					else {
 						if(vel.y < 0 || stopCam) {
@@ -737,11 +663,7 @@ public class Player {
 											else {
 												anim = SKID_ANIM;
 												skidAnim.reset();
-												
-												skidSound.stop();
-												skidSound.flush();
-												skidSound.setFramePosition(0);
-												skidSound.start();
+												ps.playSound(SOUND_SKID);
 											}
 										}
 										else {
@@ -843,11 +765,7 @@ public class Player {
 									if(anim != JUMP_ANIM) {
 										anim = JUMP_ANIM;
 										jumpAnim.reset();
-										
-										jumpSound0.stop();
-										jumpSound0.flush();
-										jumpSound0.setFramePosition(0);
-										jumpSound0.start();
+										ps.playSound(SOUND_JUMP);
 									}
 								}
 								else {
