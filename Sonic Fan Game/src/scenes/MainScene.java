@@ -40,6 +40,7 @@ import objects.Rotor;
 import objects.Spring;
 import objects.SpringPole;
 import player.Player;
+import player.PlayerConstants;
 import rendering.Camera;
 import rendering.Font;
 import rendering.Image;
@@ -368,7 +369,7 @@ public class MainScene extends Scene {
 			}
 		}
 		
-		if(!paused && !player.starting) {hud.updateTime(dt);}
+		if(!paused && player.state != PlayerConstants.STATE_STARTING) {hud.updateTime(dt);}
 		
 		leafBG.draw(new int[]{200, 100, 50}, camera, r);
 		

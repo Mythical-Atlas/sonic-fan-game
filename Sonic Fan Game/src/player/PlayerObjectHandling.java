@@ -50,7 +50,7 @@ public class PlayerObjectHandling {
 					p.mask.relocate(p.pos);
 					
 					if(checkCollision(p.mask, badnikMask)) {
-						if(p.spinning || p.spindashing || (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {
+						if(p.state == STATE_SPINNING || p.state == STATE_SPINDASHING || (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {
 							p.score += 100;
 							
 							if(!p.ground) {
@@ -80,14 +80,11 @@ public class PlayerObjectHandling {
 						p.vel.translate(new Vector(0, -1).scale(5));
 						items[i].destroy();
 						
-						if(p.anim != JUMP_ANIM && !p.spinning && !p.spindashing) {
+						if(p.anim != JUMP_ANIM && p.state != STATE_SPINNING && p.state != STATE_SPINDASHING) {
 							p.jumpReady = false;
 							p.ground = false;
-							p.jumping = false;
 							p.jumpSlowing = false;
-							p.bouncing = true;
-							p.rampDashing = false;
-							p.dashing = false;
+							p.state = STATE_BOUNCING;
 						}
 						
 						p.ps.playSound(SOUND_POP);
@@ -115,15 +112,11 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumping = false;
 						p.jumpSlowing = false;
-						p.spinning = false;
-						p.bouncing = true;
 						p.trickType = 0;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
-						p.rampDashing = false;
-						p.dashing = false;
+						p.state = STATE_BOUNCING;
 						
 						p.ps.playSound(SOUND_SPRING);
 					}
@@ -144,13 +137,10 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumping = false;
 						p.jumpSlowing = false;
-						p.spinning = false;
 						p.trickType = 0;
 						p.trickReadyReady = true;
-						p.rampDashing = true;
-						p.dashing = false;
+						p.state = STATE_RAMP_DASHING;
 						
 						p.ps.playSound(SOUND_BOOST);
 					}
@@ -160,7 +150,7 @@ public class PlayerObjectHandling {
 	}
 	
 	public static void rotors(Player p, Rotor[] rotors) {
-		if(!p.swinging) {
+		if(p.state != STATE_SWINGING) {
 			if(rotors != null) {
 				boolean didSwing = false;
 				
@@ -188,18 +178,14 @@ public class PlayerObjectHandling {
 							p.groundSpeed = 0;
 							p.pos = new Vector(rotors[i].pos.x, rotors[i].pos.y);
 							
-							p.swinging = true;
 							p.stopCam = true;
 							p.jumpReady = false;
 							p.ground = false;
-							p.jumping = false;
 							p.jumpSlowing = false;
-							p.spinning = false;
 							p.trickType = 0;
 							p.trickReady = false;
 							p.trickReadyReady = false;
-							p.rampDashing = false;
-							p.dashing = false;
+							p.state = STATE_SWINGING;
 							
 							p.rotor = rotors[i];
 							p.rotor.facing = -p.facing;
@@ -236,21 +222,19 @@ public class PlayerObjectHandling {
 				
 				p.rotor.anim.reset();
 				p.rotor.facing = 1;
-				p.swinging = false;
 				p.stopCam = false;
-				p.jumping = true;
 				p.jumpReady = false;
 				p.justSwang = true;
+				p.state = STATE_JUMPING;
 			}
 			if(!p.spaceBar) {p.jumpReady = true;}
 		}
 	}
 	
 	public static void springPoles(Player p, SpringPole[] springPoles) {
-		if(p.springPoling) {
+		if(p.state == STATE_SPRING_POLING_JUMP || p.state == STATE_SPRING_POLING_SPIN) {
 			if(!p.springPole.bouncing) {
-				p.springPoling = false;
-				p.bouncing = true;
+				p.state = STATE_BOUNCING;
 				//stopCam = false;
 				p.bounceType = 1;
 				
@@ -307,13 +291,12 @@ public class PlayerObjectHandling {
 						else {p.springPole.slowBounce();}
 						
 						//stopCam = true;
-						p.springPoling = true;
-						p.dashing = false;
-						p.rampDashing = false;
 						p.trickType = 0;
 						p.trickReady = false;
 						p.trickReadyReady = false;
 						p.anim = JUMP_ANIM;
+						if(p.anim == JUMP_ANIM || p.anim == LAND_ANIM) {p.state = STATE_SPRING_POLING_JUMP;}
+						if(p.anim == SPIN_ANIM) {p.state = STATE_SPRING_POLING_SPIN;}
 						
 						p.ps.playSound(SOUND_SPRING_POLE);
 						
@@ -402,15 +385,11 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumping = false;
 						p.jumpSlowing = false;
-						p.spinning = false;
-						p.bouncing = true;
 						p.trickType = 0;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
-						p.rampDashing = false;
-						p.dashing = false;
+						p.state = STATE_BOUNCING;
 						
 						p.ps.playSound(SOUND_SPRING);
 					}

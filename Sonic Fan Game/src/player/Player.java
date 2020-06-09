@@ -59,38 +59,27 @@ public class Player {
 	//public boolean trickKey;
 	
 	// flags
-	public boolean skidding;
-	public boolean skirting;
-	public boolean turning;
 	public boolean ground;
 	public boolean ledge;
-	public boolean jumping;
 	public boolean jumpReady;
 	public boolean jumpSlowing;
-	public boolean spinning;
-	public boolean crouching0;
-	public boolean crouching1;
 	public boolean spindashReady;
-	public boolean spindashing;
-	public boolean spindashCharge;
 	public boolean chargeReady;
-	public boolean bouncing;
-	public boolean landing;
 	public boolean controlKeyReady;
-	public boolean starting;
 	public boolean trickReady;
 	public boolean trickReadyReady;
 	public boolean stopCam;
 	public boolean groundFlipped;
 	public boolean boostMode;
 	public boolean boostReady;
-	public boolean rampDashing;
-	public boolean swinging;
 	public boolean justSwang;
-	public boolean dashing;
 	public boolean dashReady;
-	public boolean springPoling;
 	public boolean helixing;
+	public boolean spindashCharge;
+	//public boolean bouncing;
+	public boolean jumpingUp;
+	
+	public int state;
 	
 	public double jumpSlowed;
 	public double groundSpeed;
@@ -200,7 +189,7 @@ public class Player {
 		
 		ps = new PlayerSounds();
 		
-		starting = true;
+		state = STATE_STARTING;
 		ground = true;
 		voice = 0;
 	}
@@ -208,8 +197,8 @@ public class Player {
 	public void update(float dt, Shape[] layer0, Shape[] layer1, Shape[] layer2, Shape[] layer1Triggers, Shape[] layer2Triggers, Shape[] platforms, Ring[] rings, Spring[] springs, Badnik[] badniks, Item[] items, Ramp[] ramps, Rotor[] rotors, SpringPole[] springPoles, Helix[] helixes, DashPad[] dashPads, Rail[] rails, BlueSpring[] blueSprings) {
 		checkKeys();
 		
-		if(starting) {starting();}
-		if(!starting && !stopCam && !springPoling) { // NOT ELSE
+		if(state == STATE_STARTING) {starting();}
+		if(state != STATE_STARTING && !stopCam && state != STATE_SPRING_POLING_JUMP && state != STATE_SPRING_POLING_SPIN) { // NOT ELSE
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 			
@@ -224,7 +213,7 @@ public class Player {
 			boost(this);
 		}
 		
-		if(stopCam || springPoling) {vel = new Vector();}
+		if(stopCam || state == STATE_SPRING_POLING_JUMP || state == STATE_SPRING_POLING_SPIN) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
@@ -241,7 +230,7 @@ public class Player {
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
 		if(shapes != null) {
-			if(bouncing && bounceType == 0 && vel.y < 0 && !ground) {
+			if(state == STATE_BOUNCING && bounceType == 0 && vel.y < 0 && !ground) {
 				groundAxis = new Vector(0, -1);
 				groundFlipped = true;
 			}
@@ -299,11 +288,10 @@ public class Player {
 			startAnim.update(1);
 			if(startAnim.finished) {
 				voice = 4;
-				starting = false;
 				facing = 1;
 				ground = true;
-				jumping = false;
 				ledge = false;
+				state = STATE_DEFAULT;
 				
 				vel = new Vector(10, 0);
 				
@@ -412,22 +400,18 @@ public class Player {
 		
 		if(ground && !oldGround) {
 			ledge = false;
-			jumping = false;
 			trickReady = false;
 			trickReadyReady = false;
 			trickType = 0;
-			bouncing = false;
-			rampDashing = false;
-			dashing = false;
 			
 			if(downArrow) {
-				if(!spinning && vel.x != 0) {
-					spinning = true;
+				if(state != STATE_SPINNING && vel.x != 0) {
+					state = STATE_SPINNING;
 					
 					ps.playSound(SOUND_SPIN);
 				}
 			}
-			else {spinning = false;}
+			else {state = STATE_DEFAULT;}
 		}
 		
 	}
@@ -459,8 +443,12 @@ public class Player {
 	
 	private void checkLanding(Shape[] shapes) {
 		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
-		landing = false;
-		for(int i = 0; i < shapes.length; i++) {if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM) {landing = true;}}
+		for(int i = 0; i < shapes.length; i++) {
+			if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM && !ground && vel.y > 0) {
+				state = STATE_LANDING;
+				break;
+			}
+		}
 	}
 	
 	private Animation getCurrentAnim() {
@@ -498,8 +486,8 @@ public class Player {
 	}
 
 	public void manageAnimations(float dt) {
-		if(!starting) {
-			if(swinging) {
+		if(state != STATE_STARTING) {
+			if(state == STATE_SWINGING) {
 				if(anim != SWING_ANIM) {
 					anim = SWING_ANIM;
 					swingAnim.reset();
@@ -560,21 +548,21 @@ public class Player {
 				}
 			}
 			else { // not tricking
-				if(rampDashing) {
+				if(state == STATE_RAMP_DASHING) {
 					if(anim != RAMP_ANIM) {
 						anim = RAMP_ANIM;
 						rampAnim.reset();
 					}
 					else {rampAnim.update(1);}
 				}
-				else if(dashing) {
+				else if(state == STATE_DASHING) {
 					if(anim != DASH_ANIM) {
 						anim = DASH_ANIM;
 						dashAnim.reset();
 					}
 					else {dashAnim.update(1);}
 				}
-				else if(spindashing) {
+				else if(state == STATE_SPINDASHING) {
 					if(!spindashCharge) {
 						if(anim == SPINDASH_CHARGE_ANIM) {
 							spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
@@ -615,7 +603,7 @@ public class Player {
 				else {
 					dustAnim = NO_DUST_ANIM;
 					
-					if(crouching1) {
+					if(state == STATE_CROUCHING_DOWN) {
 						if(anim == CROUCH_ANIM_0) {
 							crouchAnim0.update(1 /** (dt / (1.0f / 60.0f))*/);
 							if(crouchAnim0.finished) {spindashReady = true;}
@@ -625,13 +613,13 @@ public class Player {
 							crouchAnim0.reset();
 						}
 					}
-					else if(crouching0) {
+					else if(state == STATE_CROUCHING_UP) {
 						if(anim == CROUCH_ANIM_1) {
 							crouchAnim1.update(1 /** (dt / (1.0f / 60.0f))*/);
 							if(crouchAnim1.finished) {
 								anim = IDLE_ANIM;
 								idleAnim.reset();
-								crouching0 = false;
+								state = STATE_DEFAULT;
 							}
 						}
 						else {
@@ -640,7 +628,7 @@ public class Player {
 						}
 					}
 					else {
-						if(spinning) {
+						if(state == STATE_SPINNING) {
 							if(anim == SPIN_ANIM) {spinAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 							else {
 								anim = SPIN_ANIM;
@@ -649,7 +637,7 @@ public class Player {
 						}
 						else {
 							if(ground) {
-								if(groundSpeed == 0 && !turning && !skidding && !skirting) {
+								if(groundSpeed == 0 && state != STATE_TURNING_SLOW && state != STATE_TURNING_FAST && state != STATE_SKIDDING_SLOW && state != STATE_SKIDDING_FAST) {
 									if(anim == IDLE_ANIM) {idleAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 									else {
 										anim = IDLE_ANIM;
@@ -657,8 +645,8 @@ public class Player {
 									}
 								}
 								else {
-									if(skidding || skirting) {
-										if(skidding) {
+									if(state == STATE_SKIDDING_SLOW || state == STATE_TURNING_FAST) {
+										if(state == STATE_SKIDDING_SLOW) {
 											if(anim == SKID_ANIM) {skidAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 											else {
 												anim = SKID_ANIM;
@@ -667,11 +655,11 @@ public class Player {
 											}
 										}
 										else {
-											if(skirting) {
+											if(state == STATE_TURNING_FAST) {
 												if(anim == SKIRT_ANIM) {
 													skirtAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 													if(skirtAnim.finished) {
-														skirting = false;
+														state = STATE_DEFAULT;
 														
 														if(groundSpeed == 0) {
 															anim = IDLE_ANIM;
@@ -711,13 +699,13 @@ public class Player {
 										}
 									}
 									else { // not skidding or skirting
-										if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || turning) {
-											turning = true;
+										if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || state == STATE_TURNING_SLOW) {
+											state = STATE_TURNING_SLOW;
 											
 											if(anim == TURN_ANIM) {
 												turnAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 												if(turnAnim.finished) {
-													turning = false;
+													state = STATE_DEFAULT;
 													
 													if(groundSpeed == 0) {
 														anim = IDLE_ANIM;
@@ -761,7 +749,7 @@ public class Player {
 								}
 							}
 							else { // not ground
-								if(jumping) {
+								if(state == STATE_JUMPING) {
 									if(anim != JUMP_ANIM) {
 										anim = JUMP_ANIM;
 										jumpAnim.reset();
@@ -769,7 +757,7 @@ public class Player {
 									}
 								}
 								else {
-									if(bouncing && bounceType == 0) {
+									if(state == STATE_BOUNCING && bounceType == 0) {
 										if(vel.y < 0) {
 											if(anim != BOUNCING_UP_ANIM) {
 												anim = BOUNCING_UP_ANIM;
@@ -784,16 +772,16 @@ public class Player {
 											}
 											else {
 												bounceDownAnim.update(1);
-												if(bounceDownAnim.finished) {bouncing = false;}
+												if(bounceDownAnim.finished) {state = STATE_DEFAULT;}
 											}
 										}
 									}
-									else if(bouncing && bounceType == 1) {if(anim == SPIN_ANIM && !spinning) {anim = FALL_ANIM;}}
+									else if(state == STATE_BOUNCING && bounceType == 1) {if(anim == SPIN_ANIM && state != STATE_SPINNING) {anim = FALL_ANIM;}}
 								}
 								
 								if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
 								else {
-									if(anim != JUMP_ANIM && anim != LAND_ANIM && !bouncing && !landing) {
+									if(anim != JUMP_ANIM && anim != LAND_ANIM && state != STATE_BOUNCING && state != STATE_LANDING) {
 										anim = FALL_ANIM;
 										fallAnim.reset();
 									}
@@ -804,7 +792,7 @@ public class Player {
 								if(anim == JUMP_ANIM) {
 									jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
 									
-									if(landing && vel.y > 0 && !jumping) {
+									if(state == STATE_LANDING && vel.y > 0 && state != STATE_JUMPING) {
 										anim = LAND_ANIM;
 										landAnim.reset();
 									}

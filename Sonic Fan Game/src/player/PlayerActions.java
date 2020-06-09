@@ -21,20 +21,16 @@ public class PlayerActions {
 			capScale = BOOST_LIMIT_SCALE;
 		}
 		
-		if(!p.ground) {
-			p.skidding = false;
-			p.skirting = false;
-			p.turning = false;
-		}
+		if(!p.ground && (p.state == STATE_SKIDDING_SLOW || p.state == STATE_TURNING_SLOW || p.state == STATE_TURNING_FAST)) {p.state = STATE_DEFAULT;}
 		
-		if(!p.crouching0 && !p.spindashing) {
-			if((!p.spinning || !p.ground) && !p.rampDashing && !p.dashing) { // regular movement
+		if(p.state != STATE_CROUCHING_DOWN && p.state != STATE_CROUCHING && p.state != STATE_CROUCHING_UP && p.state != STATE_SPINDASHING) {
+			if((p.state != STATE_SPINNING || !p.ground) && p.state != STATE_RAMP_DASHING && p.state != STATE_DASHING) { // regular movement
 				if(p.leftArrow && !p.rightArrow) {
 					if(p.groundSpeed <= 0 || !p.ground) {
 						if(!p.ground) {p.facing = -1;}
-						if(p.skidding) {
-							p.skidding = false;
-							if(p.facing == 1) {p.skirting = true;}
+						if(p.state == STATE_SKIDDING_SLOW) {
+							if(p.facing == 1) {p.state = STATE_TURNING_FAST;}
+							else {p.state = STATE_DEFAULT;}
 						}
 						
 						if(p.groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
@@ -45,15 +41,15 @@ public class PlayerActions {
 					}
 					else {
 						p.groundSpeed -= SKID_ACCEL * SCALE;
-						if(p.groundSpeed >= SKID_MIN_SPEED) {p.skidding = true;}
+						if(p.groundSpeed >= SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
 					}
 				}
 				if(p.rightArrow && !p.leftArrow) {
 					if(p.groundSpeed >= 0 || !p.ground) {
 						if(!p.ground) {p.facing = 1;}
-						if(p.skidding) {
-							p.skidding = false;
-							if(p.facing == -1) {p.skirting = true;}
+						if(p.state == STATE_SKIDDING_SLOW) {
+							if(p.facing == -1) {p.state = STATE_TURNING_FAST;}
+							else {p.state = STATE_DEFAULT;}
 						}
 						
 						if(p.groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
@@ -64,7 +60,7 @@ public class PlayerActions {
 					}
 					else {
 						p.groundSpeed += SKID_ACCEL * SCALE;
-						if(p.groundSpeed <= -SKID_MIN_SPEED) {p.skidding = true;}
+						if(p.groundSpeed <= -SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
 					}
 				}
 			}
@@ -74,7 +70,7 @@ public class PlayerActions {
 						if(p.groundSpeed > 0) {
 							p.groundSpeed -= SKID_ACCEL * SCALE;
 							if(p.groundSpeed <= 0) {
-								p.spinning = false;
+								p.state = STATE_DEFAULT;
 								p.facing = -1;
 							}
 						}
@@ -84,7 +80,7 @@ public class PlayerActions {
 						if(p.groundSpeed < 0) {
 							p.groundSpeed += SKID_ACCEL * SCALE;
 							if(p.groundSpeed >= 0) {
-								p.spinning = false;
+								p.state = STATE_DEFAULT;
 								p.facing = 1;
 							}
 						}
@@ -107,29 +103,27 @@ public class PlayerActions {
 	
 	public static void drag(Player p) {
 		if(!p.leftArrow && !p.rightArrow && p.ground || p.leftArrow && p.rightArrow && p.ground) {
-			p.skidding = false;
+			if(p.state == STATE_SKIDDING_SLOW) {p.state = STATE_DEFAULT;}
 			
-			if(!p.spinning && !p.spindashing) { // regular drag
+			if(p.state != STATE_SPINNING && p.state != STATE_SPINDASHING) { // regular drag
 				     if(p.groundSpeed > 0) {p.groundSpeed -= DRAG_DECEL * SCALE;}
 				else if(p.groundSpeed < 0) {p.groundSpeed += DRAG_DECEL * SCALE;}
 				
 				if(p.groundSpeed >= -DRAG_DECEL * SCALE && p.groundSpeed <= DRAG_DECEL * SCALE) {p.groundSpeed = 0;}
 			}
-			else if(p.spinning) { // spinning drag
+			else if(p.state == STATE_SPINNING) { // spinning drag
 			         if(p.groundSpeed > 0) {p.groundSpeed -= SPIN_DECEL * SCALE;}
 				else if(p.groundSpeed < 0) {p.groundSpeed += SPIN_DECEL * SCALE;}
 				
 				if(p.groundSpeed >= -SPIN_DECEL * SCALE && p.groundSpeed <= SPIN_DECEL * SCALE) {
 					p.groundSpeed = 0;
-					p.spinning = false;
+					p.state = STATE_DEFAULT;
 				}
 			}
 			
 			if(p.downArrow && p.groundSpeed != 0) {
-				if(!p.spinning) {
-					p.spinning = true;
-					p.crouching0 = false;
-					p.crouching1 = false;
+				if(p.state != STATE_SPINNING) {
+					p.state = STATE_SPINNING;
 					p.spindashReady = false;
 					
 					p.ps.playSound(SOUND_SPIN);
@@ -137,7 +131,7 @@ public class PlayerActions {
 			}
 		}
 		
-		if(p.spindashing) {
+		if(p.state == STATE_SPINDASHING) {
 		         if(p.groundSpeed > 0) {p.groundSpeed -= SKID_ACCEL * SCALE;}
 			else if(p.groundSpeed < 0) {p.groundSpeed += SKID_ACCEL * SCALE;}
 			
@@ -148,15 +142,15 @@ public class PlayerActions {
 	public static void jump(Player p) {
 		if(p.ground && !p.spaceBar) {p.jumpReady = true;}
 		if(!p.ground) {p.jumpReady = false;}
-		else {p.jumping = false;}
+		else {p.jumpingUp = false;}
 		
-		if(p.jumpReady && p.spaceBar && !p.crouching0 && p.ground && !p.spindashing) {
+		if(p.jumpReady && p.spaceBar && p.state != STATE_CROUCHING_UP && p.state != STATE_CROUCHING && p.state != STATE_CROUCHING_DOWN && p.ground && p.state != STATE_SPINDASHING) {
 			p.jumpReady = false;
 			p.ground = false;
-			p.jumping = true;
+			p.jumpingUp = true;
 			p.jumpSlowing = false;
-			p.spinning = false;
 			p.helixing = false;
+			p.state = STATE_JUMPING;
 			
 			if(!p.shiftKey) {
 				p.jumpSlowed = p.groundAxis.y * -JUMP_IMPULSE * SCALE;
@@ -168,14 +162,14 @@ public class PlayerActions {
 			}
 		}
 		else {
-			if(p.jumping) {
+			if(p.jumpingUp) {
 				if(!p.spaceBar || p.jumpSlowing) {
 					p.vel.translate(0, JUMP_SWITCH * SCALE);
 					p.jumpSlowed += JUMP_SWITCH * SCALE;
 					p.jumpSlowing = true;
 				}
 				
-				if(p.jumpSlowed >= 0 && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {p.jumping = false;}
+				if(p.jumpSlowed >= 0 && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {p.jumpingUp = false;}
 			}
 		}
 	}
@@ -193,13 +187,13 @@ public class PlayerActions {
 				p.groundSpeed = 0;
 			}
 		}
-		if((p.bouncing || p.rampDashing) && !p.spaceBar && p.trickReadyReady) {p.trickReady = true;}
+		if((p.state == STATE_BOUNCING || p.state == STATE_RAMP_DASHING) && !p.spaceBar && p.trickReadyReady) {p.trickReady = true;}
 	}
 	
 	public static void spindash(Player p) {
-		if(p.spindashReady && p.spaceBar || p.ground && p.controlKey && p.controlKeyReady && !p.spinning) {
-			if(!p.spindashing) {
-				p.spindashing = true;
+		if(p.spindashReady && p.spaceBar || p.ground && p.controlKey && p.controlKeyReady && p.state != STATE_SPINNING) {
+			if(p.state != STATE_SPINDASHING) {
+				p.state = STATE_SPINDASHING;
 				p.helixing = false;
 				p.spindashCharge = false;
 				p.chargeReady = false;
@@ -210,11 +204,11 @@ public class PlayerActions {
 			}
 		}
 		
-		if(!p.spindashing && p.spinning && p.controlKey && p.controlKeyReady) {p.spinning = false;}
+		if(p.state != STATE_SPINDASHING && p.state == STATE_SPINNING && p.controlKey && p.controlKeyReady) {p.state = STATE_DEFAULT;}
 		
 		p.controlKeyReady = !p.controlKey;
 		
-		if(p.spindashing) {
+		if(p.state == STATE_SPINDASHING) {
 			if(p.downArrow || p.controlKey) {
 				if(p.spaceBar && p.chargeReady) {
 					p.chargeDustTimer = 45;
@@ -229,13 +223,10 @@ public class PlayerActions {
 				else {p.chargeReady = false;}
 			}
 			else {
-				p.crouching0 = false;
-				p.crouching1 = false;
 				p.spindashReady = false;
-				p.spindashing = false;
-				p.spinning = true;
 				p.jumpReady = false;
 				p.groundSpeed = p.spindashStrength * p.facing;
+				p.state = STATE_SPINNING;
 				
 				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 			}
@@ -243,34 +234,29 @@ public class PlayerActions {
 	}
 	
 	public static void crouch(Player p) {
-		if(p.ground && p.groundSpeed == 0 && p.downArrow && !p.spindashing) {
-			p.crouching0 = true;
-			p.crouching1 = true;
+		if(p.ground && p.groundSpeed == 0 && p.downArrow && p.state != STATE_SPINDASHING) {
+			p.state = STATE_CROUCHING_DOWN;
 			p.spindashReady = false;
 		}
-		if(p.crouching0 && !p.downArrow) {
-			p.crouching1 = false;
+		if((p.state == STATE_CROUCHING_DOWN || p.state == STATE_CROUCHING_UP) && !p.downArrow) {
+			p.state = STATE_CROUCHING_UP;
 			p.spindashReady = false;
 		}
 		
-		if(p.crouching0 && p.groundSpeed != 0) {
-			p.crouching0 = false;
-			p.crouching1 = false;
+		if((p.state == STATE_CROUCHING_DOWN || p.state == STATE_CROUCHING || p.state == STATE_CROUCHING_UP) && p.groundSpeed != 0) {
 			p.spindashReady = false;
-			p.spinning = true;
+			p.state = STATE_SPINNING;
 			
 			p.ps.playSound(SOUND_SPIN);
 		}
 	}
 
 	public static void dash(Player p) {
-		if(p.controlKey && p.dashReady && !p.dashing && !p.bouncing && !p.rampDashing && !p.spinning && !p.spindashing && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {
-			p.jumping = false;
+		if(p.controlKey && p.dashReady && p.state == STATE_JUMPING && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {
 			p.jumpSlowing = false;
 			p.trickReady = false;
 			p.trickReadyReady = false;
-			p.dashing = true;
-			p.jumping = false;
+			p.state = STATE_DASHING;
 			
 			p.groundSpeed += 15 * SCALE * p.facing;
 			if(p.groundSpeed > GROUND_ACCEL_LIMIT * SCALE && !p.boostMode) {p.groundSpeed = GROUND_ACCEL_LIMIT * SCALE;}
@@ -290,10 +276,10 @@ public class PlayerActions {
 		if(!p.ground) {
 			p.vel.translate(0, GRAVITY * SCALE);
 			
-			if(p.jumping) {p.jumpSlowed += GRAVITY * SCALE;}
+			if(p.jumpingUp) {p.jumpSlowed += GRAVITY * SCALE;}
 			
-			if(p.vel.x < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && !p.spinning) {p.vel.x = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-			if(p.vel.x > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && !p.spinning) {p.vel.x = GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(p.vel.x < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && p.state != STATE_SPINNING) {p.vel.x = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(p.vel.x > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && p.state != STATE_SPINNING) {p.vel.x = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 		}
 		else {
 			Vector tempGrav = new Vector(0, SCALE).project(p.groundAxis.getPerpendicular().normalize());
@@ -305,8 +291,8 @@ public class PlayerActions {
 			
 			if(tempGrav.getLength() >= MIN_POTENTIAL_GRAVITY) {p.groundSpeed += p.getRotatedVectorComponents(tempGrav, p.groundAxis).x;}
 			
-			if(p.groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && !p.spinning) {p.groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-			if(p.groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && !p.spinning) {p.groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(p.groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && p.state != STATE_SPINNING) {p.groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
+			if(p.groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey && p.state != STATE_SPINNING) {p.groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 		}
 	}
 	
