@@ -86,7 +86,6 @@ public class Player {
 	public double spindashStrength;
 	public double preSpringPoleXSpeed;
 	
-	public int trickType;
 	public int boostTimer;
 	public int swingStartFrame;
 	public int swingDirection;
@@ -402,7 +401,6 @@ public class Player {
 			ledge = false;
 			trickReady = false;
 			trickReadyReady = false;
-			trickType = 0;
 			
 			if(downArrow) {
 				if(state != STATE_SPINNING && vel.x != 0) {
@@ -504,46 +502,44 @@ public class Player {
 					rotor.anim.update(swingDirection);
 				}
 			}
-			else if(trickType != 0) {
-				if(trickType == 1) {
-					if(anim != TRICK_RIGHT_ANIM) {
-						anim = TRICK_RIGHT_ANIM;
-						trickRightAnim.reset();
-						ps.playSound(SOUND_TRICK);
-					}
-					else {
-						trickRightAnim.update(1);
-						if(trickRightAnim.frame == trickRightAnim.repeatFrame) {
-							if(stopCam) {
-								stopCam = false;
-								vel = new Vector(15 * facing, 0);
-							}
+			else if(state == STATE_TRICKING_FORWARD) {
+				if(anim != TRICK_RIGHT_ANIM) {
+					anim = TRICK_RIGHT_ANIM;
+					trickRightAnim.reset();
+					ps.playSound(SOUND_TRICK);
+				}
+				else {
+					trickRightAnim.update(1);
+					if(trickRightAnim.frame == trickRightAnim.repeatFrame) {
+						if(stopCam) {
+							stopCam = false;
+							vel = new Vector(15 * facing, 0);
 						}
 					}
 				}
-				if(trickType == 2) {
-					if(anim != TRICK_UP_0_ANIM && anim != TRICK_UP_1_ANIM) {
-						anim = TRICK_UP_0_ANIM;
-						trickUp0Anim.reset();
-						ps.playSound(SOUND_TRICK);
+			}
+			else if(state == STATE_TRICKING_UP) {
+				if(anim != TRICK_UP_0_ANIM && anim != TRICK_UP_1_ANIM) {
+					anim = TRICK_UP_0_ANIM;
+					trickUp0Anim.reset();
+					ps.playSound(SOUND_TRICK);
+				}
+				else {
+					if(vel.y < 0 || stopCam) {
+						trickUp0Anim.update(1);
+						if(trickUp0Anim.frame == trickUp0Anim.repeatFrame) {
+							if(stopCam) {
+								stopCam = false;
+								vel = new Vector(0, -15);
+							}
+						}
 					}
 					else {
-						if(vel.y < 0 || stopCam) {
-							trickUp0Anim.update(1);
-							if(trickUp0Anim.frame == trickUp0Anim.repeatFrame) {
-								if(stopCam) {
-									stopCam = false;
-									vel = new Vector(0, -15);
-								}
-							}
+						if(anim != TRICK_UP_1_ANIM) {
+							anim = TRICK_UP_1_ANIM;
+							trickUp1Anim.reset();
 						}
-						else {
-							if(anim != TRICK_UP_1_ANIM) {
-								anim = TRICK_UP_1_ANIM;
-								trickUp1Anim.reset();
-							}
-							else {trickUp1Anim.update(1);}
-						}
+						else {trickUp1Anim.update(1);}
 					}
 				}
 			}

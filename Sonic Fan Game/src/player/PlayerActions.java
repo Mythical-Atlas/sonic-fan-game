@@ -176,10 +176,10 @@ public class PlayerActions {
 	
 	public static void trick(Player p) {
 		if(p.spaceBar && p.trickReady) {
-			if(p.rightArrow || p.leftArrow) {p.trickType = 1;}
-			else if(p.upArrow) {p.trickType = 2;}
+			if(p.rightArrow && p.facing == 1 || p.leftArrow && p.facing == -1) {p.state = STATE_TRICKING_FORWARD;}
+			else if(p.upArrow) {p.state = STATE_TRICKING_UP;}
 			
-			if(p.trickType != 0) {
+			if(p.state == STATE_TRICKING_FORWARD || p.state == STATE_TRICKING_UP) {
 				p.trickReady = false;
 				p.trickReadyReady = false;
 				p.stopCam = true;

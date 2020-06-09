@@ -112,7 +112,6 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpSlowing = false;
-						p.trickType = 0;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;
@@ -137,7 +136,6 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpSlowing = false;
-						p.trickType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_RAMP_DASHING;
 						
@@ -181,7 +179,6 @@ public class PlayerObjectHandling {
 							p.jumpReady = false;
 							p.ground = false;
 							p.jumpSlowing = false;
-							p.trickType = 0;
 							p.trickReady = false;
 							p.trickReadyReady = false;
 							p.state = STATE_SWINGING;
@@ -290,7 +287,6 @@ public class PlayerObjectHandling {
 						else {p.springPole.slowBounce();}
 						
 						//stopCam = true;
-						p.trickType = 0;
 						p.trickReady = false;
 						p.trickReadyReady = false;
 						p.state = STATE_SPRING_POLING;
@@ -384,7 +380,6 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpSlowing = false;
-						p.trickType = 0;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;
