@@ -80,12 +80,11 @@ public class PlayerObjectHandling {
 						p.vel.translate(new Vector(0, -1).scale(5));
 						items[i].destroy();
 						
-						if(p.anim != JUMP_ANIM && p.state != STATE_SPINNING && p.state != STATE_SPINDASHING) {
-							p.jumpReady = false;
-							p.ground = false;
-							p.jumpSlowing = false;
-							p.state = STATE_BOUNCING;
-						}
+						p.jumpReady = false;
+						p.ground = false;
+						p.jumpSlowing = false;
+						p.state = STATE_BOUNCING;
+						p.bounceType = 0;
 						
 						p.ps.playSound(SOUND_POP);
 					}
@@ -232,7 +231,7 @@ public class PlayerObjectHandling {
 	}
 	
 	public static void springPoles(Player p, SpringPole[] springPoles) {
-		if(p.state == STATE_SPRING_POLING_JUMP || p.state == STATE_SPRING_POLING_SPIN) {
+		if(p.state == STATE_SPRING_POLING) {
 			if(!p.springPole.bouncing) {
 				p.state = STATE_BOUNCING;
 				//stopCam = false;
@@ -294,9 +293,8 @@ public class PlayerObjectHandling {
 						p.trickType = 0;
 						p.trickReady = false;
 						p.trickReadyReady = false;
-						p.anim = JUMP_ANIM;
-						if(p.anim == JUMP_ANIM || p.anim == LAND_ANIM) {p.state = STATE_SPRING_POLING_JUMP;}
-						if(p.anim == SPIN_ANIM) {p.state = STATE_SPRING_POLING_SPIN;}
+						p.state = STATE_SPRING_POLING;
+						if(p.anim != SPIN_ANIM) {p.anim = JUMP_ANIM;}
 						
 						p.ps.playSound(SOUND_SPRING_POLE);
 						

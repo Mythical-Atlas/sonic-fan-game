@@ -92,8 +92,7 @@ public class PlayerConstants {
 	public static final int STATE_RAMP_DASHING			= 21;
 	public static final int STATE_SWINGING				= 22;
 	public static final int STATE_DASHING				= 23;
-	public static final int STATE_SPRING_POLING_JUMP	= 24;
-	public static final int STATE_SPRING_POLING_SPIN	= 25;
+	public static final int STATE_SPRING_POLING			= 24;
 	
 	public static final int IDLE_ANIM 				= 0;
 	public static final int RUN_ANIM 				= 1;

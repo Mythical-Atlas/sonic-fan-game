@@ -198,7 +198,7 @@ public class Player {
 		checkKeys();
 		
 		if(state == STATE_STARTING) {starting();}
-		if(state != STATE_STARTING && !stopCam && state != STATE_SPRING_POLING_JUMP && state != STATE_SPRING_POLING_SPIN) { // NOT ELSE
+		if(state != STATE_STARTING && !stopCam && state != STATE_SPRING_POLING) { // NOT ELSE
 			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
 			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
 			
@@ -213,7 +213,7 @@ public class Player {
 			boost(this);
 		}
 		
-		if(stopCam || state == STATE_SPRING_POLING_JUMP || state == STATE_SPRING_POLING_SPIN) {vel = new Vector();}
+		if(stopCam || state == STATE_SPRING_POLING) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
@@ -562,16 +562,20 @@ public class Player {
 					}
 					else {dashAnim.update(1);}
 				}
+				else if(state == STATE_SPRING_POLING) {
+					if(anim == JUMP_ANIM) {jumpAnim.update(1);}
+					if(anim == SPIN_ANIM) {spinAnim.update(1);}
+				}
 				else if(state == STATE_SPINDASHING) {
 					if(!spindashCharge) {
 						if(anim == SPINDASH_CHARGE_ANIM) {
-							spindashChargeAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+							spindashChargeAnim.update(1);
 							if(spindashChargeAnim.finished) {
 								anim = SPINDASH_ANIM;
 								spindashAnim.reset();
 							}
 						}
-						else if(anim == SPINDASH_ANIM) {spindashAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						else if(anim == SPINDASH_ANIM) {spindashAnim.update(1);}
 						else {
 							anim = SPINDASH_ANIM;
 							spindashAnim.reset();
@@ -584,14 +588,14 @@ public class Player {
 					}
 					
 					if(chargeDustTimer == 0) {
-						if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1);}
 						else {
 							dustAnim = REGULAR_DUST_ANIM;
 							spindashDustAnim.reset();
 						}
 					}
 					else {
-						if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+						if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1);}
 						else {
 							dustAnim = CHARGE_DUST_ANIM;
 							spindashChargeDustAnim.reset();
@@ -605,7 +609,7 @@ public class Player {
 					
 					if(state == STATE_CROUCHING_DOWN) {
 						if(anim == CROUCH_ANIM_0) {
-							crouchAnim0.update(1 /** (dt / (1.0f / 60.0f))*/);
+							crouchAnim0.update(1);
 							if(crouchAnim0.finished) {spindashReady = true;}
 						}
 						else {
@@ -615,7 +619,7 @@ public class Player {
 					}
 					else if(state == STATE_CROUCHING_UP) {
 						if(anim == CROUCH_ANIM_1) {
-							crouchAnim1.update(1 /** (dt / (1.0f / 60.0f))*/);
+							crouchAnim1.update(1);
 							if(crouchAnim1.finished) {
 								anim = IDLE_ANIM;
 								idleAnim.reset();
@@ -629,7 +633,7 @@ public class Player {
 					}
 					else {
 						if(state == STATE_SPINNING) {
-							if(anim == SPIN_ANIM) {spinAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+							if(anim == SPIN_ANIM) {spinAnim.update(1);}
 							else {
 								anim = SPIN_ANIM;
 								spinAnim.reset();
@@ -638,7 +642,7 @@ public class Player {
 						else {
 							if(ground) {
 								if(groundSpeed == 0 && state != STATE_TURNING_SLOW && state != STATE_TURNING_FAST && state != STATE_SKIDDING_SLOW && state != STATE_SKIDDING_FAST) {
-									if(anim == IDLE_ANIM) {idleAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+									if(anim == IDLE_ANIM) {idleAnim.update(1);}
 									else {
 										anim = IDLE_ANIM;
 										idleAnim.reset();
@@ -647,7 +651,7 @@ public class Player {
 								else {
 									if(state == STATE_SKIDDING_SLOW || state == STATE_TURNING_FAST) {
 										if(state == STATE_SKIDDING_SLOW) {
-											if(anim == SKID_ANIM) {skidAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+											if(anim == SKID_ANIM) {skidAnim.update(1);}
 											else {
 												anim = SKID_ANIM;
 												skidAnim.reset();
@@ -657,7 +661,7 @@ public class Player {
 										else {
 											if(state == STATE_TURNING_FAST) {
 												if(anim == SKIRT_ANIM) {
-													skirtAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+													skirtAnim.update(1);
 													if(skirtAnim.finished) {
 														state = STATE_DEFAULT;
 														
@@ -703,7 +707,7 @@ public class Player {
 											state = STATE_TURNING_SLOW;
 											
 											if(anim == TURN_ANIM) {
-												turnAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+												turnAnim.update(1);
 												if(turnAnim.finished) {
 													state = STATE_DEFAULT;
 													
@@ -730,11 +734,11 @@ public class Player {
 										}
 										else {
 											if(anim == RUN_ANIM) {
-												runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-												runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-												runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-												runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
-												runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25)/* * (dt / (1.0f / 60.0f))*/);
+												runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+												runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+												runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+												runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+												runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
 											}
 											else {
 												anim = RUN_ANIM;
@@ -776,12 +780,12 @@ public class Player {
 											}
 										}
 									}
-									else if(state == STATE_BOUNCING && bounceType == 1) {if(anim == SPIN_ANIM && state != STATE_SPINNING) {anim = FALL_ANIM;}}
+									else if(state == STATE_BOUNCING && bounceType == 1) {if(anim == SPIN_ANIM) {spinAnim.update(1);}}
 								}
 								
-								if(anim == FALL_ANIM) {fallAnim.update(1 /** (dt / (1.0f / 60.0f))*/);}
+								if(anim == FALL_ANIM) {fallAnim.update(1);}
 								else {
-									if(anim != JUMP_ANIM && anim != LAND_ANIM && state != STATE_BOUNCING && state != STATE_LANDING) {
+									if(anim != JUMP_ANIM && anim != LAND_ANIM && state != STATE_BOUNCING && state != STATE_LANDING && state != STATE_SPRING_POLING) {
 										anim = FALL_ANIM;
 										fallAnim.reset();
 									}
