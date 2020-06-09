@@ -95,6 +95,7 @@ public class PlayerConstants {
 	public static final int STATE_DASHING				= 22;
 	public static final int STATE_SPRING_POLING			= 23;
 	public static final int STATE_GRINDING				= 24;
+	public static final int STATE_SLIDING				= 25;
 	
 	public static final int IDLE_ANIM 				= 0;
 	public static final int RUN_ANIM 				= 1;
@@ -118,6 +119,14 @@ public class PlayerConstants {
 	public static final int RAMP_ANIM				= 19;
 	public static final int SWING_ANIM				= 20;
 	public static final int DASH_ANIM				= 21;
+	public static final int TRICK_BACK_ANIM			= 22;
+	public static final int SLAM_START_ANIM			= 23;
+	public static final int SLAM_END_ANIM			= 24;
+	public static final int GRIND_ANIM				= 25;
+	public static final int SKID_FAST_ANIM			= 26;
+	public static final int SLIDE_ANIM				= 27;
+	public static final int DOUBLE_SPIN_ANIM		= 28;
+	public static final int HELIX_ANIM				= 29;
 	
 	public static final int NO_DUST_ANIM 		= 0;
 	public static final int REGULAR_DUST_ANIM 	= 1;

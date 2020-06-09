@@ -76,8 +76,8 @@ public class Player {
 	public boolean dashReady;
 	public boolean helixing;
 	public boolean spindashCharge;
-	//public boolean bouncing;
 	public boolean jumpingUp;
+	public boolean doubleSpinning;
 	
 	public int state;
 	
@@ -103,8 +103,8 @@ public class Player {
 	public SpringPole springPole;
 	public Helix helix;
 	
-	public  Vector pos;
-	public  Vector vel;
+	public Vector pos;
+	public Vector vel;
 	public Vector groundAxis;
 	
 	public Animation idleAnim;
