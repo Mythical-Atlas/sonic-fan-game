@@ -171,6 +171,7 @@ public class PlayerActions {
 				
 				if(p.jumpSlowed >= 0 && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {p.jumpingUp = false;}
 			}
+			else {p.jumpSlowing = false;}
 		}
 	}
 	
@@ -253,7 +254,7 @@ public class PlayerActions {
 
 	public static void dash(Player p) {
 		if(p.controlKey && p.dashReady && p.state == STATE_JUMPING && (p.anim == JUMP_ANIM || p.anim == LAND_ANIM)) {
-			p.jumpSlowing = false;
+			p.jumpingUp = false;
 			p.trickReady = false;
 			p.trickReadyReady = false;
 			p.state = STATE_DASHING;
@@ -318,6 +319,29 @@ public class PlayerActions {
 			else {
 				if(abs(p.groundSpeed) < BOOST_STOP_SPEED) {p.boostMode = false;}
 			}
+		}
+	}
+	
+	public static void doubleSpin(Player p) {
+		if(!p.ground && p.state == STATE_JUMPING && !p.doubleSpinning) {
+			if(p.spaceBar && p.doubleSpinReady) {
+				p.state = STATE_SPINNING;
+				p.jumpingUp = false;
+				p.doubleSpinning = true;
+				p.doubleSpinDrawn = true;
+				p.doubleShieldDrawn = true;
+				p.ps.playSound(SOUND_SPINDASH_RELEASE);
+			}
+			
+			if(!p.spaceBar) {p.doubleSpinReady = true;}
+			else {p.doubleSpinReady = false;}
+		}
+		else {p.doubleSpinReady = false;}
+		
+		if(p.ground || p.state != STATE_SPINNING) {p.doubleSpinning = false;}
+		if(!p.doubleSpinning) {
+			p.doubleSpinDrawn = false;
+			p.doubleShieldDrawn = false;
 		}
 	}
 }

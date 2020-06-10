@@ -82,7 +82,7 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumpSlowing = false;
+						p.jumpingUp = false;
 						p.state = STATE_BOUNCING;
 						p.bounceType = 0;
 						
@@ -111,7 +111,7 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumpSlowing = false;
+						p.jumpingUp = false;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;
@@ -135,7 +135,7 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumpSlowing = false;
+						p.jumpingUp = false;
 						p.trickReadyReady = true;
 						p.state = STATE_RAMP_DASHING;
 						
@@ -178,7 +178,7 @@ public class PlayerObjectHandling {
 							p.stopCam = true;
 							p.jumpReady = false;
 							p.ground = false;
-							p.jumpSlowing = false;
+							p.jumpingUp = false;
 							p.trickReady = false;
 							p.trickReadyReady = false;
 							p.state = STATE_SWINGING;
@@ -379,7 +379,7 @@ public class PlayerObjectHandling {
 						
 						p.jumpReady = false;
 						p.ground = false;
-						p.jumpSlowing = false;
+						p.jumpingUp = false;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;

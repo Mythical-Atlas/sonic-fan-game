@@ -17,6 +17,7 @@ import static player.PlayerSounds.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedInputStream;
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 import javax.sound.sampled.AudioInputStream;
@@ -78,6 +79,10 @@ public class Player {
 	public boolean spindashCharge;
 	public boolean jumpingUp;
 	public boolean doubleSpinning;
+	public boolean doubleSpinDrawn;
+	public boolean doubleShieldDrawn;
+	public boolean doubleShieldSpriteActive;
+	public boolean doubleSpinReady;
 	
 	public int state;
 	
@@ -123,8 +128,6 @@ public class Player {
 	public Animation crouchAnim1;
 	public Animation spindashAnim;
 	public Animation spindashChargeAnim;
-	public Animation spindashDustAnim;
-	public Animation spindashChargeDustAnim;
 	public Animation skirtAnim;
 	public Animation turnAnim;
 	public Animation landAnim;
@@ -135,6 +138,17 @@ public class Player {
 	public Animation rampAnim;
 	public Animation swingAnim;
 	public Animation dashAnim;
+	public Animation doubleSpinAnim;
+	public Animation slideAnim;
+	public Animation smashStartAnim;
+	public Animation smashEndAnim;
+	public Animation backflipAnim;
+	public Animation helixAnim;
+	public Animation grindAnim;
+	
+	public Animation spindashDustAnim;
+	public Animation spindashChargeDustAnim;
+	public Animation doubleShieldAnim;
 	
 	public int facing;
 	public int anim;
@@ -172,8 +186,6 @@ public class Player {
 		crouchAnim1 = new Animation(Loader.crouchAnim1, new int[]{1, 3}, 2);
 		spindashAnim = new Animation(Loader.spindashAnim, new int[]{2, 2, 2, 2}, 0);
 		spindashChargeAnim = new Animation(Loader.spindashChargeAnim, new int[]{2, 2, 2, 3}, 0);
-		spindashDustAnim = new Animation(Loader.spindashDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
-		spindashChargeDustAnim = new Animation(Loader.spindashChargeDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
 		skirtAnim = new Animation(Loader.skirtAnim, new int[]{2, 2, 2, 4}, 0);
 		turnAnim = new Animation(Loader.turnAnim, new int[]{1, 3}, 0);
 		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
@@ -181,6 +193,17 @@ public class Player {
 		rampAnim = new Animation(Loader.rampAnim, new int[]{1, 2, 2, 2}, 1);
 		swingAnim = new Animation(Loader.sonicRotorAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 0); // not techincally accurate, it sometimes switches to 3 frames, not sure when
 		dashAnim = new Animation(Loader.dashAnim, new int[]{2, 2, 2, 2, 2, 2, 2}, 4);
+		doubleSpinAnim = new Animation(Loader.doubleSpinAnim, new int[]{1, 1, 1, 1, 1, 1, 1, 1}, 0);
+		slideAnim = new Animation(Loader.slideAnim, new int[]{2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2}, 11);
+		smashStartAnim = new Animation(Loader.smashStartAnim, new int[]{3, 3, 6, 2, 2, 2, 2, 3}, 0);
+		smashEndAnim = new Animation(Loader.smashEndAnim, new int[]{2, 2, 2, 2}, 0);
+		backflipAnim = new Animation(Loader.backflipAnim, new int[]{7, 4, 3, 2, 2, 2, 2, 2, 3, 3, 3}, 8);
+		helixAnim = new Animation(Loader.slideAnim, new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 0);
+		grindAnim = new Animation(Loader.grindAnim, new int[]{2, 2}, 0);
+		
+		spindashDustAnim = new Animation(Loader.spindashDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+		spindashChargeDustAnim = new Animation(Loader.spindashChargeDustAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 2}, 0);
+		doubleShieldAnim = new Animation(Loader.doubleShieldAnim, new int[]{2, 2, 2, 2, 2, 2, 2, 3}, 0);
 		
 		trickRightAnim = new Animation(Loader.trickRightAnim, new int[]{2, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1}, 3);
 		trickUp0Anim = new Animation(Loader.trickUp0Anim, new int[]{3, 6, 3, 1, 1, 3, 3, 3, 3}, 5);
@@ -210,6 +233,7 @@ public class Player {
 			dash(this);
 			gravity(this);
 			boost(this);
+			doubleSpin(this);
 		}
 		
 		if(stopCam || state == STATE_SPRING_POLING) {vel = new Vector();}
@@ -416,8 +440,8 @@ public class Player {
 	
 	private void getGroundAxis(Shape[] shapes) {
 		if(ground && !ledge) {
-			Vector oldAxis = new Vector(groundAxis.x, groundAxis.y);
-			double oldAngle = getAngleOfVector(oldAxis);
+			//Vector oldAxis = new Vector(groundAxis.x, groundAxis.y);
+			//double oldAngle = getAngleOfVector(oldAxis);
 			
 			if(abs(groundSpeed) < STICK_MIN_SPEED * SCALE) {groundAxis = new Vector(0, 1);}
 			
@@ -431,8 +455,8 @@ public class Player {
 			if(groundAxis.getLength() != 0) {groundAxis = groundAxis.scale(-1).normalize();}
 			else {groundAxis = new Vector(0, 1);}
 			
-			double tempAngle = getAngleOfVector(groundAxis);
-			double tempAngle0 = getAngleOfVector(new Vector(0, 1));
+			//double tempAngle = getAngleOfVector(groundAxis);
+			//double tempAngle0 = getAngleOfVector(new Vector(0, 1));
 			
 			//if(getDistanceBetweenAngles(tempAngle, oldAngle) > PI / 4) {groundAxis = new Vector(oldAxis.x, oldAxis.y);}
 		}
@@ -479,6 +503,7 @@ public class Player {
 		if(anim == SPIN_ANIM)            {return(spinAnim          );}
 		if(anim == SWING_ANIM)           {return(swingAnim         );}
 		if(anim == DASH_ANIM)            {return(dashAnim          );}
+		if(anim == DOUBLE_SPIN_ANIM)     {return(doubleSpinAnim    );}
 		
 		return(null);
 	}
@@ -543,198 +568,146 @@ public class Player {
 					}
 				}
 			}
-			else { // not tricking
-				if(state == STATE_RAMP_DASHING) {
-					if(anim != RAMP_ANIM) {
-						anim = RAMP_ANIM;
-						rampAnim.reset();
-					}
-					else {rampAnim.update(1);}
+			else if(state == STATE_RAMP_DASHING) {
+				if(anim != RAMP_ANIM) {
+					anim = RAMP_ANIM;
+					rampAnim.reset();
 				}
-				else if(state == STATE_DASHING) {
-					if(anim != DASH_ANIM) {
-						anim = DASH_ANIM;
-						dashAnim.reset();
-					}
-					else {dashAnim.update(1);}
+				else {rampAnim.update(1);}
+			}
+			else if(state == STATE_DASHING) {
+				if(anim != DASH_ANIM) {
+					anim = DASH_ANIM;
+					dashAnim.reset();
 				}
-				else if(state == STATE_SPRING_POLING) {
-					if(anim == JUMP_ANIM) {jumpAnim.update(1);}
-					if(anim == SPIN_ANIM) {spinAnim.update(1);}
-				}
-				else if(state == STATE_SPINDASHING) {
-					if(!spindashCharge) {
-						if(anim == SPINDASH_CHARGE_ANIM) {
-							spindashChargeAnim.update(1);
-							if(spindashChargeAnim.finished) {
-								anim = SPINDASH_ANIM;
-								spindashAnim.reset();
-							}
-						}
-						else if(anim == SPINDASH_ANIM) {spindashAnim.update(1);}
-						else {
+				else {dashAnim.update(1);}
+			}
+			else if(state == STATE_SPRING_POLING) {
+				if(anim == JUMP_ANIM) {jumpAnim.update(1);}
+				if(anim == SPIN_ANIM) {spinAnim.update(1);}
+			}
+			else if(state == STATE_SPINDASHING) {
+				if(!spindashCharge) {
+					if(anim == SPINDASH_CHARGE_ANIM) {
+						spindashChargeAnim.update(1);
+						if(spindashChargeAnim.finished) {
 							anim = SPINDASH_ANIM;
 							spindashAnim.reset();
 						}
 					}
-					if(spindashCharge) {
-						anim = SPINDASH_CHARGE_ANIM;
-						spindashChargeAnim.reset();
-						spindashCharge = false;
-					}
-					
-					if(chargeDustTimer == 0) {
-						if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1);}
-						else {
-							dustAnim = REGULAR_DUST_ANIM;
-							spindashDustAnim.reset();
-						}
-					}
+					else if(anim == SPINDASH_ANIM) {spindashAnim.update(1);}
 					else {
-						if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1);}
-						else {
-							dustAnim = CHARGE_DUST_ANIM;
-							spindashChargeDustAnim.reset();
-						}
-						
-						chargeDustTimer--;
+						anim = SPINDASH_ANIM;
+						spindashAnim.reset();
+					}
+				}
+				if(spindashCharge) {
+					anim = SPINDASH_CHARGE_ANIM;
+					spindashChargeAnim.reset();
+					spindashCharge = false;
+				}
+				
+				if(chargeDustTimer == 0) {
+					if(dustAnim == REGULAR_DUST_ANIM) {spindashDustAnim.update(1);}
+					else {
+						dustAnim = REGULAR_DUST_ANIM;
+						spindashDustAnim.reset();
 					}
 				}
 				else {
-					dustAnim = NO_DUST_ANIM;
-					
-					if(state == STATE_CROUCHING_DOWN) {
-						if(anim == CROUCH_ANIM_0) {
-							crouchAnim0.update(1);
-							if(crouchAnim0.finished) {spindashReady = true;}
-						}
-						else {
-							anim = CROUCH_ANIM_0;
-							crouchAnim0.reset();
-						}
+					if(dustAnim == CHARGE_DUST_ANIM) {spindashChargeDustAnim.update(1);}
+					else {
+						dustAnim = CHARGE_DUST_ANIM;
+						spindashChargeDustAnim.reset();
 					}
-					else if(state == STATE_CROUCHING_UP) {
-						if(anim == CROUCH_ANIM_1) {
-							crouchAnim1.update(1);
-							if(crouchAnim1.finished) {
-								anim = IDLE_ANIM;
-								idleAnim.reset();
-								state = STATE_DEFAULT;
-							}
-						}
+					
+					chargeDustTimer--;
+				}
+			}
+			else if(state == STATE_CROUCHING_DOWN) {
+				if(anim == CROUCH_ANIM_0) {
+					crouchAnim0.update(1);
+					if(crouchAnim0.finished) {spindashReady = true;}
+				}
+				else {
+					anim = CROUCH_ANIM_0;
+					crouchAnim0.reset();
+				}
+			}
+			else if(state == STATE_CROUCHING_UP) {
+				if(anim == CROUCH_ANIM_1) {
+					crouchAnim1.update(1);
+					if(crouchAnim1.finished) {
+						anim = IDLE_ANIM;
+						idleAnim.reset();
+						state = STATE_DEFAULT;
+					}
+				}
+				else {
+					anim = CROUCH_ANIM_1;
+					crouchAnim1.reset();
+				}
+			}
+			else if(state == STATE_SPINNING) {
+				if(doubleSpinDrawn) {
+					if(anim != DOUBLE_SPIN_ANIM) {
+						anim = DOUBLE_SPIN_ANIM;
+						doubleSpinAnim.reset();
+					}
+					else {
+						doubleSpinAnim.update(1);
+						if(doubleSpinAnim.finished) {doubleSpinDrawn = false;}
+					}
+				}
+				if(!doubleSpinDrawn) {
+					if(anim == SPIN_ANIM) {spinAnim.update(1);}
+					else {
+						anim = SPIN_ANIM;
+						spinAnim.reset();
+					}
+				}
+				
+				if(doubleShieldDrawn) {
+					if(!doubleShieldSpriteActive) {
+						doubleShieldSpriteActive = true;
+						doubleShieldAnim.reset();
+					}
+					else {
+						doubleShieldAnim.update(1);
+						if(doubleShieldAnim.finished) {doubleShieldDrawn = false;}
+					}
+				}
+				if(!doubleShieldDrawn) {doubleShieldSpriteActive = false;}
+			}
+			else {
+				if(ground) {
+					if(groundSpeed == 0 && state != STATE_TURNING_SLOW && state != STATE_TURNING_FAST && state != STATE_SKIDDING_SLOW && state != STATE_SKIDDING_FAST) {
+						if(anim == IDLE_ANIM) {idleAnim.update(1);}
 						else {
-							anim = CROUCH_ANIM_1;
-							crouchAnim1.reset();
+							anim = IDLE_ANIM;
+							idleAnim.reset();
 						}
 					}
 					else {
-						if(state == STATE_SPINNING) {
-							if(anim == SPIN_ANIM) {spinAnim.update(1);}
-							else {
-								anim = SPIN_ANIM;
-								spinAnim.reset();
-							}
-						}
-						else {
-							if(ground) {
-								if(groundSpeed == 0 && state != STATE_TURNING_SLOW && state != STATE_TURNING_FAST && state != STATE_SKIDDING_SLOW && state != STATE_SKIDDING_FAST) {
-									if(anim == IDLE_ANIM) {idleAnim.update(1);}
-									else {
-										anim = IDLE_ANIM;
-										idleAnim.reset();
-									}
-								}
+						if(state == STATE_SKIDDING_SLOW || state == STATE_TURNING_FAST) {
+							if(state == STATE_SKIDDING_SLOW) {
+								if(anim == SKID_ANIM) {skidAnim.update(1);}
 								else {
-									if(state == STATE_SKIDDING_SLOW || state == STATE_TURNING_FAST) {
-										if(state == STATE_SKIDDING_SLOW) {
-											if(anim == SKID_ANIM) {skidAnim.update(1);}
-											else {
-												anim = SKID_ANIM;
-												skidAnim.reset();
-												ps.playSound(SOUND_SKID);
-											}
-										}
-										else {
-											if(state == STATE_TURNING_FAST) {
-												if(anim == SKIRT_ANIM) {
-													skirtAnim.update(1);
-													if(skirtAnim.finished) {
-														state = STATE_DEFAULT;
-														
-														if(groundSpeed == 0) {
-															anim = IDLE_ANIM;
-															idleAnim.reset();
-														}
-														else {
-															anim = RUN_ANIM;
-															runSlowestAnim.reset();
-															runSlowAnim.reset();
-															runNormalAnim.reset();
-															runFastAnim.reset();
-															runFastestAnim.reset();
-														}
-														
-														facing *= -1;
-													}
-												}
-												else {
-													anim = SKIRT_ANIM;
-													skirtAnim.reset();
-												}
-											}
-											else {
-												if(groundSpeed == 0) {
-													anim = IDLE_ANIM;
-													idleAnim.reset();
-												}
-												else {
-													anim = RUN_ANIM;
-													runSlowestAnim.reset();
-													runSlowAnim.reset();
-													runNormalAnim.reset();
-													runFastAnim.reset();
-													runFastestAnim.reset();
-												}
-											}
-										}
-									}
-									else { // not skidding or skirting
-										if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || state == STATE_TURNING_SLOW) {
-											state = STATE_TURNING_SLOW;
+									anim = SKID_ANIM;
+									skidAnim.reset();
+									ps.playSound(SOUND_SKID);
+								}
+							}
+							else {
+								if(state == STATE_TURNING_FAST) {
+									if(anim == SKIRT_ANIM) {
+										skirtAnim.update(1);
+										if(skirtAnim.finished) {
+											state = STATE_DEFAULT;
 											
-											if(anim == TURN_ANIM) {
-												turnAnim.update(1);
-												if(turnAnim.finished) {
-													state = STATE_DEFAULT;
-													
-													if(groundSpeed == 0) {
-														anim = IDLE_ANIM;
-														idleAnim.reset();
-													}
-													else {
-														anim = RUN_ANIM;
-														runSlowestAnim.reset();
-														runSlowAnim.reset();
-														runNormalAnim.reset();
-														runFastAnim.reset();
-														runFastestAnim.reset();
-													}
-													
-													facing *= -1;
-												}
-											}
-											else {
-												anim = TURN_ANIM;
-												turnAnim.reset();
-											}
-										}
-										else {
-											if(anim == RUN_ANIM) {
-												runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
-												runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
-												runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
-												runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
-												runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+											if(groundSpeed == 0) {
+												anim = IDLE_ANIM;
+												idleAnim.reset();
 											}
 											else {
 												anim = RUN_ANIM;
@@ -744,65 +717,136 @@ public class Player {
 												runFastAnim.reset();
 												runFastestAnim.reset();
 											}
+											
+											facing *= -1;
 										}
+									}
+									else {
+										anim = SKIRT_ANIM;
+										skirtAnim.reset();
+									}
+								}
+								else {
+									if(groundSpeed == 0) {
+										anim = IDLE_ANIM;
+										idleAnim.reset();
+									}
+									else {
+										anim = RUN_ANIM;
+										runSlowestAnim.reset();
+										runSlowAnim.reset();
+										runNormalAnim.reset();
+										runFastAnim.reset();
+										runFastestAnim.reset();
 									}
 								}
 							}
-							else { // not ground
-								if(state == STATE_JUMPING) {
-									if(anim != JUMP_ANIM) {
-										anim = JUMP_ANIM;
-										jumpAnim.reset();
-										ps.playSound(SOUND_JUMP);
-									}
-								}
-								else {
-									if(state == STATE_BOUNCING && bounceType == 0) {
-										if(vel.y < 0) {
-											if(anim != BOUNCING_UP_ANIM) {
-												anim = BOUNCING_UP_ANIM;
-												bounceUpAnim.reset();
-											}
-											else {bounceUpAnim.update(1);}
+						}
+						else { // not skidding or skirting
+							if(facing == 1 && groundSpeed < 0 && leftArrow || facing == -1 && groundSpeed > 0 && rightArrow || state == STATE_TURNING_SLOW) {
+								state = STATE_TURNING_SLOW;
+								
+								if(anim == TURN_ANIM) {
+									turnAnim.update(1);
+									if(turnAnim.finished) {
+										state = STATE_DEFAULT;
+										
+										if(groundSpeed == 0) {
+											anim = IDLE_ANIM;
+											idleAnim.reset();
 										}
 										else {
-											if(anim != BOUNCING_DOWN_ANIM) {
-												anim = BOUNCING_DOWN_ANIM;
-												bounceDownAnim.reset();
-											}
-											else {
-												bounceDownAnim.update(1);
-												if(bounceDownAnim.finished) {state = STATE_DEFAULT;}
-											}
+											anim = RUN_ANIM;
+											runSlowestAnim.reset();
+											runSlowAnim.reset();
+											runNormalAnim.reset();
+											runFastAnim.reset();
+											runFastestAnim.reset();
 										}
+										
+										facing *= -1;
 									}
-									else if(state == STATE_BOUNCING && bounceType == 1) {if(anim == SPIN_ANIM) {spinAnim.update(1);}}
 								}
-								
-								if(anim == FALL_ANIM) {fallAnim.update(1);}
 								else {
-									if(anim != JUMP_ANIM && anim != LAND_ANIM && state != STATE_BOUNCING && state != STATE_LANDING && state != STATE_SPRING_POLING) {
-										anim = FALL_ANIM;
-										fallAnim.reset();
-									}
+									anim = TURN_ANIM;
+									turnAnim.reset();
 								}
-								
-								if(anim == LAND_ANIM) {landAnim.update(1);}
-								
-								if(anim == JUMP_ANIM) {
-									jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
-									
-									if(state == STATE_LANDING && vel.y > 0 && state != STATE_JUMPING) {
-										anim = LAND_ANIM;
-										landAnim.reset();
-									}
+							}
+							else {
+								if(anim == RUN_ANIM) {
+									runSlowestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+									runSlowAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+									runNormalAnim. update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+									runFastAnim.   update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+									runFastestAnim.update((abs(groundSpeed) * ANIM_SPEED_SCALE * SCALE + 0.25));
+								}
+								else {
+									anim = RUN_ANIM;
+									runSlowestAnim.reset();
+									runSlowAnim.reset();
+									runNormalAnim.reset();
+									runFastAnim.reset();
+									runFastestAnim.reset();
 								}
 							}
 						}
 					}
 				}
+				else { // not ground
+					if(state == STATE_JUMPING) {
+						if(anim != JUMP_ANIM) {
+							anim = JUMP_ANIM;
+							jumpAnim.reset();
+							ps.playSound(SOUND_JUMP);
+						}
+					}
+					else {
+						if(state == STATE_BOUNCING && bounceType == 0) {
+							if(vel.y < 0) {
+								if(anim != BOUNCING_UP_ANIM) {
+									anim = BOUNCING_UP_ANIM;
+									bounceUpAnim.reset();
+								}
+								else {bounceUpAnim.update(1);}
+							}
+							else {
+								if(anim != BOUNCING_DOWN_ANIM) {
+									anim = BOUNCING_DOWN_ANIM;
+									bounceDownAnim.reset();
+								}
+								else {
+									bounceDownAnim.update(1);
+									if(bounceDownAnim.finished) {state = STATE_DEFAULT;}
+								}
+							}
+						}
+						else if(state == STATE_BOUNCING && bounceType == 1) {if(anim == SPIN_ANIM) {spinAnim.update(1);}}
+					}
+					
+					if(anim == FALL_ANIM) {fallAnim.update(1);}
+					else {
+						if(anim != JUMP_ANIM && anim != LAND_ANIM && state != STATE_BOUNCING && state != STATE_LANDING && state != STATE_SPRING_POLING) {
+							anim = FALL_ANIM;
+							fallAnim.reset();
+						}
+					}
+					
+					if(anim == LAND_ANIM) {landAnim.update(1);}
+					
+					if(anim == JUMP_ANIM) {
+						jumpAnim.update(1 /** (dt / (1.0f / 60.0f))*/);
+						
+						if(state == STATE_LANDING && vel.y > 0 && state != STATE_JUMPING) {
+							anim = LAND_ANIM;
+							landAnim.reset();
+						}
+					}
+				}
 			}
 		}
+		
+		if(state != STATE_SPINDASHING) {dustAnim = NO_DUST_ANIM;}
+		if(state != STATE_SPINNING) {doubleShieldSpriteActive = false;}
 	}
 	
 	public void draw(float dt, Renderer r) {
@@ -833,13 +877,14 @@ public class Player {
 			if(anim == TURN_ANIM)            {turnAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == CROUCH_ANIM_0)        {crouchAnim0.       draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == CROUCH_ANIM_1)        {crouchAnim1.       draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
-			if(anim == JUMP_ANIM)            {jumpAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
-			if(anim == LAND_ANIM)            {landAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == JUMP_ANIM)            {jumpAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == LAND_ANIM)            {landAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == TRICK_RIGHT_ANIM)     {trickRightAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == TRICK_UP_0_ANIM)      {trickUp0Anim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == TRICK_UP_1_ANIM)      {trickUp1Anim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == RAMP_ANIM)            {rampAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
-			if(anim == DASH_ANIM)            {dashAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == DASH_ANIM)            {dashAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == DOUBLE_SPIN_ANIM)     {doubleSpinAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw((pos.x - w / 2 - 32 + 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 1) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
@@ -849,6 +894,8 @@ public class Player {
 			if(anim == SPINDASH_CHARGE_ANIM)            {spindashChargeAnim.    draw((pos.x - w / 2 + s) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(dustAnim == REGULAR_DUST_ANIM && ground) {spindashDustAnim.      draw((pos.x - w / 2 + s) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(dustAnim == CHARGE_DUST_ANIM  && ground) {spindashChargeDustAnim.draw((pos.x - w / 2 + s) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			
+			if(doubleShieldSpriteActive) {doubleShieldAnim.draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 		}
 	}
 
