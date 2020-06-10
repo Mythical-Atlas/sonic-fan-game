@@ -236,6 +236,13 @@ public class Player {
 			doubleSpin(this);
 		}
 		
+		if(ground || anim != JUMP_ANIM) {doubleSpinReady = false;}
+		if(ground || state != STATE_SPINNING) {doubleSpinning = false;}
+		if(!doubleSpinning) {
+			doubleSpinDrawn = false;
+			doubleShieldDrawn = false;
+		}
+		
 		if(stopCam || state == STATE_SPRING_POLING) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
