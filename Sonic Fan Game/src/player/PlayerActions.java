@@ -27,7 +27,7 @@ public class PlayerActions {
 			if((p.state != STATE_SPINNING || !p.ground) && p.state != STATE_RAMP_DASHING && p.state != STATE_DASHING) { // regular movement
 				if(p.leftArrow && !p.rightArrow) {
 					if(p.groundSpeed <= 0 || !p.ground) {
-						if(!p.ground) {p.facing = -1;}
+						if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = -1;}
 						if(p.state == STATE_SKIDDING_SLOW) {
 							if(p.facing == 1) {p.state = STATE_TURNING_FAST;}
 							else {p.state = STATE_DEFAULT;}
@@ -46,7 +46,7 @@ public class PlayerActions {
 				}
 				if(p.rightArrow && !p.leftArrow) {
 					if(p.groundSpeed >= 0 || !p.ground) {
-						if(!p.ground) {p.facing = 1;}
+						if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = 1;}
 						if(p.state == STATE_SKIDDING_SLOW) {
 							if(p.facing == -1) {p.state = STATE_TURNING_FAST;}
 							else {p.state = STATE_DEFAULT;}
@@ -179,6 +179,14 @@ public class PlayerActions {
 		if(p.spaceBar && p.trickReady) {
 			if(p.rightArrow && p.facing == 1 || p.leftArrow && p.facing == -1) {p.state = STATE_TRICKING_FORWARD;}
 			else if(p.upArrow) {p.state = STATE_TRICKING_UP;}
+			else if(p.downArrow) {}
+			else if(p.rightArrow && p.facing == -1 || p.leftArrow && p.facing == 1 || !p.rightArrow && !p.leftArrow && !p.upArrow && !p.downArrow) {
+				p.state = STATE_TRICKING_BACKWARD;
+				p.trickReady = false;
+				p.trickReadyReady = false;
+				p.vel = new Vector(0, -5);
+				p.groundSpeed = -p.facing * 15;
+			}
 			
 			if(p.state == STATE_TRICKING_FORWARD || p.state == STATE_TRICKING_UP) {
 				p.trickReady = false;

@@ -511,6 +511,7 @@ public class Player {
 		if(anim == SWING_ANIM)           {return(swingAnim         );}
 		if(anim == DASH_ANIM)            {return(dashAnim          );}
 		if(anim == DOUBLE_SPIN_ANIM)     {return(doubleSpinAnim    );}
+		if(anim == TRICK_BACK_ANIM)      {return(backflipAnim      );}
 		
 		return(null);
 	}
@@ -549,6 +550,14 @@ public class Player {
 						}
 					}
 				}
+			}
+			else if(state == STATE_TRICKING_BACKWARD) {
+				if(anim != TRICK_BACK_ANIM) {
+					anim = TRICK_BACK_ANIM;
+					backflipAnim.reset();
+					ps.playSound(SOUND_TRICK);
+				}
+				else {backflipAnim.update(1);}
 			}
 			else if(state == STATE_TRICKING_UP) {
 				if(anim != TRICK_UP_0_ANIM && anim != TRICK_UP_1_ANIM) {
@@ -892,6 +901,7 @@ public class Player {
 			if(anim == RAMP_ANIM)            {rampAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == DASH_ANIM)            {dashAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == DOUBLE_SPIN_ANIM)     {doubleSpinAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == TRICK_BACK_ANIM)      {backflipAnim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw((pos.x - w / 2 - 32 + 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 1) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
