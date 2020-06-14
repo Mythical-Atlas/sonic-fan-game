@@ -37,7 +37,6 @@ public class Window {
 	
 	public static Window get() {
 		if(window == null) {window = new Window();}
-		
 		return(window);
 	}
 	
