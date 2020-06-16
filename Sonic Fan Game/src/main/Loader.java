@@ -257,7 +257,7 @@ public class Loader {
 		slideAnim = loadImages("/sonicsprites", "slide");
 		smashStartAnim = loadImages("/sonicsprites", "smashStart");
 		smashEndAnim = loadImages("/sonicsprites", "smashEnd");
-		backflipAnim = loadImages("/sonicsprites", "backflip");
+		backflipAnim = loadImages("/sonicsprites", "backFlip");
 		helixAnim = loadImages("/sonicsprites", "helix");
 		grindAnim = loadImages("/sonicsprites", "grind");
 		
