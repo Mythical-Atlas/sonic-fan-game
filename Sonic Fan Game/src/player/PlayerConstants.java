@@ -20,6 +20,7 @@ public class PlayerConstants {
 	public static final double GROUND_GRAVITY_DECEL 	= 0.4;
 	public static final double SPIN_DECEL			  	= 0.025;
 	public static final double MIN_POTENTIAL_GRAVITY	= 0.1;
+	public static final double SLIDE_DECEL  		  	= 0.25;
 	
 	public static final double SLOW_MIN_SPEED 		= 10;
 	public static final double NORMAL_MIN_SPEED 	= 20;

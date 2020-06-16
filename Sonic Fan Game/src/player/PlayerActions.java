@@ -9,6 +9,15 @@ import datatypes.Vector;
 
 public class PlayerActions {
 	public static void movement(Player p) {
+		if(!p.ground && (p.state == STATE_SKIDDING_SLOW || p.state == STATE_TURNING_SLOW || p.state == STATE_TURNING_FAST || p.state == STATE_SLIDING)) {p.state = STATE_DEFAULT;}
+		
+		if(p.state != STATE_CROUCHING_DOWN && p.state != STATE_CROUCHING && p.state != STATE_CROUCHING_UP && p.state != STATE_SPINDASHING) {
+			if((p.state != STATE_SPINNING || !p.ground) && p.state != STATE_RAMP_DASHING && p.state != STATE_DASHING && p.state != STATE_SLIDING) {defaultMovement(p);}
+			else if(p.state == STATE_SLIDING) {slidingMovement(p);}
+			else {spinningMovement(p);}
+		}
+	}
+	private static void defaultMovement(Player p) {
 		double moveSpeed;
 		if(!p.shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
 		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
@@ -21,82 +30,89 @@ public class PlayerActions {
 			capScale = BOOST_LIMIT_SCALE;
 		}
 		
-		if(!p.ground && (p.state == STATE_SKIDDING_SLOW || p.state == STATE_TURNING_SLOW || p.state == STATE_TURNING_FAST)) {p.state = STATE_DEFAULT;}
-		
-		if(p.state != STATE_CROUCHING_DOWN && p.state != STATE_CROUCHING && p.state != STATE_CROUCHING_UP && p.state != STATE_SPINDASHING) {
-			if((p.state != STATE_SPINNING || !p.ground) && p.state != STATE_RAMP_DASHING && p.state != STATE_DASHING) { // regular movement
-				if(p.leftArrow && !p.rightArrow) {
-					if(p.groundSpeed <= 0 || !p.ground) {
-						if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = -1;}
-						if(p.state == STATE_SKIDDING_SLOW) {
-							if(p.facing == 1) {p.state = STATE_TURNING_FAST;}
-							else {p.state = STATE_DEFAULT;}
-						}
-						
-						if(p.groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
-							if(p.ground || p.shiftKey) {p.groundSpeed -= moveSpeed * accelScale;}
-							if(!p.ground) {p.groundSpeed -= AIR_ACCEL * accelScale;}
-							if(p.groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
-						}
-					}
-					else {
-						p.groundSpeed -= SKID_ACCEL * SCALE;
-						if(p.groundSpeed >= SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
-					}
+		if(p.leftArrow && !p.rightArrow) {
+			if(p.groundSpeed <= 0 || !p.ground) {
+				if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = -1;}
+				if(p.state == STATE_SKIDDING_SLOW) {
+					if(p.facing == 1) {p.state = STATE_TURNING_FAST;}
+					else {p.state = STATE_DEFAULT;}
 				}
-				if(p.rightArrow && !p.leftArrow) {
-					if(p.groundSpeed >= 0 || !p.ground) {
-						if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = 1;}
-						if(p.state == STATE_SKIDDING_SLOW) {
-							if(p.facing == -1) {p.state = STATE_TURNING_FAST;}
-							else {p.state = STATE_DEFAULT;}
-						}
-						
-						if(p.groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
-							if(p.ground || p.shiftKey) {p.groundSpeed += moveSpeed * accelScale;}
-							if(!p.ground) {p.groundSpeed += AIR_ACCEL * accelScale;}
-							if(p.groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
-						}
-					}
-					else {
-						p.groundSpeed += SKID_ACCEL * SCALE;
-						if(p.groundSpeed <= -SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
-					}
+				
+				if(p.groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
+					if(p.ground || p.shiftKey) {p.groundSpeed -= moveSpeed * accelScale;}
+					if(!p.ground) {p.groundSpeed -= AIR_ACCEL * accelScale;}
+					if(p.groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
 				}
 			}
-			else { // movement while spinning
-				if(p.ground) {
-					if(p.leftArrow && !p.rightArrow) {
-						if(p.groundSpeed > 0) {
-							p.groundSpeed -= SKID_ACCEL * SCALE;
-							if(p.groundSpeed <= 0) {
-								p.state = STATE_DEFAULT;
-								p.facing = -1;
-							}
-						}
-						else {p.facing = -1;}
-					}
-					if(p.rightArrow && !p.leftArrow) {
-						if(p.groundSpeed < 0) {
-							p.groundSpeed += SKID_ACCEL * SCALE;
-							if(p.groundSpeed >= 0) {
-								p.state = STATE_DEFAULT;
-								p.facing = 1;
-							}
-						}
-						else {p.facing = 1;}
+			else {
+				p.groundSpeed -= SKID_ACCEL * SCALE;
+				if(p.groundSpeed >= SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
+			}
+		}
+		if(p.rightArrow && !p.leftArrow) {
+			if(p.groundSpeed >= 0 || !p.ground) {
+				if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = 1;}
+				if(p.state == STATE_SKIDDING_SLOW) {
+					if(p.facing == -1) {p.state = STATE_TURNING_FAST;}
+					else {p.state = STATE_DEFAULT;}
+				}
+				
+				if(p.groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
+					if(p.ground || p.shiftKey) {p.groundSpeed += moveSpeed * accelScale;}
+					if(!p.ground) {p.groundSpeed += AIR_ACCEL * accelScale;}
+					if(p.groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
+				}
+			}
+			else {
+				p.groundSpeed += SKID_ACCEL * SCALE;
+				if(p.groundSpeed <= -SKID_MIN_SPEED) {p.state = STATE_SKIDDING_SLOW;}
+			}
+		}
+	}
+	private static void spinningMovement(Player p) {
+		if(p.ground) {
+			if(p.leftArrow && !p.rightArrow) {
+				if(p.groundSpeed > 0) {
+					p.groundSpeed -= SKID_ACCEL * SCALE;
+					if(p.groundSpeed <= 0) {
+						p.state = STATE_CROUCHING_UP;
+						p.groundSpeed = 0;
+						p.facing = -1;
 					}
 				}
-				else {
-					if(p.leftArrow && !p.rightArrow) {
-						p.groundSpeed -= MOVE_ACCEL * SCALE;
-						if(p.groundSpeed < 0) {p.facing = -1;}
-					}
-					if(p.rightArrow && !p.leftArrow) {
-						p.groundSpeed += MOVE_ACCEL * SCALE;
-						if(p.groundSpeed > 0) {p.facing = 1;}
+				else {p.facing = -1;}
+			}
+			if(p.rightArrow && !p.leftArrow) {
+				if(p.groundSpeed < 0) {
+					p.groundSpeed += SKID_ACCEL * SCALE;
+					if(p.groundSpeed >= 0) {
+						p.state = STATE_CROUCHING_UP;
+						p.groundSpeed = 0;
+						p.facing = 1;
 					}
 				}
+				else {p.facing = 1;}
+			}
+		}
+		else {
+			if(p.leftArrow && !p.rightArrow) {
+				p.groundSpeed -= MOVE_ACCEL * SCALE;
+				if(p.groundSpeed < 0) {p.facing = -1;}
+			}
+			if(p.rightArrow && !p.leftArrow) {
+				p.groundSpeed += MOVE_ACCEL * SCALE;
+				if(p.groundSpeed > 0) {p.facing = 1;}
+			}
+		}
+	}
+	private static void slidingMovement(Player p) {
+		if(p.leftArrow && !p.rightArrow && p.ground || !p.leftArrow && p.rightArrow && p.ground) {
+			if(p.groundSpeed > 0) {p.groundSpeed -= SLIDE_DECEL * SCALE;}
+			else if(p.groundSpeed < 0) {p.groundSpeed += SLIDE_DECEL * SCALE;}
+			
+			if(p.groundSpeed >= -SKID_ACCEL * SCALE && p.groundSpeed <= SKID_ACCEL * SCALE) {
+				p.groundSpeed = 0;
+				p.state = STATE_CROUCHING_UP;
 			}
 		}
 	}
@@ -105,7 +121,7 @@ public class PlayerActions {
 		if(!p.leftArrow && !p.rightArrow && p.ground || p.leftArrow && p.rightArrow && p.ground) {
 			if(p.state == STATE_SKIDDING_SLOW) {p.state = STATE_DEFAULT;}
 			
-			if(p.state != STATE_SPINNING && p.state != STATE_SPINDASHING) { // regular drag
+			if(p.state != STATE_SPINNING && p.state != STATE_SPINDASHING && p.state != STATE_SLIDING) { // regular drag
 				     if(p.groundSpeed > 0) {p.groundSpeed -= DRAG_DECEL * SCALE;}
 				else if(p.groundSpeed < 0) {p.groundSpeed += DRAG_DECEL * SCALE;}
 				
@@ -115,9 +131,18 @@ public class PlayerActions {
 			         if(p.groundSpeed > 0) {p.groundSpeed -= SPIN_DECEL * SCALE;}
 				else if(p.groundSpeed < 0) {p.groundSpeed += SPIN_DECEL * SCALE;}
 				
-				if(p.groundSpeed >= -SPIN_DECEL * SCALE && p.groundSpeed <= SPIN_DECEL * SCALE) {
+				if(p.groundSpeed >= -SKID_ACCEL * SCALE && p.groundSpeed <= SKID_ACCEL * SCALE) {
 					p.groundSpeed = 0;
-					p.state = STATE_DEFAULT;
+					p.state = STATE_CROUCHING_UP;
+				}
+			}
+			else if(p.state == STATE_SLIDING) { // sliding drag
+			         if(p.groundSpeed > 0) {p.groundSpeed -= SLIDE_DECEL * SCALE;}
+				else if(p.groundSpeed < 0) {p.groundSpeed += SLIDE_DECEL * SCALE;}
+				
+				if(p.groundSpeed >= -SKID_ACCEL * SCALE && p.groundSpeed <= SKID_ACCEL * SCALE) {
+					p.groundSpeed = 0;
+					p.state = STATE_CROUCHING_UP;
 				}
 			}
 			
@@ -351,5 +376,18 @@ public class PlayerActions {
 			p.doubleSpinDrawn = false;
 			p.doubleShieldDrawn = false;
 		}
+	}
+	
+	public static void slide(Player p) {
+		if(p.ground && p.state != STATE_SLIDING) {
+			if(p.zKey && p.slideReady) {
+				p.state = STATE_SLIDING;
+				p.groundSpeed = p.facing * 10;
+				p.ps.playSound(SOUND_SPINDASH_RELEASE);
+			}
+			
+			if(!p.zKey) {p.slideReady = true;}
+		}
+		else {p.slideReady = false;}
 	}
 }

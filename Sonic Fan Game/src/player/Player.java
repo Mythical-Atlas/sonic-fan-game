@@ -57,7 +57,7 @@ public class Player {
 	public boolean spaceBar;
 	public boolean shiftKey;
 	public boolean controlKey;
-	//public boolean trickKey;
+	public boolean zKey;
 	
 	// flags
 	public boolean ground;
@@ -83,6 +83,7 @@ public class Player {
 	public boolean doubleShieldDrawn;
 	public boolean doubleShieldSpriteActive;
 	public boolean doubleSpinReady;
+	public boolean slideReady;
 	
 	public int state;
 	
@@ -234,6 +235,7 @@ public class Player {
 			gravity(this);
 			boost(this);
 			doubleSpin(this);
+			slide(this);
 		}
 		
 		if(ground || anim != JUMP_ANIM) {doubleSpinReady = false;}
@@ -512,6 +514,7 @@ public class Player {
 		if(anim == DASH_ANIM)            {return(dashAnim          );}
 		if(anim == DOUBLE_SPIN_ANIM)     {return(doubleSpinAnim    );}
 		if(anim == TRICK_BACK_ANIM)      {return(backflipAnim      );}
+		if(anim == SLIDE_ANIM)           {return(slideAnim         );}
 		
 		return(null);
 	}
@@ -694,6 +697,13 @@ public class Player {
 					}
 				}
 				if(!doubleShieldDrawn) {doubleShieldSpriteActive = false;}
+			}
+			else if(state == STATE_SLIDING) {
+				if(anim != SLIDE_ANIM) {
+					anim = SLIDE_ANIM;
+					slideAnim.reset();
+				}
+				else {slideAnim.update(1);}
 			}
 			else {
 				if(ground) {
@@ -902,6 +912,7 @@ public class Player {
 			if(anim == DASH_ANIM)            {dashAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == DOUBLE_SPIN_ANIM)     {doubleSpinAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == TRICK_BACK_ANIM)      {backflipAnim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == SLIDE_ANIM     )      {slideAnim.         draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw((pos.x - w / 2 - 32 + 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 1) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
@@ -924,7 +935,7 @@ public class Player {
 		spaceBar = KeyListener.isKeyPressed(GLFW_KEY_C);
 		shiftKey = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT);
 		controlKey = KeyListener.isKeyPressed(GLFW_KEY_X);
-		//trickKey = KeyListener.isKeyPressed(GLFW_KEY_Z);
+		zKey = KeyListener.isKeyPressed(GLFW_KEY_Z);
 	}
 	
 	public Shape getRotatedCircle(Vector pos, double radius, double offsetX, double offsetY) {
