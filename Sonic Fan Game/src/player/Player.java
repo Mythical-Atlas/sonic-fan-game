@@ -84,6 +84,8 @@ public class Player {
 	public boolean doubleShieldSpriteActive;
 	public boolean doubleSpinReady;
 	public boolean slideReady;
+	public boolean slamReady;
+	public boolean slamUp;
 	
 	public int state;
 	
@@ -221,21 +223,26 @@ public class Player {
 		checkKeys();
 		
 		if(state == STATE_STARTING) {starting();}
-		if(state != STATE_STARTING && !stopCam && state != STATE_SPRING_POLING) { // NOT ELSE
-			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
-			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
+		if(state != STATE_STARTING && state != STATE_SPRING_POLING) { // NOT ELSE
+			if(!stopCam) {
+				groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
+				vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
+				
+				// actions
+				movement(this);
+				drag(this);
+				jump(this);
+				trick(this);
+				spindash(this);
+				crouch(this);
+				dash(this);
+				gravity(this);
+				boost(this);
+				doubleSpin(this);
+				slide(this);
+			}
 			
-			movement(this);
-			drag(this);
-			jump(this);
-			trick(this);
-			spindash(this);
-			crouch(this);
-			dash(this);
-			gravity(this);
-			boost(this);
-			doubleSpin(this);
-			slide(this);
+			slam(this);
 		}
 		
 		if(ground || anim != JUMP_ANIM) {doubleSpinReady = false;}
@@ -245,7 +252,7 @@ public class Player {
 			doubleShieldDrawn = false;
 		}
 		
-		if(stopCam || state == STATE_SPRING_POLING) {vel = new Vector();}
+		if((stopCam || state == STATE_SPRING_POLING) && state != STATE_SMASHING) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
@@ -271,13 +278,12 @@ public class Player {
 			collide(shapes);
 			checkLedge(shapes);
 			stick(shapes);
-		
 			checkGround(shapes);
 			getGroundAxis(shapes);
-			
 			checkLanding(shapes);
 		}
 		
+		// object handling
 		rings(this, rings);
 		badniks(this, badniks);
 		items(this, items);
@@ -374,8 +380,16 @@ public class Player {
 		pos.translate(dir);
 		
 		if(dir.getLength() != 0) {
-			dir = dir.getPerpendicular();
-			vel = vel.project(dir);
+			if(state != STATE_SMASHING) {
+				dir = dir.getPerpendicular();
+				vel = vel.project(dir);
+			}
+			else { // bounce if in slam state
+				ground = false;
+				slamUp = true;
+				vel = new Vector(0, -10);
+				pos.translate(vel);
+			}
 		}
 	}
 	
@@ -428,23 +442,24 @@ public class Player {
 		else {groundMask = getRotatedCircle(pos, (GROUND_ANGLE_MASK_RADIUS - 1) * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, (GROUND_ANGLE_MASK_OFFSET_Y + 1) * SCALE);}
 		
 		ground = false;
-		for(int i = 0; i < shapes.length; i++) {if(checkCollision(groundMask, shapes[i])) {ground = true;}}
+		if(state != STATE_SMASHING) {
+			for(int i = 0; i < shapes.length; i++) {if(checkCollision(groundMask, shapes[i])) {ground = true;}}
 		
-		if(ground && !oldGround) {
-			ledge = false;
-			trickReady = false;
-			trickReadyReady = false;
-			
-			if(downArrow) {
-				if(state != STATE_SPINNING && vel.x != 0) {
-					state = STATE_SPINNING;
-					
-					ps.playSound(SOUND_SPIN);
+			if(ground && !oldGround) {
+				ledge = false;
+				trickReady = false;
+				trickReadyReady = false;
+				
+				if(downArrow) {
+					if(state != STATE_SPINNING && vel.x != 0) {
+						state = STATE_SPINNING;
+						
+						ps.playSound(SOUND_SPIN);
+					}
 				}
+				else {state = STATE_DEFAULT;}
 			}
-			else {state = STATE_DEFAULT;}
 		}
-		
 	}
 	
 	private void getGroundAxis(Shape[] shapes) {
@@ -475,7 +490,7 @@ public class Player {
 	private void checkLanding(Shape[] shapes) {
 		Shape landMask = getRotatedRectangle(pos, LAND_MASK_WIDTH * SCALE, LAND_MASK_HEIGHT * SCALE, 0, LAND_MASK_OFFSET_Y * SCALE);
 		for(int i = 0; i < shapes.length; i++) {
-			if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM && !ground && vel.y > 0) {
+			if(checkCollision(landMask, shapes[i]) && anim == JUMP_ANIM && !ground && vel.y > 0 && state != STATE_SMASHING) {
 				state = STATE_LANDING;
 				break;
 			}
@@ -515,6 +530,8 @@ public class Player {
 		if(anim == DOUBLE_SPIN_ANIM)     {return(doubleSpinAnim    );}
 		if(anim == TRICK_BACK_ANIM)      {return(backflipAnim      );}
 		if(anim == SLIDE_ANIM)           {return(slideAnim         );}
+		if(anim == SLAM_START_ANIM)      {return(smashStartAnim    );}
+		if(anim == SLAM_END_ANIM)        {return(smashEndAnim      );}
 		
 		return(null);
 	}
@@ -704,6 +721,36 @@ public class Player {
 					slideAnim.reset();
 				}
 				else {slideAnim.update(1);}
+			}
+			else if(state == STATE_SMASHING_START) {
+				if(anim != SLAM_START_ANIM) {
+					anim = SLAM_START_ANIM;
+					smashStartAnim.reset();
+				}
+				else {
+					smashStartAnim.update(1);
+					if(smashStartAnim.finished) {
+						state = STATE_SMASHING;
+						anim = SPIN_ANIM;
+						spinAnim.reset();
+					}
+				}
+			}
+			else if(state == STATE_SMASHING) {spinAnim.update(1);}
+			else if(state == STATE_SMASHING_END) {
+				if(anim != SLAM_END_ANIM) {
+					anim = SLAM_END_ANIM;
+					smashEndAnim.reset();
+				}
+				else {
+					smashEndAnim.update(1);
+					if(smashEndAnim.finished) {
+						anim = FALL_ANIM;
+						state = STATE_DEFAULT;
+						fallAnim.reset();
+						stopCam = false;
+					}
+				}
 			}
 			else {
 				if(ground) {
@@ -912,7 +959,9 @@ public class Player {
 			if(anim == DASH_ANIM)            {dashAnim.          draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == DOUBLE_SPIN_ANIM)     {doubleSpinAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3 + 8) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == TRICK_BACK_ANIM)      {backflipAnim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
-			if(anim == SLIDE_ANIM     )      {slideAnim.         draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == SLIDE_ANIM)           {slideAnim.         draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == SLAM_START_ANIM)      {smashStartAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == SLAM_END_ANIM)        {smashEndAnim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw((pos.x - w / 2 - 32 + 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 1) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			

@@ -146,7 +146,7 @@ public class PlayerActions {
 				}
 			}
 			
-			if(p.downArrow && p.groundSpeed != 0) {
+			if(p.downArrow && p.groundSpeed != 0 && p.state != STATE_SLIDING) {
 				if(p.state != STATE_SPINNING) {
 					p.state = STATE_SPINNING;
 					p.spindashReady = false;
@@ -204,7 +204,16 @@ public class PlayerActions {
 		if(p.spaceBar && p.trickReady) {
 			if(p.rightArrow && p.facing == 1 || p.leftArrow && p.facing == -1) {p.state = STATE_TRICKING_FORWARD;}
 			else if(p.upArrow) {p.state = STATE_TRICKING_UP;}
-			else if(p.downArrow) {}
+			else if(p.downArrow) {
+				p.state = STATE_SMASHING_START;
+				p.ps.playSound(SOUND_SPINDASH_RELEASE);
+				
+				p.vel = new Vector(0, 0);
+				p.groundSpeed = 0;
+				p.stopCam = true;
+				p.jumpingUp = false;
+				p.slamUp = false;
+			}
 			else if(p.rightArrow && p.facing == -1 || p.leftArrow && p.facing == 1 || !p.rightArrow && !p.leftArrow && !p.upArrow && !p.downArrow) {
 				p.state = STATE_TRICKING_BACKWARD;
 				p.trickReady = false;
@@ -290,6 +299,7 @@ public class PlayerActions {
 			p.jumpingUp = false;
 			p.trickReady = false;
 			p.trickReadyReady = false;
+			p.jumpingUp = false;
 			p.state = STATE_DASHING;
 			
 			p.groundSpeed += 15 * SCALE * p.facing;
@@ -382,6 +392,7 @@ public class PlayerActions {
 		if(p.ground && p.state != STATE_SLIDING) {
 			if(p.zKey && p.slideReady) {
 				p.state = STATE_SLIDING;
+				p.helixing = false;
 				p.groundSpeed = p.facing * 10;
 				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 			}
@@ -389,5 +400,33 @@ public class PlayerActions {
 			if(!p.zKey) {p.slideReady = true;}
 		}
 		else {p.slideReady = false;}
+	}
+	
+	public static void slam(Player p) {
+		if(p.state == STATE_JUMPING) {
+			if(p.zKey && p.slamReady) {
+				p.state = STATE_SMASHING_START;
+				p.ps.playSound(SOUND_SPINDASH_RELEASE);
+				
+				p.vel = new Vector(0, 0);
+				p.groundSpeed = 0;
+				p.stopCam = true;
+				p.jumpingUp = false;
+				p.slamUp = false;
+			}
+			
+			if(!p.zKey) {p.slamReady = true;}
+		}
+		else {p.slamReady = false;}
+		
+		if(p.state == STATE_SMASHING) {
+			p.ground = false;
+			p.vel.translate(0, GRAVITY * SCALE);
+			
+			if(p.vel.y > 0 && p.slamUp) {
+				p.vel.y = 0;
+				p.state = STATE_SMASHING_END;
+			}
+		}
 	}
 }

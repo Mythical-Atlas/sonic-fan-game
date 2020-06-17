@@ -83,6 +83,7 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpingUp = false;
+						p.stopCam = false;
 						p.state = STATE_BOUNCING;
 						p.bounceType = 0;
 						
@@ -112,6 +113,7 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpingUp = false;
+						p.stopCam = false;
 						p.bounceType = 0;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;
@@ -136,6 +138,7 @@ public class PlayerObjectHandling {
 						p.jumpReady = false;
 						p.ground = false;
 						p.jumpingUp = false;
+						p.stopCam = false;
 						p.trickReadyReady = true;
 						p.state = STATE_RAMP_DASHING;
 						
@@ -231,7 +234,6 @@ public class PlayerObjectHandling {
 		if(p.state == STATE_SPRING_POLING) {
 			if(!p.springPole.bouncing) {
 				p.state = STATE_BOUNCING;
-				//stopCam = false;
 				p.bounceType = 1;
 				
 				double lowPower = -15;
@@ -286,7 +288,7 @@ public class PlayerObjectHandling {
 						if(xDif >= 0.5) {p.springPole.fastBounce();}
 						else {p.springPole.slowBounce();}
 						
-						//stopCam = true;
+						p.stopCam = false;
 						p.trickReady = false;
 						p.trickReadyReady = false;
 						p.state = STATE_SPRING_POLING;
@@ -321,13 +323,13 @@ public class PlayerObjectHandling {
 					}
 				}
 				else {
-					if(checkCollision(p.mask, helixMaskLeft) && p.ground && p.groundSpeed > 0) {
+					if(checkCollision(p.mask, helixMaskLeft) && p.ground && p.groundSpeed > 0 && !p.stopCam) {
 						p.helix = helixes[i];
 						p.helixDir = 1;
 						p.vel.y = 0;
 						p.helixing = true;
 					}
-					if(checkCollision(p.mask, helixMaskRight) && p.ground && p.groundSpeed < 0) {
+					if(checkCollision(p.mask, helixMaskRight) && p.ground && p.groundSpeed < 0 && !p.stopCam) {
 						p.helix = helixes[i];
 						p.helixDir = -1;
 						p.vel.y = 0;
@@ -356,6 +358,8 @@ public class PlayerObjectHandling {
 					p.vel = new Vector(GROUND_ACCEL_LIMIT * BOOST_LIMIT_SCALE * SCALE * dashPads[i].direction, 0);
 					p.facing = dashPads[i].direction;
 					p.boostMode = true;
+					p.stopCam = false;
+					if(p.state != STATE_SPINNING) {p.state = STATE_DEFAULT;}
 					
 					p.ps.playSound(SOUND_BOOST);
 				}
@@ -381,6 +385,7 @@ public class PlayerObjectHandling {
 						p.ground = false;
 						p.jumpingUp = false;
 						p.bounceType = 0;
+						p.stopCam = false;
 						p.trickReadyReady = true;
 						p.state = STATE_BOUNCING;
 						
