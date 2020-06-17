@@ -224,10 +224,10 @@ public class Player {
 		
 		if(state == STATE_STARTING) {starting();}
 		if(state != STATE_STARTING && state != STATE_SPRING_POLING) { // NOT ELSE
+			groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
+			vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
+			
 			if(!stopCam) {
-				groundSpeed = getRotatedVectorComponents(vel, groundAxis).x;
-				vel.translate(groundAxis.getPerpendicular().normalize().scale(groundSpeed));
-				
 				// actions
 				movement(this);
 				drag(this);
@@ -252,7 +252,7 @@ public class Player {
 			doubleShieldDrawn = false;
 		}
 		
-		if((stopCam || state == STATE_SPRING_POLING) && state != STATE_SMASHING && state != STATE_SMASHING_END) {vel = new Vector();}
+		if((stopCam || state == STATE_SPRING_POLING) && state != STATE_SMASHING_START && state != STATE_SMASHING && state != STATE_SMASHING_END) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
@@ -383,6 +383,7 @@ public class Player {
 			if(state != STATE_SMASHING) {
 				dir = dir.getPerpendicular();
 				vel = vel.project(dir);
+				stopCam = false;
 			}
 			else { // bounce if in slam state
 				ground = false;

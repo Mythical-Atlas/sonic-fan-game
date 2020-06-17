@@ -208,8 +208,6 @@ public class PlayerActions {
 				p.state = STATE_SMASHING_START;
 				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 				
-				p.vel = new Vector(0, 0);
-				p.groundSpeed = 0;
 				p.stopCam = true;
 				p.jumpingUp = false;
 				p.slamUp = false;
@@ -247,7 +245,7 @@ public class PlayerActions {
 			}
 		}
 		
-		if(p.state != STATE_SPINDASHING && p.state == STATE_SPINNING && p.controlKey && p.controlKeyReady) {p.state = STATE_DEFAULT;}
+		//if(p.state != STATE_SPINDASHING && p.state == STATE_SPINNING && p.controlKey && p.controlKeyReady) {p.state = STATE_DEFAULT;}
 		
 		p.controlKeyReady = !p.controlKey;
 		
@@ -408,8 +406,6 @@ public class PlayerActions {
 				p.state = STATE_SMASHING_START;
 				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 				
-				p.vel = new Vector(0, 0);
-				p.groundSpeed = 0;
 				p.stopCam = true;
 				p.jumpingUp = false;
 				p.slamUp = false;
@@ -419,6 +415,10 @@ public class PlayerActions {
 		}
 		else {p.slamReady = false;}
 		
+		if(p.state == STATE_SMASHING_START) {
+			p.ground = false;
+			p.vel.translate(0, GRAVITY * SCALE);
+		}
 		if(p.state == STATE_SMASHING) {
 			p.ground = false;
 			p.vel.translate(0, GRAVITY * SCALE);
