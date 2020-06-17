@@ -252,7 +252,7 @@ public class Player {
 			doubleShieldDrawn = false;
 		}
 		
-		if((stopCam || state == STATE_SPRING_POLING) && state != STATE_SMASHING) {vel = new Vector();}
+		if((stopCam || state == STATE_SPRING_POLING) && state != STATE_SMASHING && state != STATE_SMASHING_END) {vel = new Vector();}
 		if(helixing) {vel.y = 0;}
 		
 		boolean[] platMasks = null;
@@ -387,7 +387,16 @@ public class Player {
 			else { // bounce if in slam state
 				ground = false;
 				slamUp = true;
-				vel = new Vector(0, -10);
+				
+				double normal = getAngleOfVector(dir);
+				double initial = getAngleOfVector(vel.scale(-1));
+				double dif0 = getDistanceBetweenAngles(initial, normal);
+				double finish = initial;
+				
+				     if(getDistanceBetweenAngles(initial, normal + PI / 2) < getDistanceBetweenAngles(initial, normal - PI / 2)) {finish -= dif0 * 2;}
+				else if(getDistanceBetweenAngles(initial, normal + PI / 2) > getDistanceBetweenAngles(initial, normal - PI / 2)) {finish += dif0 * 2;}
+				
+				vel = new Vector(cos(finish), -sin(finish)).scale(min(vel.getLength(), GROUND_ACCEL_LIMIT * SCALE));
 				pos.translate(vel);
 			}
 		}

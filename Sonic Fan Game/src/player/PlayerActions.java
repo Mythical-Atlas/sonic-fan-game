@@ -423,10 +423,7 @@ public class PlayerActions {
 			p.ground = false;
 			p.vel.translate(0, GRAVITY * SCALE);
 			
-			if(p.vel.y > 0 && p.slamUp) {
-				p.vel.y = 0;
-				p.state = STATE_SMASHING_END;
-			}
+			if(p.vel.y > 0 && p.slamUp) {p.state = STATE_SMASHING_END;}
 		}
 	}
 }
