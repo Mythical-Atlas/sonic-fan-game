@@ -82,7 +82,14 @@ public class HUD {
 		timeFrames = 0;
 	}
 	
-	public void manageAnimation(float dt, Player p) {for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {ring.update((p.vel.getLength() / 10 + 1));}}
+	public void manageAnimation(float dt, Player p) {
+		for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
+			ring.update((p.vel.getLength() / 10 + 1));
+			
+			ringTimer++;
+			if(ringTimer == 60) {ringTimer = 0;}
+		}
+	}
 	
 	public void updateTime(float dt) {timeFrames += dt * 1000000000;}
 	
@@ -113,11 +120,6 @@ public class HUD {
 		else {
 			if(ringTimer < 30) {drawNumber(28 * SCALE, 3 * SCALE, p.rings, 3, camera, r);}
 			else {drawRedNumber(28 * SCALE, 3 * SCALE, p.rings, 3, camera, r);}
-			
-			for(int f = 1; f < min(60.0f / (1.0f / dt), 5); f++) {
-				ringTimer++;
-				if(ringTimer == 60) {ringTimer = 0;}
-			}
 		}
 
 		drawNumber((1 + 27) * SCALE, (3 + 14) * SCALE, p.score, 6, camera, r);

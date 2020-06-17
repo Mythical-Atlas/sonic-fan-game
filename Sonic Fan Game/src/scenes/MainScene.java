@@ -473,6 +473,7 @@ public class MainScene extends Scene {
 	private void moveCamera(float dt) {
 		Vector pos = player.pos;
 		double lead = player.groundSpeed * LEAD_DISTANCE_SCALE / 2 * Loader.scale;
+		if(!player.ground) {lead = player.vel.x * LEAD_DISTANCE_SCALE / 2 * Loader.scale;}
 		
 		double x = camPos.x;
 		double y = camPos.y;
