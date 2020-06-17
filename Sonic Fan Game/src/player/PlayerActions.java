@@ -219,7 +219,7 @@ public class PlayerActions {
 				p.trickReady = false;
 				p.trickReadyReady = false;
 				p.vel = new Vector(0, -5);
-				p.groundSpeed = -p.facing * 15;
+				p.groundSpeed = -p.facing * 12;
 			}
 			
 			if(p.state == STATE_TRICKING_FORWARD || p.state == STATE_TRICKING_UP) {
