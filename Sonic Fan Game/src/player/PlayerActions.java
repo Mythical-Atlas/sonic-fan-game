@@ -416,10 +416,6 @@ public class PlayerActions {
 		else {p.slamReady = false;}
 		
 		if(p.state == STATE_SMASHING_START || p.state == STATE_SMASHING || p.state == STATE_SMASHING_END) {
-			double moveSpeed;
-			if(!p.shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
-			else          {moveSpeed = SPRINT_ACCEL * SCALE;}
-			
 			double accelScale = 1;
 			double capScale = 1;
 			
@@ -429,27 +425,15 @@ public class PlayerActions {
 			}
 			
 			if(p.leftArrow && !p.rightArrow) {
-				if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = -1;}
-				if(p.state == STATE_SKIDDING_SLOW) {
-					if(p.facing == 1) {p.state = STATE_TURNING_FAST;}
-					else {p.state = STATE_DEFAULT;}
-				}
-				
 				if(p.groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
-					if(p.ground || p.shiftKey) {p.groundSpeed -= moveSpeed * accelScale;}
+					if(p.ground || p.shiftKey) {p.groundSpeed -= MOVE_ACCEL * SCALE * accelScale;}
 					if(!p.ground) {p.groundSpeed -= AIR_ACCEL * accelScale;}
 					if(p.groundSpeed < -GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = -GROUND_ACCEL_LIMIT * capScale * SCALE;}
 				}
 			}
 			if(p.rightArrow && !p.leftArrow) {
-				if(!p.ground && p.state != STATE_TRICKING_UP && p.state != STATE_TRICKING_BACKWARD && p.state != STATE_TRICKING_FORWARD) {p.facing = 1;}
-				if(p.state == STATE_SKIDDING_SLOW) {
-					if(p.facing == -1) {p.state = STATE_TURNING_FAST;}
-					else {p.state = STATE_DEFAULT;}
-				}
-				
 				if(p.groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
-					if(p.ground || p.shiftKey) {p.groundSpeed += moveSpeed * accelScale;}
+					if(p.ground || p.shiftKey) {p.groundSpeed += MOVE_ACCEL * SCALE * accelScale;}
 					if(!p.ground) {p.groundSpeed += AIR_ACCEL * accelScale;}
 					if(p.groundSpeed > GROUND_ACCEL_LIMIT * capScale * SCALE && !p.shiftKey) {p.groundSpeed = GROUND_ACCEL_LIMIT * capScale * SCALE;}
 				}
