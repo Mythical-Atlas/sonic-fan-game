@@ -425,6 +425,8 @@ public class PlayerActions {
 			}
 			
 			if(p.leftArrow && !p.rightArrow) {
+				p.facing = -1;
+				
 				if(p.groundSpeed > -GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
 					if(p.ground || p.shiftKey) {p.groundSpeed -= MOVE_ACCEL * SCALE * accelScale;}
 					if(!p.ground) {p.groundSpeed -= AIR_ACCEL * accelScale;}
@@ -432,6 +434,8 @@ public class PlayerActions {
 				}
 			}
 			if(p.rightArrow && !p.leftArrow) {
+				p.facing = 1;
+				
 				if(p.groundSpeed < GROUND_ACCEL_LIMIT * capScale * SCALE || p.shiftKey) {
 					if(p.ground || p.shiftKey) {p.groundSpeed += MOVE_ACCEL * SCALE * accelScale;}
 					if(!p.ground) {p.groundSpeed += AIR_ACCEL * accelScale;}
