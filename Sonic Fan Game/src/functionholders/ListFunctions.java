@@ -9,6 +9,7 @@ import objects.AfterImage;
 import objects.BlueSpring;
 import objects.DashPad;
 import objects.Item;
+import objects.Rail;
 import objects.Ramp;
 import objects.Ring;
 import objects.Rotor;
@@ -99,6 +100,16 @@ public class ListFunctions {
 		if(existingPoints == null) {return(new Spring[]{pointToCheck});}
 		
 		Spring[] newList = new Spring[existingPoints.length + 1];
+		
+		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
+		newList[existingPoints.length] = pointToCheck;
+		
+		return(newList);
+	}
+	public static Rail[] append(Rail[] existingPoints, Rail pointToCheck) {
+		if(existingPoints == null) {return(new Rail[]{pointToCheck});}
+		
+		Rail[] newList = new Rail[existingPoints.length + 1];
 		
 		for(int i = 0; i < existingPoints.length; i++) {newList[i] = existingPoints[i];}
 		newList[existingPoints.length] = pointToCheck;

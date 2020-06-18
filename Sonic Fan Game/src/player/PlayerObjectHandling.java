@@ -367,7 +367,13 @@ public class PlayerObjectHandling {
 		}
 	}
 	
-	public static void rails(Player p, Rail[] rails) {}
+	public static void rails(Player p, Rail[] rails) {
+		if(rails != null) {
+			for(int i = 0; i < rails.length; i++) {
+				
+			}
+		}
+	}
 	
 	public static void blueSprings(Player p, BlueSpring[] blueSprings) {
 		if(blueSprings != null) {

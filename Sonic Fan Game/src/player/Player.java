@@ -194,7 +194,7 @@ public class Player {
 		landAnim = new Animation(Loader.landAnim, new int[]{1, 2, 2, 2}, 1);
 		startAnim = new Animation(Loader.startAnim, new int[]{2, 2, 4, 4, 4, 6, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 6, 4, 6, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 6, 4, 110, 6, 60, 3}, 0);
 		rampAnim = new Animation(Loader.rampAnim, new int[]{1, 2, 2, 2}, 1);
-		swingAnim = new Animation(Loader.sonicRotorAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 0); // not techincally accurate, it sometimes switches to 3 frames, not sure when
+		swingAnim = new Animation(Loader.sonicRotorAnim, new int[]{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, 0); // not technically accurate, it sometimes switches to 3 frames, not sure when
 		dashAnim = new Animation(Loader.dashAnim, new int[]{2, 2, 2, 2, 2, 2, 2}, 4);
 		doubleSpinAnim = new Animation(Loader.doubleSpinAnim, new int[]{1, 1, 1, 1, 1, 1, 1, 1}, 0);
 		slideAnim = new Animation(Loader.slideAnim, new int[]{2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2}, 11);
@@ -267,6 +267,14 @@ public class Player {
 		if(layer == 1) {shapes = combine(layer0, layer1);}
 		if(layer == 2) {shapes = combine(layer0, layer2);}
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
+		/*if(state == STATE_GRINDING) {
+			if(rails != null) {
+				for(int i = 0; i < rails.length; i++) {
+					Shape[] railShapes = rails[i].getShapes(96, 96, 2);
+					for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
+				}
+			}
+		}*/
 		
 		if(shapes != null) {
 			if(state == STATE_BOUNCING && bounceType == 0 && vel.y < 0 && !ground) {
@@ -275,9 +283,19 @@ public class Player {
 			}
 			else {groundFlipped = false;}
 			
-			collide(shapes);
+			collide(shapes, rails);
 			checkLedge(shapes);
-			stick(shapes);
+			stick(shapes, rails);
+			
+			if(state == STATE_GRINDING) {
+				if(rails != null) {
+					for(int i = 0; i < rails.length; i++) {
+						Shape[] railShapes = rails[i].getShapes(96, 96, 2);
+						for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
+					}
+				}
+			}
+			
 			checkGround(shapes);
 			getGroundAxis(shapes);
 			checkLanding(shapes);
@@ -372,12 +390,31 @@ public class Player {
 		if(layer1Triggers != null) {for(int i = 0; i < layer1Triggers.length; i++) {if(checkCollision(mask, layer1Triggers[i])) {layer = 1;}}}
 	}
 	
-	private void collide(Shape[] shapes) {
+	private void collide(Shape[] shapes, Rail[] rails) {
 		mask = new Circle(MASK_RADIUS * SCALE);
 		mask.relocate(pos);
 		Vector dir = clip(mask, shapes);
 		
-		pos.translate(dir);
+		if(rails != null) {
+			Shape[] tempShapes = null;
+			
+			for(int i = 0; i < rails.length; i++) {
+				Shape[] railShapes = rails[i].getShapes(96, 96, 2);
+				for(int s = 0; s < railShapes.length; s++) {tempShapes = append(tempShapes, railShapes[s]);}
+			}
+			
+			Vector railDir = clip(mask, combine(tempShapes, shapes));
+			
+			if(railDir.x == dir.x && railDir.y == dir.y) {pos.translate(dir);}
+			else {
+				pos.translate(railDir);
+				state = STATE_GRINDING;
+			}
+		}
+		else {
+			pos.translate(dir);
+			if(state == STATE_GRINDING) {state = STATE_DEFAULT;}
+		}
 		
 		if(dir.getLength() != 0) {
 			if(state != STATE_SMASHING) {
@@ -427,7 +464,7 @@ public class Player {
 		if(ledge) {groundAxis = new Vector(0, 1);}
 	}
 	
-	private void stick(Shape[] shapes) {
+	private void stick(Shape[] shapes, Rail[] rails) {
 		if(ground && !ledge) {
 			pos.translate(groundAxis.scale(STICK_OFFSET_SCALE * SCALE * vel.getLength()));
 			mask = new Circle(MASK_RADIUS * SCALE);
@@ -435,7 +472,26 @@ public class Player {
 			
 			Vector dir = clip(mask, shapes);
 			
-			pos.translate(dir);
+			if(rails != null) {
+				Shape[] tempShapes = null;
+				
+				for(int i = 0; i < rails.length; i++) {
+					Shape[] railShapes = rails[i].getShapes(96, 96, 2);
+					for(int s = 0; s < railShapes.length; s++) {tempShapes = append(tempShapes, railShapes[s]);}
+				}
+				
+				Vector railDir = clip(mask, combine(tempShapes, shapes));
+				
+				if(railDir.x == dir.x && railDir.y == dir.y) {pos.translate(dir);}
+				else {
+					pos.translate(railDir);
+					state = STATE_GRINDING;
+				}
+			}
+			else {
+				pos.translate(dir);
+				if(state == STATE_GRINDING) {state = STATE_DEFAULT;}
+			}
 			
 			if(dir.getLength() != 0) {
 				dir = dir.getPerpendicular();
@@ -542,6 +598,7 @@ public class Player {
 		if(anim == SLIDE_ANIM)           {return(slideAnim         );}
 		if(anim == SLAM_START_ANIM)      {return(smashStartAnim    );}
 		if(anim == SLAM_END_ANIM)        {return(smashEndAnim      );}
+		if(anim == GRIND_ANIM)           {return(grindAnim         );}
 		
 		return(null);
 	}
@@ -762,6 +819,13 @@ public class Player {
 					}
 				}
 			}
+			else if(state == STATE_GRINDING) {
+				if(anim != GRIND_ANIM) {
+					anim = GRIND_ANIM;
+					grindAnim.reset();
+				}
+				else {grindAnim.update(1);}
+			}
 			else {
 				if(ground) {
 					if(groundSpeed == 0 && state != STATE_TURNING_SLOW && state != STATE_TURNING_FAST && state != STATE_SKIDDING_SLOW && state != STATE_SKIDDING_FAST) {
@@ -972,6 +1036,7 @@ public class Player {
 			if(anim == SLIDE_ANIM)           {slideAnim.         draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == SLAM_START_ANIM)      {smashStartAnim.    draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			if(anim == SLAM_END_ANIM)        {smashEndAnim.      draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
+			if(anim == GRIND_ANIM)           {grindAnim.         draw((pos.x - w / 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 + 3) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			
 			if(anim == SWING_ANIM) {swingAnim.draw((pos.x - w / 2 - 32 + 2) / 2 * Loader.scale, (pos.y - h / 2 - 32 - 1) / 2 * Loader.scale + 0, pos.x / 2 * Loader.scale, pos.y / 2 * Loader.scale, t, -facing * Loader.scale, Loader.scale, r);}
 			

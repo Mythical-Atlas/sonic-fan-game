@@ -149,6 +149,7 @@ public class MainScene extends Scene {
 		springPoles = null;
 		dashPads = null;
 		blueSprings = null;
+		rails = null;
 		
 		placeObjects();
 		
@@ -228,6 +229,12 @@ public class MainScene extends Scene {
 		placeDashPad(75, 11, 2, 4, 0, 0, 1, 0);
 		
 		placeBlueSpring( 40,  6,  9, 10, -16, -32);
+		
+		rails = append(rails, new Rail());
+		rails[0].appendCorner(getPos(31, 3,  0, 4, 0, 0));
+		rails[0].appendCorner(getPos(31, 3,  6, 4, 0, 0));
+		rails[0].appendCorner(getPos(33, 2,  6, 4, 0, 0));
+		rails[0].appendCorner(getPos(33, 2, 12, 4, 0, 0));
 	}
 	
 	private void reset() {
