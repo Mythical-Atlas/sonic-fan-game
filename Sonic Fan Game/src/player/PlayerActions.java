@@ -387,7 +387,7 @@ public class PlayerActions {
 	}
 	
 	public static void slide(Player p) {
-		if(p.ground && p.state != STATE_SLIDING) {
+		if(p.ground && p.state != STATE_SLIDING && p.state != STATE_GRINDING) {
 			if(p.zKey && p.slideReady) {
 				p.state = STATE_SLIDING;
 				p.helixing = false;

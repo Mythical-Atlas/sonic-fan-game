@@ -181,7 +181,7 @@ public class MainScene extends Scene {
 		placeSpring( 35,  6,  8,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring( 46,  5, 10,  3, -16, -32, PI / 2, 55, 0);
 		placeSpring( 56, 10, 10,  5, -16, -32, PI / 2, 55, 0);
-		placeSpring( 59, 13, 10,  5, -16, -32, PI / 2, 55, 0);
+		placeSpring( 59, 13, 10,  5, -16, -32, PI / 2, 35, 0);
 		//placeSpring( 88, 16, 10,  5, -16, -32, PI / 2, 55, 0);
 		placeSpring(125, 18, 10, 11, -16, -32, PI / 2, 55, 0);
 		placeSpring(137, 18,  8,  5, -16, -32, PI / 2, 55, 0);

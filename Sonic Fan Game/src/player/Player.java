@@ -86,6 +86,7 @@ public class Player {
 	public boolean slideReady;
 	public boolean slamReady;
 	public boolean slamUp;
+	public boolean justGrinded;
 	
 	public int state;
 	
@@ -277,14 +278,14 @@ public class Player {
 			
 			checkGrinding(shapes, rails);
 			
-			//if(state == STATE_GRINDING) {
+			if(state == STATE_GRINDING) {
 				if(rails != null) {
 					for(int i = 0; i < rails.length; i++) {
 						Shape[] railShapes = rails[i].getShapes(96, 96, 2);
 						for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
 					}
 				}
-			//}
+			}
 			
 			collide(shapes);
 			checkLedge(shapes);
@@ -384,7 +385,7 @@ public class Player {
 	}
 	
 	private void checkGrinding(Shape[] shapes, Rail[] rails) {
-		if(rails != null/* && !ground && vel.y >= 0*/ || state == STATE_GRINDING) {
+		if(rails != null && (!ground && vel.y > 0 || ground) || state == STATE_GRINDING) {
 			Shape[] tempShapes = null;
 			for(int i = 0; i < rails.length; i++) {
 				Shape[] railShapes = rails[i].getShapes(96, 96, 2);
@@ -399,13 +400,16 @@ public class Player {
 			boolean tempGrind2 = false;
 			for(int i = 0; i < shapes.length; i++) {if(checkCollision(groundMask, shapes[i])) {tempGrind = true;}}
 			//if(!tempGrind) {
+			if(!justGrinded || ground || state == STATE_GRINDING) {
 				for(int i = 0; i < tempShapes.length; i++) {
 					if(checkCollision(groundMask, tempShapes[i])) {
 						state = STATE_GRINDING;
+						justGrinded = true;
 						tempGrind2 = true;
 						break;
 					}
 				}
+			}
 			//}
 			
 			if(state == STATE_GRINDING && !tempGrind2) {state = STATE_DEFAULT;}
@@ -509,6 +513,8 @@ public class Player {
 					}
 				}
 				else {state = STATE_DEFAULT;}
+				
+				if(state != STATE_GRINDING) {justGrinded = false;}
 			}
 		}
 	}
