@@ -231,10 +231,17 @@ public class MainScene extends Scene {
 		placeBlueSpring( 40,  6,  9, 10, -16, -32);
 		
 		rails = append(rails, new Rail());
-		rails[0].appendCorner(getPos(31, 3,  0, 4, 0, 0));
-		rails[0].appendCorner(getPos(31, 3,  6, 4, 0, 0));
-		rails[0].appendCorner(getPos(33, 2,  6, 4, 0, 0));
-		rails[0].appendCorner(getPos(33, 2, 12, 4, 0, 0));
+		rails[0].appendCorner(getPos(31, 3,  0,  4, 0, 0));
+		rails[0].appendCorner(getPos(31, 3,  6,  4, 0, 0));
+		rails[0].appendCorner(getPos(33, 2,  6,  4, 0, 0));
+		rails[0].appendCorner(getPos(33, 2, 12,  4, 0, 0));
+		rails = append(rails, new Rail());
+		rails[1].appendCorner(getPos(36, 2,  0,  4, 0, 0));
+		rails[1].appendCorner(getPos(36, 2,  5,  4, 0, 0));
+		rails[1].appendCorner(getPos(36, 2,  7,  5, 0, 0));
+		rails[1].appendCorner(getPos(39, 4,  1, 11, 0, 0));
+		rails[1].appendCorner(getPos(39, 5,  3,  0, 0, 0));
+		rails[1].appendCorner(getPos(39, 5, 12,  0, 0, 0));
 	}
 	
 	private void reset() {
