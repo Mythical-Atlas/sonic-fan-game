@@ -211,6 +211,7 @@ public class PlayerActions {
 				p.stopCam = true;
 				p.jumpingUp = false;
 				p.slamUp = false;
+				p.vel.y = -10;
 			}
 			else if(p.rightArrow && p.facing == -1 || p.leftArrow && p.facing == 1 || !p.rightArrow && !p.leftArrow && !p.upArrow && !p.downArrow) {
 				p.state = STATE_TRICKING_BACKWARD;
@@ -407,8 +408,11 @@ public class PlayerActions {
 				p.ps.playSound(SOUND_SPINDASH_RELEASE);
 				
 				p.stopCam = true;
+				p.trickReady = false;
+				p.trickReadyReady = false;
 				p.jumpingUp = false;
 				p.slamUp = false;
+				p.vel.y = -10;
 			}
 			
 			if(!p.zKey) {p.slamReady = true;}
