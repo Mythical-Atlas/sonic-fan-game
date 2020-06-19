@@ -267,14 +267,6 @@ public class Player {
 		if(layer == 1) {shapes = combine(layer0, layer1);}
 		if(layer == 2) {shapes = combine(layer0, layer2);}
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
-		/*if(state == STATE_GRINDING) {
-			if(rails != null) {
-				for(int i = 0; i < rails.length; i++) {
-					Shape[] railShapes = rails[i].getShapes(96, 96, 2);
-					for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
-				}
-			}
-		}*/
 		
 		if(shapes != null) {
 			if(state == STATE_BOUNCING && bounceType == 0 && vel.y < 0 && !ground) {
@@ -283,19 +275,20 @@ public class Player {
 			}
 			else {groundFlipped = false;}
 			
-			collide(shapes, rails);
-			checkLedge(shapes);
-			stick(shapes, rails);
+			checkGrinding(shapes, rails);
 			
-			if(state == STATE_GRINDING) {
+			//if(state == STATE_GRINDING) {
 				if(rails != null) {
 					for(int i = 0; i < rails.length; i++) {
 						Shape[] railShapes = rails[i].getShapes(96, 96, 2);
 						for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
 					}
 				}
-			}
+			//}
 			
+			collide(shapes);
+			checkLedge(shapes);
+			stick(shapes);
 			checkGround(shapes);
 			getGroundAxis(shapes);
 			checkLanding(shapes);
@@ -390,31 +383,42 @@ public class Player {
 		if(layer1Triggers != null) {for(int i = 0; i < layer1Triggers.length; i++) {if(checkCollision(mask, layer1Triggers[i])) {layer = 1;}}}
 	}
 	
-	private void collide(Shape[] shapes, Rail[] rails) {
-		mask = new Circle(MASK_RADIUS * SCALE);
-		mask.relocate(pos);
-		Vector dir = clip(mask, shapes);
-		
-		if(rails != null) {
+	private void checkGrinding(Shape[] shapes, Rail[] rails) {
+		if(rails != null/* && !ground && vel.y >= 0*/ || state == STATE_GRINDING) {
 			Shape[] tempShapes = null;
-			
 			for(int i = 0; i < rails.length; i++) {
 				Shape[] railShapes = rails[i].getShapes(96, 96, 2);
 				for(int s = 0; s < railShapes.length; s++) {tempShapes = append(tempShapes, railShapes[s]);}
 			}
 			
-			Vector railDir = clip(mask, combine(tempShapes, shapes));
+			Shape groundMask;
+			if(!groundFlipped) {groundMask = getRotatedCircle(pos, GROUND_ANGLE_MASK_RADIUS * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, GROUND_ANGLE_MASK_OFFSET_Y * SCALE);}
+			else {groundMask = getRotatedCircle(pos, (GROUND_ANGLE_MASK_RADIUS - 1) * SCALE, GROUND_ANGLE_MASK_OFFSET_X * SCALE, (GROUND_ANGLE_MASK_OFFSET_Y + 1) * SCALE);}
 			
-			if(railDir.x == dir.x && railDir.y == dir.y) {pos.translate(dir);}
-			else {
-				pos.translate(railDir);
-				state = STATE_GRINDING;
-			}
+			boolean tempGrind = false;
+			boolean tempGrind2 = false;
+			for(int i = 0; i < shapes.length; i++) {if(checkCollision(groundMask, shapes[i])) {tempGrind = true;}}
+			//if(!tempGrind) {
+				for(int i = 0; i < tempShapes.length; i++) {
+					if(checkCollision(groundMask, tempShapes[i])) {
+						state = STATE_GRINDING;
+						tempGrind2 = true;
+						break;
+					}
+				}
+			//}
+			
+			if(state == STATE_GRINDING && !tempGrind2) {state = STATE_DEFAULT;}
 		}
-		else {
-			pos.translate(dir);
-			if(state == STATE_GRINDING) {state = STATE_DEFAULT;}
-		}
+		else {if(state == STATE_GRINDING) {state = STATE_DEFAULT;}}
+	}
+	
+	private void collide(Shape[] shapes) {
+		mask = new Circle(MASK_RADIUS * SCALE);
+		mask.relocate(pos);
+		Vector dir = clip(mask, shapes);
+		
+		pos.translate(dir);
 		
 		if(dir.getLength() != 0) {
 			if(state != STATE_SMASHING) {
@@ -464,7 +468,7 @@ public class Player {
 		if(ledge) {groundAxis = new Vector(0, 1);}
 	}
 	
-	private void stick(Shape[] shapes, Rail[] rails) {
+	private void stick(Shape[] shapes) {
 		if(ground && !ledge) {
 			pos.translate(groundAxis.scale(STICK_OFFSET_SCALE * SCALE * vel.getLength()));
 			mask = new Circle(MASK_RADIUS * SCALE);
@@ -472,26 +476,7 @@ public class Player {
 			
 			Vector dir = clip(mask, shapes);
 			
-			if(rails != null) {
-				Shape[] tempShapes = null;
-				
-				for(int i = 0; i < rails.length; i++) {
-					Shape[] railShapes = rails[i].getShapes(96, 96, 2);
-					for(int s = 0; s < railShapes.length; s++) {tempShapes = append(tempShapes, railShapes[s]);}
-				}
-				
-				Vector railDir = clip(mask, combine(tempShapes, shapes));
-				
-				if(railDir.x == dir.x && railDir.y == dir.y) {pos.translate(dir);}
-				else {
-					pos.translate(railDir);
-					state = STATE_GRINDING;
-				}
-			}
-			else {
-				pos.translate(dir);
-				if(state == STATE_GRINDING) {state = STATE_DEFAULT;}
-			}
+			pos.translate(dir);
 			
 			if(dir.getLength() != 0) {
 				dir = dir.getPerpendicular();
