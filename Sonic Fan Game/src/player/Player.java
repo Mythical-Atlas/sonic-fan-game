@@ -422,10 +422,9 @@ public class Player {
 		mask.relocate(pos);
 		Vector dir = clip(mask, shapes);
 		
-		pos.translate(dir);
-		
 		if(dir.getLength() != 0) {
 			if(state != STATE_SMASHING) {
+				pos.translate(dir);
 				dir = dir.getPerpendicular();
 				vel = vel.project(dir);
 				stopCam = false;
@@ -442,8 +441,16 @@ public class Player {
 				     if(getDistanceBetweenAngles(initial, normal + PI / 2) < getDistanceBetweenAngles(initial, normal - PI / 2)) {finish -= dif0 * 2;}
 				else if(getDistanceBetweenAngles(initial, normal + PI / 2) > getDistanceBetweenAngles(initial, normal - PI / 2)) {finish += dif0 * 2;}
 				
-				vel = new Vector(cos(finish), -sin(finish)).scale(min(vel.getLength(), GROUND_ACCEL_LIMIT * SCALE));
-				pos.translate(vel);
+				if(new Vector(cos(finish), -sin(finish)).scale(min(vel.getLength(), GROUND_ACCEL_LIMIT * SCALE)).y < 0) {
+					vel = new Vector(cos(finish), -sin(finish)).scale(min(vel.getLength(), GROUND_ACCEL_LIMIT * SCALE));
+					pos.translate(vel);
+				}
+				else {
+					pos.translate(dir);
+					dir = dir.getPerpendicular();
+					vel = vel.project(dir);
+					stopCam = false;
+				}
 			}
 		}
 	}
