@@ -34,6 +34,23 @@ public class Loader {
 	public static Scene currentScene;
 	public static boolean fullscreen;
 	
+	public static int joyUp = 1;
+	public static int joyDown = 1;
+	public static int joyLeft = 0;
+	public static int joyRight = 0;
+	public static int joyA = 0;
+	public static int joyB = 1;
+	public static int joyX = 2;
+	public static int joyY = 3;
+	public static int joyStart = 7;
+	public static int joyBack = 6;
+	
+	public static int joyUpAxis = -1;
+	public static int joyDownAxis = 1;
+	public static int joyLeftAxis = -1;
+	public static int joyRightAxis = 1;
+	
+	/*
 	public static int joyUp = 16;
 	public static int joyDown = 18;
 	public static int joyLeft = 19;
@@ -44,6 +61,12 @@ public class Loader {
 	public static int joyY = 2;
 	public static int joyStart = 8;
 	public static int joyBack = 9;
+	
+	public static int joyUpAxis = 0;
+	public static int joyDownAxis = 0;
+	public static int joyLeftAxis = 0;
+	public static int joyRightAxis = 0;
+	*/
 	
 	public static int graphicsWidth;
 	public static int graphicsHeight;

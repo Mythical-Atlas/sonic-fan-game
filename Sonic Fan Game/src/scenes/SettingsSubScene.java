@@ -121,16 +121,24 @@ public class SettingsSubScene extends Scene {
 		f.draw(xBase, 0 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "joystick buttons", r);
 		
 		setSelectionColor(3);
-		f.draw(xBase, 1 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "up " + Loader.joyUp, r);
+		if(Loader.joyUpAxis ==  0) {f.draw(xBase, 1 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "up " + Loader.joyUp, r);}
+		if(Loader.joyUpAxis == -1) {f.draw(xBase, 1 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "up " + Loader.joyUp + " neg", r);}
+		if(Loader.joyUpAxis ==  1) {f.draw(xBase, 1 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "up " + Loader.joyUp + " pos", r);}
 		
 		setSelectionColor(4);
-		f.draw(xBase, 2 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "down " + Loader.joyDown, r);
+		if(Loader.joyDownAxis ==  0) {f.draw(xBase, 2 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "down " + Loader.joyDown, r);}
+		if(Loader.joyDownAxis == -1) {f.draw(xBase, 2 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "down " + Loader.joyDown + " neg", r);}
+		if(Loader.joyDownAxis ==  1) {f.draw(xBase, 2 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "down " + Loader.joyDown + " pos", r);}
 		
 		setSelectionColor(5);
-		f.draw(xBase, 3 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "left " + Loader.joyLeft, r);
+		if(Loader.joyLeftAxis ==  0) {f.draw(xBase, 3 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "left " + Loader.joyLeft, r);}
+		if(Loader.joyLeftAxis == -1) {f.draw(xBase, 3 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "left " + Loader.joyLeft + " neg", r);}
+		if(Loader.joyLeftAxis ==  1) {f.draw(xBase, 3 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "left " + Loader.joyLeft + " pos", r);}
 		
 		setSelectionColor(6);
-		f.draw(xBase, 4 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "right " + Loader.joyRight, r);
+		if(Loader.joyRightAxis ==  0) {f.draw(xBase, 4 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "right " + Loader.joyRight, r);}
+		if(Loader.joyRightAxis == -1) {f.draw(xBase, 4 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "right " + Loader.joyRight + " neg", r);}
+		if(Loader.joyRightAxis ==  1) {f.draw(xBase, 4 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "right " + Loader.joyRight + " pos", r);}
 		
 		setSelectionColor(7);
 		f.draw(xBase, 5 * 12 * Loader.scale + 6 * Loader.scale, Loader.scale, "a " + Loader.joyA, r);
@@ -241,20 +249,76 @@ public class SettingsSubScene extends Scene {
 		else {
 			if(!keySetReady) {keySetReady = !enterKey && !aKey;}
 			else {
-				if(KeyListener.getNumJoystickKeysPressed() == 1) {
-					if(settingsSelection ==  3) {Loader.joyUp = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  4) {Loader.joyDown = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  5) {Loader.joyLeft = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  6) {Loader.joyRight = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  7) {Loader.joyA = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  8) {Loader.joyB = KeyListener.getNextJoystickButton();}
-					if(settingsSelection ==  9) {Loader.joyX = KeyListener.getNextJoystickButton();}
-					if(settingsSelection == 10) {Loader.joyStart = KeyListener.getNextJoystickButton();}
-					if(settingsSelection == 11) {Loader.joyBack = KeyListener.getNextJoystickButton();}
-					
-					settingKey = false;
+				if(settingsSelection ==  3) {
+					if(KeyListener.getNextJoystickButton() != -1) {
+						Loader.joyUp = KeyListener.getNextJoystickButton();
+						Loader.joyUpAxis = 0;
+						settingKey = false;
+					}
+					else {
+						if(KeyListener.getNextJoystickAxis() != -1) {
+							Loader.joyUp = KeyListener.getNextJoystickAxis();
+							Loader.joyUpAxis = KeyListener.getJoystickAxisSign(Loader.joyUp);
+							settingKey = false;
+						}
+					}
 				}
+				if(settingsSelection ==  4) {
+					if(KeyListener.getNextJoystickButton() != -1) {
+						Loader.joyDown = KeyListener.getNextJoystickButton();
+						Loader.joyDownAxis = 0;
+						settingKey = false;
+					}
+					else {
+						if(KeyListener.getNextJoystickAxis() != -1) {
+							Loader.joyDown = KeyListener.getNextJoystickAxis();
+							Loader.joyDownAxis = KeyListener.getJoystickAxisSign(Loader.joyDown);
+							settingKey = false;
+						}
+					}
+				}
+				if(settingsSelection ==  5) {
+					if(KeyListener.getNextJoystickButton() != -1) {
+						Loader.joyLeft = KeyListener.getNextJoystickButton();
+						Loader.joyLeftAxis = 0;
+						settingKey = false;
+					}
+					else {
+						if(KeyListener.getNextJoystickAxis() != -1) {
+							Loader.joyLeft = KeyListener.getNextJoystickAxis();
+							Loader.joyLeftAxis = KeyListener.getJoystickAxisSign(Loader.joyLeft);
+							settingKey = false;
+						}
+					}
+				}
+				if(settingsSelection ==  6) {
+					if(KeyListener.getNextJoystickButton() != -1) {
+						Loader.joyRight = KeyListener.getNextJoystickButton();
+						Loader.joyRightAxis = 0;
+						settingKey = false;
+					}
+					else {
+						if(KeyListener.getNextJoystickAxis() != -1) {
+							Loader.joyRight = KeyListener.getNextJoystickAxis();
+							Loader.joyRightAxis = KeyListener.getJoystickAxisSign(Loader.joyRight);
+							settingKey = false;
+						}
+					}
+				}
+				if(settingsSelection ==  7) {if(KeyListener.getNextJoystickButton() != -1) {Loader.joyA = KeyListener.getNextJoystickButton(); settingKey = false;}}
+				if(settingsSelection ==  8) {if(KeyListener.getNextJoystickButton() != -1) {Loader.joyB = KeyListener.getNextJoystickButton(); settingKey = false;}}
+				if(settingsSelection ==  9) {if(KeyListener.getNextJoystickButton() != -1) {Loader.joyX = KeyListener.getNextJoystickButton(); settingKey = false;}}
+				if(settingsSelection == 10) {if(KeyListener.getNextJoystickButton() != -1) {Loader.joyStart = KeyListener.getNextJoystickButton(); settingKey = false;}}
+				if(settingsSelection == 11) {if(KeyListener.getNextJoystickButton() != -1) {Loader.joyBack = KeyListener.getNextJoystickButton(); settingKey = false;}}
 			}
+			
+			enterReady = false;
+			backReady = false;
+			upReady = false;
+			downReady = false;
+			leftReady = false;
+			rightReady = false;
+			aReady = false;
 		}
 		
 		checkKeys();
