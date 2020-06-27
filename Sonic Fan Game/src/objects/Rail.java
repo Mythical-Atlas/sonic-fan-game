@@ -66,10 +66,10 @@ public class Rail {
 			while(difAngle < 0)      {difAngle += PI * 2;}
 			
 			if(difAngle < PI && angle1 == PI) {
-				System.out.println(angle0);
+				/*System.out.println(angle0);
 				System.out.println(angle1);
 				System.out.println(difAngle);
-				System.out.println();
+				System.out.println();*/
 				
 				shapes = append(shapes, new InverseArc( // WHY DOESN'T THIS WORK?!?!?!
 					new Vector(x1, y1),

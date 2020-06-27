@@ -19,7 +19,10 @@ public class PlayerActions {
 	}
 	private static void defaultMovement(Player p) {
 		double moveSpeed;
-		if(!p.shiftKey) {moveSpeed = MOVE_ACCEL * SCALE;}
+		if(!p.shiftKey) {
+			moveSpeed = MOVE_ACCEL * SCALE;
+			if(!p.ground) {moveSpeed /= 2;}
+		}
 		else          {moveSpeed = SPRINT_ACCEL * SCALE;}
 		
 		double accelScale = 1;

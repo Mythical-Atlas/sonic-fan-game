@@ -42,8 +42,8 @@ public class Loader {
 	public static int joyB = 1;
 	public static int joyX = 2;
 	public static int joyY = 3;
-	public static int joyStart = 7;
-	public static int joyBack = 6;
+	public static int joyStart = 6;
+	public static int joyBack = 7;
 	
 	public static int joyUpAxis = -1;
 	public static int joyDownAxis = 1;
@@ -55,10 +55,10 @@ public class Loader {
 	public static int joyDown = 18;
 	public static int joyLeft = 19;
 	public static int joyRight = 17;
-	public static int joyA = 1;
-	public static int joyB = 0;
-	public static int joyX = 3;
-	public static int joyY = 2;
+	public static int joyA = 0;
+	public static int joyB = 1;
+	public static int joyX = 2;
+	public static int joyY = 3;
 	public static int joyStart = 8;
 	public static int joyBack = 9;
 	

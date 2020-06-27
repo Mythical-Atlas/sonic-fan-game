@@ -269,6 +269,13 @@ public class Player {
 		if(layer == 2) {shapes = combine(layer0, layer2);}
 		if(platMasks != null) {shapes = combine(shapes, applyMask(platforms, platMasks));}
 		
+		if(rails != null) {
+			for(int i = 0; i < rails.length; i++) {
+				Shape[] railShapes = rails[i].getShapes(96, 96, 2);
+				for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
+			}
+		}
+		
 		if(shapes != null) {
 			if(state == STATE_BOUNCING && bounceType == 0 && vel.y < 0 && !ground) {
 				groundAxis = new Vector(0, -1);
@@ -278,14 +285,14 @@ public class Player {
 			
 			checkGrinding(shapes, rails);
 			
-			if(state == STATE_GRINDING) {
+			/*if(state == STATE_GRINDING) {
 				if(rails != null) {
 					for(int i = 0; i < rails.length; i++) {
 						Shape[] railShapes = rails[i].getShapes(96, 96, 2);
 						for(int s = 0; s < railShapes.length; s++) {shapes = append(shapes, railShapes[s]);}
 					}
 				}
-			}
+			}*/
 			
 			collide(shapes);
 			checkLedge(shapes);
@@ -385,7 +392,7 @@ public class Player {
 	}
 	
 	private void checkGrinding(Shape[] shapes, Rail[] rails) {
-		if(rails != null && (!ground && vel.y > 0 || ground) || state == STATE_GRINDING) {
+		/*if(rails != null && (!ground && vel.y > 0 || ground) || state == STATE_GRINDING) {
 			Shape[] tempShapes = null;
 			for(int i = 0; i < rails.length; i++) {
 				Shape[] railShapes = rails[i].getShapes(96, 96, 2);
@@ -414,7 +421,7 @@ public class Player {
 			
 			if(state == STATE_GRINDING && !tempGrind2) {state = STATE_DEFAULT;}
 		}
-		else {if(state == STATE_GRINDING) {state = STATE_DEFAULT;}}
+		else {if(state == STATE_GRINDING) {state = STATE_DEFAULT;}}*/
 	}
 	
 	private void collide(Shape[] shapes) {
