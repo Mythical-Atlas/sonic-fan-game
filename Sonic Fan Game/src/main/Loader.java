@@ -34,6 +34,7 @@ public class Loader {
 	public static Scene currentScene;
 	public static boolean fullscreen;
 	
+	/*
 	public static int joyUp = 1;
 	public static int joyDown = 1;
 	public static int joyLeft = 0;
@@ -49,8 +50,8 @@ public class Loader {
 	public static int joyDownAxis = 1;
 	public static int joyLeftAxis = -1;
 	public static int joyRightAxis = 1;
+	*/
 	
-	/*
 	public static int joyUp = 16;
 	public static int joyDown = 18;
 	public static int joyLeft = 19;
@@ -66,7 +67,6 @@ public class Loader {
 	public static int joyDownAxis = 0;
 	public static int joyLeftAxis = 0;
 	public static int joyRightAxis = 0;
-	*/
 	
 	public static int graphicsWidth;
 	public static int graphicsHeight;
@@ -230,7 +230,25 @@ public class Loader {
 	public static void main(String[] args) {
 		if(args.length > 0) {
 			if(args[0].equals("debug")) {
-				if(args[1].equals("leaf1")) {debugMode = 1;}
+				if(args[1].equals("leaf1")) {
+					debugMode = 1;
+					
+					joyUp = 1;
+					joyDown = 1;
+					joyLeft = 0;
+					joyRight = 0;
+					joyA = 0;
+					joyB = 1;
+					joyX = 2;
+					joyY = 3;
+					joyStart = 6;
+					joyBack = 7;
+					
+					joyUpAxis = -1;
+					joyDownAxis = 1;
+					joyLeftAxis = -1;
+					joyRightAxis = 1;
+				}
 			}
 		}
 		
